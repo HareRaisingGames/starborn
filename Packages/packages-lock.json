@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.hareraisingstudios.rabbyte": {
+      "version": "https://github.com/HareRaisingStudios/Rabbyte.git?path=/Assets/Scripts/Rabbyte",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "16308e1ba373723d724ccc48481dbeb74205fcb7"
+    },
     "com.unity.2d.animation": {
       "version": "9.1.1",
       "depth": 1,
