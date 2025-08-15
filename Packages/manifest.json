@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.hareraisingstudios.rabbyte": "https://github.com/HareRaisingStudios/Rabbyte.git?path=/Assets/Scripts/Rabbyte",
+    "com.hareraisinggames.rabbyte": "https://github.com/HareRaisingGames/Rabbyte.git?path=/Assets/Scripts/Rabbyte",
     "com.unity.collab-proxy": "2.3.1",
     "com.unity.feature.2d": "2.0.1",
     "com.unity.ide.rider": "3.0.28",
