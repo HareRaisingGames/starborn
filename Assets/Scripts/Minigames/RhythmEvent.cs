@@ -29,55 +29,25 @@ namespace Starborn.InputSystem
             public RhythmInputs inputMarker; //The input enum 
             private float _start;
             private float _end;
+            private Action _onHit;
 
             private bool _hasInput = false;
-            public bool hasInput
-            {
-                get
-                {
-                    return _hasInput;
-                }
-            }
+            public bool hasInput => _hasInput;
+            public Action action =>_action;
 
-            public Action action
-            {
-                get
-                {
-                    return _action;
-                }
-            }
+            public float beat => _beat;
+            public float startPoint => _start;
+            public float endPoint => _end;
+            public Action onHit => _onHit;
 
-            public float beat
-            {
-                get
-                {
-                    return _beat;
-                }
-            }
-
-            public float startPoint
-            {
-                get
-                {
-                    return _start;
-                }
-            }
-
-            public float endPoint
-            {
-                get
-                {
-                    return _end;
-                }
-            }
-
-            public CallForAction(Action action, float beat, RhythmInputs input = RhythmInputs.None, float start = 1, float end = 1)
+            public CallForAction(Action action, float beat, RhythmInputs input = RhythmInputs.None, float start = 1, float end = 1, Action onHit = null)
             {
                 _action = action;
                 _beat = beat;
                 inputMarker = input;
                 _start = start;
                 _end = end;
+                _onHit = onHit;
 
                 _hasInput = input != RhythmInputs.None;
 
@@ -89,9 +59,15 @@ namespace Starborn.InputSystem
                 //if (this.input.action != RhythmInputs.None && enable) this.input.Enable();
             }
 
+            public void AddAction(Action action)
+            {
+                _action = action;
+            }
+
             public CallForAction AddInput(float length, bool enable = false)
             {
-                input = new RhythmInput(inputMarker).SetDestination(beat).SetRange(_start * length, _end * length);
+                input = new RhythmInput(inputMarker).SetDestination(beat).SetRange(_start * length, _end * length).SetOnHit(_onHit);
+
                 if (input.action != RhythmInputs.None && enable) input.Enable();
                 return this;
             }
@@ -115,6 +91,11 @@ namespace Starborn.InputSystem
         public RhythmEvent()
         {
             SetUp();
+
+            if (Minigame.instance != null)
+                Minigame.instance.events.Add(this);
+
+            MinigameManager.instance.events.Add(this);
         }
 
         public void AddToChart(float time, float crochet = 1)
@@ -122,7 +103,7 @@ namespace Starborn.InputSystem
             startPoint = time;
             foreach(CallForAction action in actions)
             {
-                CallForAction newCFA = new CallForAction(action.action, startPoint + Conductor.instance.crochet * (action.beat - 1), action.inputMarker, action.startPoint, action.endPoint);
+                CallForAction newCFA = new CallForAction(action.action, startPoint + Conductor.instance.crochet * (action.beat - 1), action.inputMarker, action.startPoint, action.endPoint, action.onHit);
                 if (action.hasInput)
                 {
                     newCFA = newCFA.AddInput(crochet, true);

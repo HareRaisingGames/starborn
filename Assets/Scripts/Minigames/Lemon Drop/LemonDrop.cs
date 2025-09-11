@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Starborn.InputSystem;
 using UnityEngine.InputSystem;
+using System.Runtime;
 
 namespace Starborn.LemonDrop
 {
@@ -10,17 +11,19 @@ namespace Starborn.LemonDrop
     {
         LemonToss lemonEvent;
         RhythmInput input;
+        public GameObject lemonPrefab;
+        Lemon lemon;
         // Start is called before the first frame update
         public override void Start()
         {
-            lemonEvent = new LemonToss();
-            TweenManager.instance.AddManager();
-            Conductor.instance.SetUpBPM();
-            lemonEvent.AddToChart(Conductor.instance.crochet * 1);
-            lemonEvent.AddToChart(Conductor.instance.crochet * 13, Conductor.instance.crochet);
+            lemon = FindObjectOfType<Lemon>();
+            //lemonEvent.AddToChart(Conductor.instance.crochet * 13, Conductor.instance.crochet);
             //input = new RhythmInput(RhythmInputs.A).SetDestination(Conductor.instance.crochet * 12).SetRange(Conductor.instance.crochet, Conductor.instance.crochet);
             //input.Enable();
             //Conductor.instance.music.Play();
+
+            //Debug.Log(Object.FindObjectsOfType<RhythmEvent>().Length);
+            base.Start();
             StartCoroutine(PlayMusic());
             IEnumerator PlayMusic()
             {
@@ -29,16 +32,12 @@ namespace Starborn.LemonDrop
                 Conductor.instance.music.Play();
             }
         }
-
-        // Update is called once per frame
-        public override void Update()
+        int i = 0;
+        public override void onA(InputAction.CallbackContext context)
         {
-            if (Conductor.instance.isPlaying)
-            {
-                lemonEvent.CheckForInvoke(Conductor.instance.songPosition);
-                //input.Update(Conductor.instance.songPosition);
-            }
-                
+            base.onA(context);
+            //i++;
+            //lemon.Cut(i);
         }
     }
 }

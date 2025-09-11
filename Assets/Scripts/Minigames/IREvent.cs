@@ -6,6 +6,6 @@ namespace Starborn.InputSystem
 {
     public interface IREvent
     {
-
+        void SetUp();
     }
 }

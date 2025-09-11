@@ -11,6 +11,7 @@ public static class AssetsManager
 
     static AssetsManager()
     {
+#if UNITY_EDITOR
         string[] sbcs = AssetDatabase.FindAssets("t:defaultAsset", new[] {"Assets/Resources/Characters"});
 
         foreach (string sbc in sbcs)
@@ -21,6 +22,7 @@ public static class AssetsManager
                 filename = filename.Remove(filename.Length - 4);
                 characterFileNames.Add(filename);
             }
+#endif
     }
 
     public static void nun()

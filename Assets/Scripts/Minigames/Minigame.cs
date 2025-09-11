@@ -12,6 +12,7 @@ public abstract class Minigame : MonoBehaviour
 {
     StarbornInputSystem m_inputSystem;
 
+    [HideInInspector]
     public string minigameName;
     public Conductor conductor;
 
@@ -21,6 +22,7 @@ public abstract class Minigame : MonoBehaviour
     [HideInInspector]
     public List<string> eventsList = new List<string>();
     public List<Charting> chartings = new List<Charting>();
+    [HideInInspector] public List<RhythmEvent> events = new List<RhythmEvent>();
     protected Charting selectedCharting;
 
     public static double ngEarlyTimeBase = 0.1, justEarlyTimeBase = 0.05, aceEarlyTimeBase = 0.01, aceLateTimeBase = 0.01, justLateTimeBase = 0.05, ngLateTimeBase = 0.1;
@@ -32,15 +34,33 @@ public abstract class Minigame : MonoBehaviour
     //public static double justLateTime => justLateTimeBase * Conductor.instance?.SongPitch ?? 1;
     //public static double ngLateTime => ngLateTimeBase * Conductor.instance?.SongPitch ?? 1;
 
+    public static Minigame instance; 
+
     public virtual void OnValidate()
     {
+        foreach (Charting chart in chartings)
+        {
+            foreach (Section section in chart.sections)
+            {
+                foreach (Inputs input in section.inputList)
+                {
+                    input.events.Clear();
+                }
+            }
+        }
+
+        if(GetType().GetField("chartings") != null)
+        {
+
+        }
+
         eventsList.Clear();
         System.Type myType = GetType();
-        string nameSpaceName = myType.Namespace;
+        minigameName = myType.Namespace;
         Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
         foreach (Assembly assembly in assemblies)
         {
-            System.Type[] classes = ReflectionUtils.GetTypesInNamespace(assembly, nameSpaceName);
+            System.Type[] classes = ReflectionUtils.GetTypesInNamespace(assembly, minigameName);
             if (classes.Length != 0)
             {
                 for (int i = 0; i < classes.Length; i++)
@@ -53,13 +73,27 @@ public abstract class Minigame : MonoBehaviour
             }
         }
 
-        foreach(Charting chart in chartings)
+        foreach (Charting chart in chartings)
         {
-            foreach(Section section in chart.sections)
+            foreach (Section section in chart.sections)
             {
-                foreach(Inputs input in section.inputList)
+                foreach (Inputs input in section.inputList)
                 {
-                    input.events = eventsList;
+                    /*input.events = eventsList;*/
+                    foreach (Assembly assembly in assemblies)
+                    {
+                        System.Type[] classes = ReflectionUtils.GetTypesInNamespace(assembly, minigameName);
+                        if (classes.Length != 0)
+                        {
+                            for (int i = 0; i < classes.Length; i++)
+                            {
+                                if (classes[i].IsSubclassOf(typeof(RhythmEvent)))
+                                {
+                                    input.events.Add(classes[i].Name);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -67,6 +101,7 @@ public abstract class Minigame : MonoBehaviour
 
     public virtual void Awake()
     {
+        instance = this;
         //Debug.Log(ReflectionUtils.GetTypesInNamespace(System.AppDomain.CurrentDomain.GetAssemblies()[1],"Starborn." + minigameName).Length);
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Rhythm.A.performed += onA;
@@ -74,6 +109,7 @@ public abstract class Minigame : MonoBehaviour
         m_inputSystem.Rhythm.Down.performed += onDown;
         m_inputSystem.Rhythm.Up.performed += onUp;
         m_inputSystem.Rhythm.Right.performed += onRight;
+        m_inputSystem.Rhythm.Pad.performed += onPad;
 
         if(chartings.Count != 0) selectedCharting = chartings[Random.Range(0, chartings.Count - 1)];
     }
@@ -91,14 +127,33 @@ public abstract class Minigame : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Start()
     {
-        
+        //Debug.Log(events.Count);
+        TweenManager.instance.AddManager();
+        Conductor.instance.SetUpBPM();
+        selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
     }
+
+    protected int curBeat = 0;
+    int prevBeat = 0;
 
     // Update is called once per frame
     public virtual void Update()
     {
-        
+        if (Conductor.instance.isPlaying)
+        {
+            curBeat = Conductor.instance.curBeat;
+            foreach(RhythmEvent eventT in events)
+            {
+                eventT.CheckForInvoke(Conductor.instance.songPosition);
+            }
+        }
+            
+
+        if (prevBeat != curBeat) OnBeatChange();
+        prevBeat = curBeat;
     }
+
+    public virtual void OnBeatChange() { }
 
     public virtual void onA(InputAction.CallbackContext context)
     {
@@ -124,4 +179,54 @@ public abstract class Minigame : MonoBehaviour
     {
         //If the Right button has been pressed
     }
+
+    public virtual void onPad(InputAction.CallbackContext context)
+    {
+        //If the arrow pad has been pressed
+    }
 }
+
+//This is specifically for the minigames
+public class GamePopupAttribute : PropertyAttribute
+{
+
+}
+
+#if UNITY_EDITOR
+[CustomPropertyDrawer(typeof(GamePopupAttribute))]
+public class MinigameDrawer : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        List<string> events = null;
+        if(property.serializedObject.targetObject.GetType() == typeof(Minigame) || property.serializedObject.targetObject.GetType().IsSubclassOf(typeof(Minigame)))
+        {
+            System.Type t = property.serializedObject.targetObject.GetType();
+            List<Charting> chartings = t.GetField("chartings").GetValue(property.serializedObject.targetObject) as List<Charting>;
+            foreach(Charting charting in chartings)
+            {
+                List<Section> sections = charting.GetType().GetField("sections").GetValue(charting) as List<Section>;
+                foreach(Section section in sections)
+                {
+                    List<Inputs> inputs = section.GetType().GetField("inputList").GetValue(section) as List<Inputs>;
+                    foreach(Inputs input in inputs)
+                    {
+                        events = input.GetType().GetField("events").GetValue(input) as List<string>;
+                    }
+                }
+            }
+
+            if(events != null && events.Count != 0)
+            {
+                int selectedIndex = Mathf.Max(events.IndexOf(property.stringValue), 0);
+                selectedIndex = EditorGUI.Popup(position, property.name, selectedIndex, events.ToArray());
+                property.stringValue = events[selectedIndex];
+            }
+            else
+                EditorGUI.PropertyField(position, property, label);
+        }
+        else
+            EditorGUI.PropertyField(position, property, label);
+    }
+}
+#endif

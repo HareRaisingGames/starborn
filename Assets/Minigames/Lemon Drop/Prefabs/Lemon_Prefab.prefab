@@ -630,6 +630,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3061b8858a2d254f8ebf00baf4988a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  skin: {fileID: 1740064820209721627}
+  front: {fileID: 3182762111846771464}
+  slice1: {fileID: 508643669414881139}
+  slice2: {fileID: 5167338287024581343}
+  back: {fileID: 8070402256546235980}
 --- !u!1 &8240913429194367434
 GameObject:
   m_ObjectHideFlags: 0

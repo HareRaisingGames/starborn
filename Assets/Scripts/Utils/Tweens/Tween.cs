@@ -42,6 +42,8 @@ public class Tween<T>: ITween
     private Action _onUpdate;
     private Action _onPercentCompleted;
 
+    public T endValue => _endValue;
+
 
     public Tween(object target, string identifier, T startValue, T endValue, float duration, Action<T> onTweenUpdate, Eases type = default(Eases), Action onComplete = default(Action))
     {
@@ -177,6 +179,12 @@ public class Tween<T>: ITween
             return (T)(object)Color.LerpUnclamped(startColor, endColor, t);
 
         throw new NotImplementedException($"Interpolation for type {typeof(T)} has not yet been implemented");
+    }
+
+    public Tween<T> SetLoop(int loopCounted = 1)
+    {
+        _loopCount = loopCounted;
+        return this;
     }
 
     public Tween<T> SetPingPong(int loopCounted = 1)

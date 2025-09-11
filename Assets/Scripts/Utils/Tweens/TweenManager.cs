@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using UnityEngine.UI;
 
 public class TweenManager : MonoBehaviour
 {
@@ -28,6 +29,7 @@ public class TweenManager : MonoBehaviour
     }
 
     private Dictionary<string, ITween> _activeTweens = new Dictionary<string, ITween>();
+    public Dictionary<string, ITween> activeTweens => _activeTweens;
 
 
     public void AddTween<T>(Tween<T> tween)
@@ -136,7 +138,11 @@ public class TweenManager : MonoBehaviour
 
     public static Tween<float> AlphaTween(GameObject gameObject, float startAlpha, float endAlpha, float duration, Eases type = default(Eases), Action onComplete = default(Action))
     {
-        SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        dynamic spriteRenderer = null;
+        if (gameObject.GetComponent<Image>() != null)
+            spriteRenderer = gameObject.GetComponent<Image>();
+        else
+            spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         float value = UnityEngine.Random.value;
         string identifier = $"{gameObject.GetInstanceID()}_Alpha_{value}";
@@ -146,9 +152,104 @@ public class TweenManager : MonoBehaviour
             Color color = spriteRenderer.color;
             color.a = value;
             spriteRenderer.color = color;
+
         }, type, onComplete);
 
         return tween;
 
+    }
+
+    public static Tween<float> PitchTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    {
+        dynamic tranformation = null;
+        if (gameObject.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObject.GetComponent<RectTransform>();
+        }
+        else
+            tranformation = gameObject.GetComponent<Transform>();
+
+        float value = UnityEngine.Random.value;
+        string identifier = $"{tranformation.GetInstanceID()}_Pitch_{value}";
+
+        Tween<float> tween = new Tween<float>(gameObject, identifier, startAngle, endAngle, duration, value =>
+        {
+            Vector3 rotation = tranformation.rotation.eulerAngles;
+            rotation.x = value;
+            tranformation.rotation = Quaternion.Euler(rotation);
+
+        }, type, onComplete);
+
+        return tween;
+
+
+    }
+
+    public static Tween<float> YawTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    {
+        dynamic tranformation = null;
+        if (gameObject.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObject.GetComponent<RectTransform>();
+        }
+        else
+            tranformation = gameObject.GetComponent<Transform>();
+
+        float value = UnityEngine.Random.value;
+        string identifier = $"{tranformation.GetInstanceID()}_Yaw_{value}";
+
+        Tween<float> tween = new Tween<float>(gameObject, identifier, startAngle, endAngle, duration, value =>
+        {
+            Vector3 rotation = tranformation.rotation.eulerAngles;
+            rotation.y = value;
+            tranformation.rotation = Quaternion.Euler(rotation);
+
+        }, type, onComplete);
+
+        return tween;
+
+
+    }
+
+    public static Tween<float> RollTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    {
+        dynamic tranformation = null;
+        if (gameObject.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObject.GetComponent<RectTransform>();
+        }
+        else
+            tranformation = gameObject.GetComponent<Transform>();
+
+        float value = UnityEngine.Random.value;
+        string identifier = $"{tranformation.GetInstanceID()}_Roll_{value}";
+
+        Tween<float> tween = new Tween<float>(gameObject, identifier, startAngle, endAngle, duration, value =>
+        {
+            Vector3 rotation = tranformation.rotation.eulerAngles;
+            rotation.z = value;
+            tranformation.rotation = Quaternion.Euler(rotation);
+
+        }, type, onComplete);
+
+        return tween;
+
+
+    }
+
+    public static Tween<float> NumTween(Func<float> getFloat, Action<float> setFloat, float end, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    {
+        float value = UnityEngine.Random.value;
+        string identifier = $"{getFloat.Target.GetHashCode()}_Float_{value}";
+        object target = getFloat.Target;
+
+        float start = getFloat();
+
+        Tween<float> tween = new Tween<float>(target, identifier, start, end, duration, value => 
+        {
+            setFloat(value);
+        }, type, onComplete);
+
+        return tween;
     }
 }

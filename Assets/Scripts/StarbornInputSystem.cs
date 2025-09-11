@@ -73,6 +73,15 @@ namespace Starborn.InputSystem
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pad"",
+                    ""type"": ""Button"",
+                    ""id"": ""9b0b53d7-71ed-482d-bb81-743c6719f863"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -166,6 +175,17 @@ namespace Starborn.InputSystem
                 },
                 {
                     ""name"": """",
+                    ""id"": ""8acd71ad-10a7-404a-a1a7-71193286a390"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Left"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""517e48ab-ad85-49e6-baba-06695ef43eb8"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
@@ -201,6 +221,17 @@ namespace Starborn.InputSystem
                     ""name"": """",
                     ""id"": ""3adb873b-b5bc-4503-9864-5ec7ae30924d"",
                     ""path"": ""<SwitchProControllerHID>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Right"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5181b607-5f82-4a54-8984-89f6ccda8575"",
+                    ""path"": ""<Keyboard>/d"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -254,6 +285,17 @@ namespace Starborn.InputSystem
                 },
                 {
                     ""name"": """",
+                    ""id"": ""eb8b142d-9410-4b8a-85d5-81e4031a50d9"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Up"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""ff17f255-3c69-487b-9dd9-ddc4faf13264"",
                     ""path"": ""<Keyboard>/downArrow"",
                     ""interactions"": """",
@@ -293,6 +335,149 @@ namespace Starborn.InputSystem
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Down"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e4584eff-6b4e-4abc-bfbe-c366000b10d6"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Down"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""443124fb-de3c-4b03-af89-86d11dc4157d"",
+                    ""path"": ""<Gamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""389ea4b6-0053-4f67-b176-d85a86a4c4f7"",
+                    ""path"": ""<XInputController>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""733d76fb-e235-46e7-a40c-bbcecc723178"",
+                    ""path"": ""<DualShockGamepad>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""26a1bd44-6462-49ac-9583-bfe4f4cbde69"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d0233200-d15a-49b5-90ba-8b3eb3b5c5b6"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""997ee1c8-6fb9-4c3d-91f2-dc09365134d8"",
+                    ""path"": ""<Keyboard>/w"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9565aafa-38fd-4337-8fcd-35f603836e97"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fca63e02-7888-4349-90ad-91da7f1b6e25"",
+                    ""path"": ""<Keyboard>/d"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3a4dbdb0-7c7f-4281-9370-3e7e1180037a"",
+                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""19573c7e-d44b-4071-b32a-65f68944e834"",
+                    ""path"": ""<Keyboard>/a"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5fd9720e-aa32-43a5-8ad5-43b70291028f"",
+                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""22537fc5-b54d-4669-b35b-0cd87615c8ab"",
+                    ""path"": ""<SwitchProControllerHID>/dpad"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pad"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -813,6 +998,78 @@ namespace Starborn.InputSystem
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Dialogue"",
+            ""id"": ""003ebcb8-9fa1-4dbc-b049-361e7d7dfd94"",
+            ""actions"": [
+                {
+                    ""name"": ""A"",
+                    ""type"": ""Button"",
+                    ""id"": ""e4bf8851-5162-4a84-bebe-4edfd3d6b889"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""5b28cc33-9f61-48e6-a4f4-1f0bfa8057f0"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard&Mouse"",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cb516d55-c74c-4e49-8d19-4744484b908f"",
+                    ""path"": ""<XInputController>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""afe876a8-1a66-4155-9993-e7681a59d7ba"",
+                    ""path"": ""<DualShockGamepad>/buttonSouth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""080b1519-6287-483c-ad0e-0636e61c9215"",
+                    ""path"": ""<SwitchProControllerHID>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4f746a8a-85ee-4160-a501-b7f46dfc4bf8"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": [
@@ -885,6 +1142,7 @@ namespace Starborn.InputSystem
             m_Rhythm_Right = m_Rhythm.FindAction("Right", throwIfNotFound: true);
             m_Rhythm_Up = m_Rhythm.FindAction("Up", throwIfNotFound: true);
             m_Rhythm_Down = m_Rhythm.FindAction("Down", throwIfNotFound: true);
+            m_Rhythm_Pad = m_Rhythm.FindAction("Pad", throwIfNotFound: true);
             // UI
             m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
             m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -897,6 +1155,9 @@ namespace Starborn.InputSystem
             m_UI_RightClick = m_UI.FindAction("RightClick", throwIfNotFound: true);
             m_UI_TrackedDevicePosition = m_UI.FindAction("TrackedDevicePosition", throwIfNotFound: true);
             m_UI_TrackedDeviceOrientation = m_UI.FindAction("TrackedDeviceOrientation", throwIfNotFound: true);
+            // Dialogue
+            m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
+            m_Dialogue_A = m_Dialogue.FindAction("A", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -963,6 +1224,7 @@ namespace Starborn.InputSystem
         private readonly InputAction m_Rhythm_Right;
         private readonly InputAction m_Rhythm_Up;
         private readonly InputAction m_Rhythm_Down;
+        private readonly InputAction m_Rhythm_Pad;
         public struct RhythmActions
         {
             private @StarbornInputSystem m_Wrapper;
@@ -972,6 +1234,7 @@ namespace Starborn.InputSystem
             public InputAction @Right => m_Wrapper.m_Rhythm_Right;
             public InputAction @Up => m_Wrapper.m_Rhythm_Up;
             public InputAction @Down => m_Wrapper.m_Rhythm_Down;
+            public InputAction @Pad => m_Wrapper.m_Rhythm_Pad;
             public InputActionMap Get() { return m_Wrapper.m_Rhythm; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -996,6 +1259,9 @@ namespace Starborn.InputSystem
                 @Down.started += instance.OnDown;
                 @Down.performed += instance.OnDown;
                 @Down.canceled += instance.OnDown;
+                @Pad.started += instance.OnPad;
+                @Pad.performed += instance.OnPad;
+                @Pad.canceled += instance.OnPad;
             }
 
             private void UnregisterCallbacks(IRhythmActions instance)
@@ -1015,6 +1281,9 @@ namespace Starborn.InputSystem
                 @Down.started -= instance.OnDown;
                 @Down.performed -= instance.OnDown;
                 @Down.canceled -= instance.OnDown;
+                @Pad.started -= instance.OnPad;
+                @Pad.performed -= instance.OnPad;
+                @Pad.canceled -= instance.OnPad;
             }
 
             public void RemoveCallbacks(IRhythmActions instance)
@@ -1150,6 +1419,52 @@ namespace Starborn.InputSystem
             }
         }
         public UIActions @UI => new UIActions(this);
+
+        // Dialogue
+        private readonly InputActionMap m_Dialogue;
+        private List<IDialogueActions> m_DialogueActionsCallbackInterfaces = new List<IDialogueActions>();
+        private readonly InputAction m_Dialogue_A;
+        public struct DialogueActions
+        {
+            private @StarbornInputSystem m_Wrapper;
+            public DialogueActions(@StarbornInputSystem wrapper) { m_Wrapper = wrapper; }
+            public InputAction @A => m_Wrapper.m_Dialogue_A;
+            public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
+            public void Enable() { Get().Enable(); }
+            public void Disable() { Get().Disable(); }
+            public bool enabled => Get().enabled;
+            public static implicit operator InputActionMap(DialogueActions set) { return set.Get(); }
+            public void AddCallbacks(IDialogueActions instance)
+            {
+                if (instance == null || m_Wrapper.m_DialogueActionsCallbackInterfaces.Contains(instance)) return;
+                m_Wrapper.m_DialogueActionsCallbackInterfaces.Add(instance);
+                @A.started += instance.OnA;
+                @A.performed += instance.OnA;
+                @A.canceled += instance.OnA;
+            }
+
+            private void UnregisterCallbacks(IDialogueActions instance)
+            {
+                @A.started -= instance.OnA;
+                @A.performed -= instance.OnA;
+                @A.canceled -= instance.OnA;
+            }
+
+            public void RemoveCallbacks(IDialogueActions instance)
+            {
+                if (m_Wrapper.m_DialogueActionsCallbackInterfaces.Remove(instance))
+                    UnregisterCallbacks(instance);
+            }
+
+            public void SetCallbacks(IDialogueActions instance)
+            {
+                foreach (var item in m_Wrapper.m_DialogueActionsCallbackInterfaces)
+                    UnregisterCallbacks(item);
+                m_Wrapper.m_DialogueActionsCallbackInterfaces.Clear();
+                AddCallbacks(instance);
+            }
+        }
+        public DialogueActions @Dialogue => new DialogueActions(this);
         private int m_KeyboardMouseSchemeIndex = -1;
         public InputControlScheme KeyboardMouseScheme
         {
@@ -1202,6 +1517,7 @@ namespace Starborn.InputSystem
             void OnRight(InputAction.CallbackContext context);
             void OnUp(InputAction.CallbackContext context);
             void OnDown(InputAction.CallbackContext context);
+            void OnPad(InputAction.CallbackContext context);
         }
         public interface IUIActions
         {
@@ -1215,6 +1531,10 @@ namespace Starborn.InputSystem
             void OnRightClick(InputAction.CallbackContext context);
             void OnTrackedDevicePosition(InputAction.CallbackContext context);
             void OnTrackedDeviceOrientation(InputAction.CallbackContext context);
+        }
+        public interface IDialogueActions
+        {
+            void OnA(InputAction.CallbackContext context);
         }
     }
 }
