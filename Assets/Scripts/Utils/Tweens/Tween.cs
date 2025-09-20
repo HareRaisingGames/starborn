@@ -90,6 +90,9 @@ public class Tween<T>: ITween
             if (isComplete)
                 return;
 
+            if (isPaused)
+                return;
+
             if (IsTargetDestroyed())
             {
                 FullKill();

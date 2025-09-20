@@ -5,6 +5,7 @@ using Starborn;
 using Starborn.InputSystem;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using TMPro;
 
 public class MinigameManager : MonoBehaviour
 {
@@ -22,7 +23,20 @@ public class MinigameManager : MonoBehaviour
     public int maxLives = 3;
     int _lives;
     bool _gameOver;
-    bool _consequences;
+    bool _consequences = true;
+
+    bool _canPlay = true;
+
+    public bool canPlay
+    {
+        set
+        {
+            _canPlay = value;
+        }
+    }
+
+    public TMP_Text accuracyText;
+    public TMP_Text livesText;
     public bool gameOver
     {
         get
@@ -46,6 +60,10 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    public TMP_Text text;
+
+    bool paused;
+
     public bool consequences
     {
         set
@@ -62,30 +80,62 @@ public class MinigameManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                GameObject manager = new GameObject("Minigame");
-                _instance = manager.AddComponent<MinigameManager>();
+                if(FindObjectOfType<MinigameManager>() == null)
+                {
+                    GameObject prefab = Resources.Load<GameObject>("Prefabs/Manager");
+                    if(prefab != null)
+                    {
+                        Instantiate(prefab, Vector3.zero, Quaternion.identity).name = "Manager";
+                    }
+                    else
+                    {
+                        GameObject manager = new GameObject("Minigame");
+                        _instance = manager.AddComponent<MinigameManager>();
+                    }
+                }
+                _instance = FindObjectOfType<MinigameManager>();
             }
 
             return _instance;
         }
     }
 
+    public static List<float> totalAccuracies = new List<float>();
+    public static void ClearAccuracies() => totalAccuracies.Clear();
+    public static void AverageAccuracies(List<float> game) => totalAccuracies.Add(MathUtils.ListAverage(game));
+
+    StarbornInputSystem m_inputSystem;
+
     private void Awake()
     {
+        minigame = FindObjectOfType<Minigame>();
         Conductor.instance.SetUpBPM();
+
+        text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();
+        m_inputSystem = new StarbornInputSystem();
+        m_inputSystem.Dialogue.Pause.performed += OnPause;
+
+    }
+
+    private void OnEnable()
+    {
+        m_inputSystem.Dialogue.Enable();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         _lives = maxLives;
+        minigame = FindObjectOfType<Minigame>();
     }
 
     public void LoseALife(int amount = 1)
     {
-        if(!_consequences)
+        if(_consequences)
             _lives -= amount;
     }
+
+    float totalAccuracy = 0;
 
     // Update is called once per frame
     void Update()
@@ -99,6 +149,19 @@ public class MinigameManager : MonoBehaviour
             foreach (RhythmInput input in inputs)
             {
                 input.Update(Conductor.instance.songPosition);
+
+/*                if (minigame != null)
+                {
+                    if(minigame.autoPlay)
+                    {
+                        if(input.curHit >= input.desHit && !input.HasHit)
+                        {
+                            input.onHit?.Invoke();
+                            input.HasHit = true;
+                        }
+                    }
+                }
+*/
             }
         }
 
@@ -107,6 +170,16 @@ public class MinigameManager : MonoBehaviour
             _gameOver = true;
             MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f);
         }
+
+        if(accuracyText != null) accuracyText.text = Mathf.Round(totalAccuracy * 100) + "%";
+        if (livesText != null) livesText.text = Mathf.Clamp(lives, 0, Mathf.Infinity).ToString();
+
+        if (accuracies.Count != 0)
+        {
+            totalAccuracy = Mathf.Lerp(totalAccuracy, MathUtils.ListAverage(accuracies), Time.deltaTime * 10);
+        }
+
+        foreach (RhythmInput input in inputs) input.canPlay = _canPlay;
 
         /*if (Gamepad.current != null)
         {
@@ -126,5 +199,75 @@ public class MinigameManager : MonoBehaviour
 
         //inputs = Object.FindObjectsOfType<RhythmInput>();
         //inputs = new List<RhythmInput>(FindObjectsOfType<RhythmInput>());
+    }
+
+    public void StartTutorial()
+    {
+        if(minigame != null)
+        {
+            if(minigame.isTutorial && minigame.tutorial.lines.Count != 0)
+            {
+                if(text != null)
+                {
+                    NextLine();
+                }
+            }
+        }
+    }
+
+    int t = 0;
+    public void NextLine()
+    {
+        if(minigame.tutorial.lines.Count <= t)
+        {
+            return;
+        }
+        text.text = minigame.tutorial.lines[t].dialogue;
+        t++;
+    }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        paused = !paused;
+        minigame.paused = paused;
+        if(paused)
+        {
+            if(Conductor.instance.isPlaying)
+            {
+                Conductor.instance.music.Pause();
+                foreach(KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+                {
+                    tween.Value.Pause();
+                }
+
+                foreach(RhythmInput input in inputs)
+                {
+                    input.Disable();
+                }
+            }
+        }
+        else
+        {
+            if (Conductor.instance.isPaused)
+            {
+                Conductor.instance.music.UnPause();
+                foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+                {
+                    tween.Value.Resume();
+                }
+
+                foreach (RhythmInput input in inputs)
+                {
+                    input.Enable();
+                }
+            }
+        }
+    }
+
+    public static void Clear()
+    {
+        instance.events.Clear();
+        instance.inputs.Clear();
+        instance.accuracies.Clear();
     }
 }

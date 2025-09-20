@@ -6,6 +6,16 @@ using System;
 namespace Starborn.InputSystem
 {
     [System.Serializable]
+    ///<summary>
+    /// How will the events work?
+    ///
+    /// The start point is the song position in which the event has been placed
+    ///
+    /// Each function will be called based on the song position's plus the crochet (seconds per beat) times the beat placement
+    /// startPoint + Conductor.instance.crochet* beat
+    ///
+    /// If the song's position matches the placement of the event's beat, Invoke the Action
+    /// </summary>
     public class RhythmEvent : IREvent
     {
         public virtual void SetUp()
@@ -131,16 +141,6 @@ namespace Starborn.InputSystem
                 input.Update(time);
             }
         }
-        /**
-         * How will the events work?
-         * 
-         * The start point is the song position in which the event has been placed
-         * 
-         * Each function will be called based on the song position's plus the crochet (seconds per beat) times the beat placement
-         * startPoint + Conductor.instance.crochet * beat
-         * 
-         * If the song's position matches the placement of the event's beat, Invoke the Action
-         */
     }
 }
 

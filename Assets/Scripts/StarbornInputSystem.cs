@@ -1011,6 +1011,15 @@ namespace Starborn.InputSystem
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""12c167d0-c404-4257-91c2-0e2e1370e75b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1066,6 +1075,50 @@ namespace Starborn.InputSystem
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f55ba551-9a75-4eb8-b1a5-d8794e0ca4cc"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2a73612e-7d51-45a0-8099-539a4ef5fb75"",
+                    ""path"": ""<XInputController>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7ac9cca8-dfd7-4507-beda-0491a48bc5ca"",
+                    ""path"": ""<DualShockGamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""415d9ed3-9aed-4541-9241-43d3ab8f13b4"",
+                    ""path"": ""<SwitchProControllerHID>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1158,6 +1211,7 @@ namespace Starborn.InputSystem
             // Dialogue
             m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
             m_Dialogue_A = m_Dialogue.FindAction("A", throwIfNotFound: true);
+            m_Dialogue_Pause = m_Dialogue.FindAction("Pause", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -1424,11 +1478,13 @@ namespace Starborn.InputSystem
         private readonly InputActionMap m_Dialogue;
         private List<IDialogueActions> m_DialogueActionsCallbackInterfaces = new List<IDialogueActions>();
         private readonly InputAction m_Dialogue_A;
+        private readonly InputAction m_Dialogue_Pause;
         public struct DialogueActions
         {
             private @StarbornInputSystem m_Wrapper;
             public DialogueActions(@StarbornInputSystem wrapper) { m_Wrapper = wrapper; }
             public InputAction @A => m_Wrapper.m_Dialogue_A;
+            public InputAction @Pause => m_Wrapper.m_Dialogue_Pause;
             public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1441,6 +1497,9 @@ namespace Starborn.InputSystem
                 @A.started += instance.OnA;
                 @A.performed += instance.OnA;
                 @A.canceled += instance.OnA;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
 
             private void UnregisterCallbacks(IDialogueActions instance)
@@ -1448,6 +1507,9 @@ namespace Starborn.InputSystem
                 @A.started -= instance.OnA;
                 @A.performed -= instance.OnA;
                 @A.canceled -= instance.OnA;
+                @Pause.started -= instance.OnPause;
+                @Pause.performed -= instance.OnPause;
+                @Pause.canceled -= instance.OnPause;
             }
 
             public void RemoveCallbacks(IDialogueActions instance)
@@ -1535,6 +1597,7 @@ namespace Starborn.InputSystem
         public interface IDialogueActions
         {
             void OnA(InputAction.CallbackContext context);
+            void OnPause(InputAction.CallbackContext context);
         }
     }
 }

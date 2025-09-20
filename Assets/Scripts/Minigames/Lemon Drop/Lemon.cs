@@ -70,9 +70,9 @@ public class Lemon : MonoBehaviour
         if (state >= 3)
         {
             slice2.isKinematic = false;
-            //back.isKinematic = false;
+            back.isKinematic = false;
             slice2.transform.parent = null;
-            //back.transform.parent = null;
+            back.transform.parent = null;
         }
 
         switch(state)

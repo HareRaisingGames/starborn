@@ -26,14 +26,14 @@ namespace Starborn.Tosstail
             shortT.AddToChart(Conductor.instance.crochet * 10, Conductor.instance.crochet);
             longT = new LongToss();
             longT.AddToChart(Conductor.instance.crochet * 12, Conductor.instance.crochet);*/
-            StartCoroutine(PlayMusic());
+            /*StartCoroutine(PlayMusic());
             IEnumerator PlayMusic()
             {
                 yield return new WaitForSeconds(1);
                 //new ShortToss().AddToChart(0);
                 //Debug.Log("Go!");
                 Conductor.instance.music.Play();
-            }
+            }*/
         }
 
         public void Toss(float time, float beat = 0, float reset = 1, bool tall = false)
@@ -41,7 +41,7 @@ namespace Starborn.Tosstail
             shaker.Toss(time, tall, reset);
             RhythmInput input = new RhythmInput(shaker.direction ? RhythmInputs.Pad : RhythmInputs.A)
                 .SetDestination(beat)
-                    .SetRange(tall ? 2f : 1f, tall ? 2f : 1f)
+                    .SetRange(0.5f, 0.5f)
                         .SetOnHit(shaker.SuccessfulCatch)
                             .SetOnHalfHit(shaker.UnsuccessfulCatch);
             input.Enable();
@@ -70,7 +70,7 @@ namespace Starborn.Tosstail
         {
             CallForAction toss = new CallForAction(() => { }, 1);
             toss.AddAction(() => {
-                float beat = startPoint + Conductor.instance.crochet * (toss.beat - 1);
+                float beat = startPoint + Conductor.instance.crochet * toss.beat;
                 game.Toss(Conductor.instance.crochet, beat, Conductor.instance.crochet);
             });
             actions = new List<CallForAction>() {
@@ -85,7 +85,7 @@ namespace Starborn.Tosstail
         {
             CallForAction toss = new CallForAction(() => { }, 1);
             toss.AddAction(() => {
-                float beat = startPoint + Conductor.instance.crochet * (toss.beat - 1);
+                float beat = startPoint + Conductor.instance.crochet * (toss.beat + 1);
                 game.Toss(Conductor.instance.crochet * 2, beat, Conductor.instance.crochet, true);
             });
             actions = new List<CallForAction>() {

@@ -28,20 +28,26 @@ namespace Starborn.Tosstail
         public bool canPlay => _canPlay;
 
         public AudioSource sfx;
+        public AudioSource catchSfx;
+        public AudioSource missSfx;
+
+        bool inRuntime;
         // Start is called before the first frame update
         void Start()
         {
             _right = startOnRight;
             startY = transform.position.y;
 
-            if (GameObject.Find("Metronome") == null)
+            if (GameObject.Find("Toss") == null)
             {
-                GameObject gameObject = new GameObject("Metronome");
+                GameObject gameObject = new GameObject("Toss");
                 sfx = gameObject.AddComponent<AudioSource>();
                 sfx.clip = Resources.Load<AudioClip>("Audio/blip");
             }
             else
-                sfx = GameObject.Find("Metronome").GetComponent<AudioSource>();
+                sfx = GameObject.Find("Toss").GetComponent<AudioSource>();
+
+            inRuntime = true;
         }
 
         Tween<float> xTween;
@@ -51,7 +57,16 @@ namespace Starborn.Tosstail
         float reset;
         float yDistance;
 
-        // Update is called once per frame
+        public virtual void OnValidate()
+        {
+            if(!inRuntime)
+            {
+                float x = startOnRight ? startPosition : endPosition;
+                transform.position = new Vector3(x, transform.position.y, transform.position.z);
+            }
+        }
+
+            // Update is called once per frame
         void Update()
         {
 
@@ -137,15 +152,16 @@ namespace Starborn.Tosstail
 
         public void SuccessfulCatch()
         {
-            Debug.Log("Go!");
             xTween.OnCompleteKill();
             yTween.OnCompleteKill();
             angleTween.OnCompleteKill();
+            if (catchSfx != null) catchSfx.Play();
             isTossed = false;
             _canPlay = true;
             transform.position = new Vector3(_right ? endPosition : startPosition, startY, transform.position.z);
             transform.rotation = Quaternion.identity;
             _right = !_right;
+            //MinigameManager.instance.canPlay = true;
         }
 
         public void UnsuccessfulCatch(bool early)
@@ -154,6 +170,8 @@ namespace Starborn.Tosstail
             yTween.OnCompleteKill();
             angleTween.OnCompleteKill();
 
+            //MinigameManager.instance.canPlay = false;
+
             isTossed = false;
             float x = _right ? endPosition : startPosition;
 
@@ -161,9 +179,9 @@ namespace Starborn.Tosstail
             transform.rotation = Quaternion.identity;
             _right = !_right;
 
-            TweenManager.XTween(gameObject, x, x + 3 * (x > 0 ? -1 : 1), reset * 0.75f, Eases.EaseInSine, () =>
+            TweenManager.XTween(gameObject, x, x + 3 * (early ? (x > 0 ? -1 : 1) : (x > 0 ? 1 : -1)), reset * 0.75f, Eases.EaseInSine, () =>
             {
-                TossBack(x + 3 * (x > 0 ? -1 : 1), startY - yDistance, reset, 0.25f);
+                TossBack(x + 3 * (early ? (x > 0 ? -1 : 1) : (x > 0 ? 1 : -1)), startY - yDistance, reset, 0.25f);
             });
             TweenManager.YTween(gameObject, startY, startY + 0.5f, reset * 0.25f, Eases.EaseOutSine, () =>
             {
@@ -171,11 +189,13 @@ namespace Starborn.Tosstail
             });
             TweenManager.RollTween(gameObject, 0, _right ? -270 : 270, reset * 0.75f, Eases.Linear);
 
-            MinigameManager.instance.LoseALife();
+            //MinigameManager.instance.LoseALife();
         }
 
         void TossBack(float startX, float startY, float duration, float delay = 0)
         {
+            //MinigameManager.instance.canPlay = false;
+
             xTween.OnCompleteKill();
             yTween.OnCompleteKill();
             angleTween.OnCompleteKill();
@@ -197,6 +217,8 @@ namespace Starborn.Tosstail
             TweenManager.RollTween(gameObject, _right ? 270 : -270, _right ? 360 : -360, duration * 0.75f, Eases.Linear, () =>
             {
                 gameObject.transform.rotation = Quaternion.identity;
+                //MinigameManager.instance.canPlay = true;
+
             }).SetStartDelay(delay);
         }
     }

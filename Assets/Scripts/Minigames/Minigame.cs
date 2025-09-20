@@ -15,24 +15,76 @@ public abstract class Minigame : MonoBehaviour
     [HideInInspector]
     public string minigameName;
     public Conductor conductor;
-
+    public bool autoPlay;
+    public bool isTutorial;
     protected bool startGame;
+    protected bool completed;
+
+    public AudioClip song;
+    public AudioClip tutorialSong;
+
+    [HideInInspector]
+    public bool paused;
 
     //public List<RhythmInput> inputs = new List<RhythmInput>();
     [HideInInspector]
     public List<string> eventsList = new List<string>();
     public List<Charting> chartings = new List<Charting>();
+    public Tutorial tutorial;
+    public List<Charting> endlessChartings = new List<Charting>();
     [HideInInspector] public List<RhythmEvent> events = new List<RhythmEvent>();
     protected Charting selectedCharting;
 
     public static double ngEarlyTimeBase = 0.1, justEarlyTimeBase = 0.05, aceEarlyTimeBase = 0.01, aceLateTimeBase = 0.01, justLateTimeBase = 0.05, ngLateTimeBase = 0.1;
 
-    //public static double ngEarlyTime => ngEarlyTimeBase * Conductor.instance?.SongPitch ?? 1;
-    //public static double justEarlyTime => justEarlyTimeBase * Conductor.instance?.SongPitch ?? 1;
-    //public static double aceEarlyTime => aceEarlyTimeBase * Conductor.instance?.SongPitch ?? 1;
-    //public static double aceLateTime => aceLateTimeBase * Conductor.instance?.SongPitch ?? 1;
-    //public static double justLateTime => justLateTimeBase * Conductor.instance?.SongPitch ?? 1;
-    //public static double ngLateTime => ngLateTimeBase * Conductor.instance?.SongPitch ?? 1;
+    public static double ngEarlyTime => ngEarlyTimeBase * Conductor.instance?.music.pitch ?? 1;
+    public static double justEarlyTime => justEarlyTimeBase * Conductor.instance?.music.pitch ?? 1;
+    public static double aceEarlyTime => aceEarlyTimeBase * Conductor.instance?.music.pitch ?? 1;
+    public static double aceLateTime => aceLateTimeBase * Conductor.instance?.music.pitch ?? 1;
+    public static double justLateTime => justLateTimeBase * Conductor.instance?.music.pitch ?? 1;
+    public static double ngLateTime => ngLateTimeBase * Conductor.instance?.music.pitch ?? 1;
+
+    public static double NgEarlyTime(float pitch = -1, double margin = 0)
+    {
+        if (pitch < 0)
+            return 1 - (ngEarlyTime + margin);
+        return 1 - ((ngEarlyTime + margin) * pitch);
+    }
+
+    public static double NgLateTime(float pitch = -1, double margin = 0)
+    {
+        if (pitch < 0)
+            return 1 + (ngLateTime + margin);
+        return 1 + ((ngLateTime + margin) * pitch);
+    }
+
+    public static double JustEarlyTime(float pitch = -1, double margin = 0)
+    {
+        if (pitch < 0)
+            return 1 - (justEarlyTime + margin);
+        return 1 - ((justEarlyTime + margin) * pitch);
+    }
+
+    public static double JustLateTime(float pitch = -1, double margin = 0)
+    {
+        if (pitch < 0)
+            return 1 + (justLateTime + margin);
+        return 1 + ((justLateTime + margin) * pitch);
+    }
+
+    public static double AceEarlyTime(float pitch = -1, double margin = 0)
+    {
+        if (pitch < 0)
+            return 1 - (aceEarlyTime + margin);
+        return 1 - ((aceEarlyTime + margin) * pitch);
+    }
+
+    public static double AceLateTime(float pitch = -1, double margin = 0)
+    {
+        if (pitch < 0)
+            return 1 + (aceLateTime + margin);
+        return 1 + ((aceLateTime + margin) * pitch);
+    }
 
     public static Minigame instance; 
 
@@ -130,7 +182,29 @@ public abstract class Minigame : MonoBehaviour
         //Debug.Log(events.Count);
         TweenManager.instance.AddManager();
         Conductor.instance.SetUpBPM();
+        if(isTutorial)
+        {
+            MinigameManager.instance.StartTutorial();
+        }
+        else
+        {
+            StartSong();
+        }
+        //selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
+    }
+
+    public void StartSong()
+    {
+        MinigameManager.Clear();
+        if (song != null) Conductor.instance.music.clip = song;
+        Conductor.instance.SetUpBPM();
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
+        StartCoroutine(PlayMusic());
+        IEnumerator PlayMusic()
+        {
+            yield return new WaitForSeconds(1);
+            Conductor.instance.music.Play();
+        }
     }
 
     protected int curBeat = 0;

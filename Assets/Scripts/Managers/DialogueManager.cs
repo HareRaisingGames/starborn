@@ -8,14 +8,13 @@ using UnityEngine.SceneManagement;
 using System;
 using System.Linq;
 using TMPro;
-using System.IO;
 using System.Threading.Tasks;
 
 public class DialogueManager : MonoBehaviour
 {
     #region Dialogue Properties
-    public string filename;
-    public static SimpleSBDFile dialogueFile;
+    public static string filename;
+    SimpleSBDFile dialogueFile;
     int curLine;
     int jumpToLine;
 
@@ -187,6 +186,11 @@ public class DialogueManager : MonoBehaviour
     }
 
     public void StartDialogue()
+    {
+
+    }
+
+    void NextLine(int line)
     {
 
     }

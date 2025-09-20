@@ -55,6 +55,24 @@ namespace Starborn.InputSystem
     }
 
     [System.Serializable]
+    public class Tutorial
+    {
+        public List<TutorialLine> lines = new List<TutorialLine>();
+        public string skipLine;
+        public Tutorial()
+        {
+
+        }
+    }
+
+    [System.Serializable]
+    public class TutorialLine
+    {
+        public string dialogue;
+        public Charting section;
+        public int amount = 1;
+    }
+    [System.Serializable]
     public class Section
     {
         public List<Inputs> inputList = new List<Inputs>();

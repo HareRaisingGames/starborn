@@ -5,6 +5,5 @@ using Rabbyte;
 
 public static class StaticProperties
 {
-    public static SimpleSBDFile curDialogue;
     public static string controlType;
 }

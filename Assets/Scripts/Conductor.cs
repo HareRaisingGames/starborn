@@ -23,6 +23,8 @@ namespace Starborn
 
         private float dspTime;
 
+        double dspSizeSeconds;
+
         public float offset = 0f;
 
         public float crochet => 60 / songBpm; //Seconds per beat
@@ -51,7 +53,8 @@ namespace Starborn
 
         private void Start()
         {
-
+            AudioConfiguration config = AudioSettings.GetConfiguration();
+            dspSizeSeconds = config.dspBufferSize / (double)config.sampleRate;
         }
 
         public void SetUpBPM()
@@ -61,6 +64,11 @@ namespace Starborn
                 songBpm = UniBpmAnalyzer.AnalyzeBpm(music.clip) / 2;
                 dspTime = (float)AudioSettings.dspTime;
             }
+        }
+
+        public void Play()
+        {
+            if (isPlaying) return;
         }
 
         private void Update()
@@ -84,8 +92,6 @@ namespace Starborn
                 curBeat = Mathf.FloorToInt(adjustedTime * bps);
 
                 curStep = Mathf.FloorToInt(adjustedTime * sps);
-
-
             }
         }
     }

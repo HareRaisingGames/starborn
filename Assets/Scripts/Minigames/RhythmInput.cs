@@ -9,7 +9,7 @@ namespace Starborn.InputSystem
 {
     public interface IInput
     {
-        //void Action();
+
     }
 
     public class RhythmInput : IInput
@@ -27,12 +27,35 @@ namespace Starborn.InputSystem
         public float range; //The song's seconds per beat (spb)
         public float startPoint;
         public float endPoint;
+        public float[] margin = new float[2];
 
         public bool checkForAccuracy;
         public bool success;
         private bool mustHit;
         public bool MustHit => mustHit;
         private bool hasHit;
+
+        bool autoplay = false;
+        public bool HasHit
+        {
+            get
+            {
+                return hasHit;
+            }
+            set
+            {
+                hasHit = value;
+            }
+        }
+
+        bool _canPlay = true;
+        public bool canPlay
+        {
+            set
+            {
+                _canPlay = value;
+            }
+        }
 
         private InputAction InputAction;
 
@@ -42,6 +65,8 @@ namespace Starborn.InputSystem
 
         private StarbornInputSystem m_inputSystem = new StarbornInputSystem();
         private RhythmInputs _action;
+
+        private float spb;
         public RhythmInputs action
         {
             get
@@ -55,15 +80,16 @@ namespace Starborn.InputSystem
             _action = action;
             id = (int)UnityEngine.Random.Range(1, 1000);
             MinigameManager.instance.inputs.Add(this);
+            spb = Conductor.instance.crochet;
             Generate();
         }
 
         public void onInputHit(InputAction.CallbackContext context)
         {
-            Action();
             float accurary = 0;
-            if(checkForAccuracy && mustHit && !hasHit)
+            if(checkForAccuracy && mustHit && !hasHit && !autoplay)
             {
+                //TimeToAccuracy(curHit);
                 bool early = false;
                 if(curHit == desHit)
                 {
@@ -82,19 +108,22 @@ namespace Starborn.InputSystem
                     accurary = MathUtils.ReverseNormalize(curHit, desHit, endPoint);
                 }
 
-                if (accurary >= 0.5)
+                if (accurary >= 0.8)
+                {
                     onHit?.Invoke();
-                else
+                    success = true;
+                }
+                else if(accurary < 0.8 && accurary >= 0.6)
+                {
                     onHalfHit?.Invoke(early);
+                    success = true;
+                }
+
+                MinigameManager.instance.accuracies.Add(accurary);
 
                 hasHit = true;
             }
 
-
-        }
-
-        public void Action()
-        {
 
         }
 
@@ -165,8 +194,10 @@ namespace Starborn.InputSystem
 
         public RhythmInput SetRange(float start = 0, float end = 0)
         {
-            startPoint = desHit - start;
-            endPoint = desHit + end;
+            margin[0] = start;
+            margin[1] = end;
+            startPoint = desHit - start * spb;
+            endPoint = desHit + end * spb;
             return this;
         }
 
@@ -180,6 +211,7 @@ namespace Starborn.InputSystem
             InputAction.Disable();
         }
 
+        bool found;
         public void Update(float time)
         {
             if(mustHit)
@@ -187,14 +219,38 @@ namespace Starborn.InputSystem
                 curHit = time;
                 checkForAccuracy = (curHit >= startPoint) && (curHit <= endPoint);
 
-                if(curHit > endPoint && !hasHit)
+                if(autoplay)
                 {
-                    onMiss?.Invoke();
+                    if(curHit >= desHit && !found)
+                    {
+                        Debug.Log("Now!");
+                        found = true;
+                        onHit?.Invoke();
+                        success = true;
+                        hasHit = true;
+                    }
+                }
+
+                if(curHit > endPoint && !success)
+                {
+                    OnMiss();
                     hasHit = true;
+                    success = true;
                 }
             }
         }
-    }
+
+        public void OnMiss()
+        {
+            if(_canPlay)
+            {
+                onMiss?.Invoke();
+                //MinigameManager.instance.LoseALife();
+            }
+
+        }
+
+        }
 
 }
 
