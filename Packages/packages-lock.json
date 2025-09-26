@@ -5,9 +5,17 @@
       "depth": 0,
       "source": "git",
       "dependencies": {
+        "com.toxicbloud.moonsharp": "2.0.0",
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       },
-      "hash": "68466824c5f21dfc1a65015f0bd2ad860b0cec71"
+      "hash": "5f6c87d62e6450c6829ef75215e6a93414d0455e"
+    },
+    "com.toxicbloud.moonsharp": {
+      "version": "2.0.0",
+      "depth": 1,
+      "source": "registry",
+      "dependencies": {},
+      "url": "https://package.openupm.com"
     },
     "com.unity.2d.animation": {
       "version": "9.1.1",

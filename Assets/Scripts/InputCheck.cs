@@ -6,8 +6,8 @@ using UnityEngine.InputSystem.Controls;
 
 public class InputCheck : MonoBehaviour
 {
-    protected string controlType;
-    public string controller => controlType;
+    protected static string controlType;
+    public static string controller => controlType;
 
     Vector2 mousePosition;
     void Awake()
@@ -41,30 +41,44 @@ public class InputCheck : MonoBehaviour
             {
                 if (control is ButtonControl button && button.isPressed)
                 {
-                    controlType = controllerType.displayName;
+                    if (controllerType.displayName.Contains("XInputController"))
+                        controlType = "Xbox";
+                    else if (controllerType.displayName.Contains("DualShockGamepad"))
+                        controlType = "PS";
+                    else
+                        controlType = controllerType.displayName;
                 }
             }
         }
 
-        foreach(Keyboard keyboard in InputSystem.devices)
+        try
         {
-            if(keyboard.anyKey.isPressed)
+            foreach (Keyboard keyboard in InputSystem.devices)
             {
-                controlType = "PC";
+                if (keyboard.anyKey.isPressed)
+                {
+                    controlType = "PC";
+                }
             }
         }
+        catch (System.Exception e) { };
 
-        foreach(Mouse mouse in InputSystem.devices)
+
+        try
         {
-            Vector2 newPosition = mouse.position.ReadValue();
-            bool isPressed = mouse.IsPressed(0) || mouse.IsPressed(1) || mouse.IsPressed(2);
-
-            if (isPressed && !mousePosition.Equals(newPosition))
+            foreach (Mouse mouse in InputSystem.devices)
             {
-                controlType = "PC";
-            }
+                Vector2 newPosition = mouse.position.ReadValue();
+                bool isPressed = mouse.IsPressed(0) || mouse.IsPressed(1) || mouse.IsPressed(2);
 
-            mousePosition = newPosition;
+                if (isPressed && !mousePosition.Equals(newPosition))
+                {
+                    controlType = "PC";
+                }
+
+                mousePosition = newPosition;
+            }
         }
+        catch (System.Exception e) { };
     }
 }
