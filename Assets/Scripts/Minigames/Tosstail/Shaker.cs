@@ -31,6 +31,9 @@ namespace Starborn.Tosstail
         public AudioSource catchSfx;
         public AudioSource missSfx;
 
+        public ParticleSystem rightCatch;
+        public ParticleSystem leftCatch;
+
         bool inRuntime;
         // Start is called before the first frame update
         void Start()
@@ -161,6 +164,19 @@ namespace Starborn.Tosstail
             transform.position = new Vector3(_right ? endPosition : startPosition, startY, transform.position.z);
             transform.rotation = Quaternion.identity;
             _right = !_right;
+
+            if (_right)
+            {
+                if (rightCatch != null)
+                    rightCatch.Play();
+            }
+            else
+            {
+                if (leftCatch != null)
+                    leftCatch.Play();
+            }
+
+
             //MinigameManager.instance.canPlay = true;
         }
 
