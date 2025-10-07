@@ -36,6 +36,19 @@ namespace Starborn.InputSystem
         private bool hasHit;
 
         bool autoplay = false;
+
+        public bool AUTOPLAY
+        {
+            set
+            {
+                autoplay = value;
+                if(autoplay)
+                    InputAction.performed -= onInputHit;
+                else
+                    InputAction.performed += onInputHit;
+            }
+        }
+
         public bool HasHit
         {
             get
@@ -111,6 +124,8 @@ namespace Starborn.InputSystem
                 if (accurary >= 0.8)
                 {
                     onHit?.Invoke();
+                    if (accurary >= 0.95) //Super close means it's a perfect hit
+                        accurary = 1;
                     success = true;
                 }
                 else if(accurary < 0.8 && accurary >= 0.6)
@@ -170,7 +185,7 @@ namespace Starborn.InputSystem
 
             mustHit = _action != RhythmInputs.None;
             //Debug.Log(InputAction);
-            if (mustHit)
+            if (mustHit && !autoplay)
                 InputAction.performed += onInputHit;
 
             //desHit = destination;
@@ -186,6 +201,13 @@ namespace Starborn.InputSystem
             onHalfHit = action;
             return this;
         }
+
+        public RhythmInput SetOnMiss(Action action)
+        {
+            onMiss = action;
+            return this;
+        }
+
         public RhythmInput SetDestination(float destination)
         {
             desHit = destination;
@@ -223,7 +245,6 @@ namespace Starborn.InputSystem
                 {
                     if(curHit >= desHit && !found)
                     {
-                        Debug.Log("Now!");
                         found = true;
                         onHit?.Invoke();
                         success = true;

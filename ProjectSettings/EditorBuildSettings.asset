@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Minigames/Tosstail.unity
+    guid: f7809f0719954054d91665a3d5da25b2
+  - enabled: 1
     path: Assets/Scenes/Main/DialogueState.unity
     guid: f285699e1f0132647b5a0fd2aa8df688
   m_configObjects: {}

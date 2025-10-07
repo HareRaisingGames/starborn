@@ -20,8 +20,10 @@ public class MinigameManager : MonoBehaviour
     [HideInInspector]
     public List<float> accuracies = new List<float>();
 
+    public HeartGroup hearts;
+
     public int maxLives = 3;
-    int _lives;
+    float _lives;
     bool _gameOver;
     bool _consequences = true;
 
@@ -35,8 +37,13 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    bool canPause = true;
+    Tween<float> pauseTween;
+
     public TMP_Text accuracyText;
     public TMP_Text livesText;
+    public TMP_Text beatsText;
+    public GameObject pauseGameOver;
     public bool gameOver
     {
         get
@@ -48,7 +55,7 @@ public class MinigameManager : MonoBehaviour
             _gameOver = value;
         }
     }
-    public int lives
+    public float lives
     {
         get
         {
@@ -94,6 +101,7 @@ public class MinigameManager : MonoBehaviour
                     }
                 }
                 _instance = FindObjectOfType<MinigameManager>();
+                
             }
 
             return _instance;
@@ -109,6 +117,7 @@ public class MinigameManager : MonoBehaviour
     private void Awake()
     {
         minigame = FindObjectOfType<Minigame>();
+        conductor = FindObjectOfType<Conductor>();
         Conductor.instance.SetUpBPM();
 
         text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();
@@ -129,7 +138,7 @@ public class MinigameManager : MonoBehaviour
         minigame = FindObjectOfType<Minigame>();
     }
 
-    public void LoseALife(int amount = 1)
+    public void LoseALife(float amount = 1)
     {
         if(_consequences)
             _lives -= amount;
@@ -150,18 +159,20 @@ public class MinigameManager : MonoBehaviour
             {
                 input.Update(Conductor.instance.songPosition);
 
-/*                if (minigame != null)
+                if (minigame != null)
                 {
-                    if(minigame.autoPlay)
+                    input.AUTOPLAY = minigame.autoPlay;
+
+                    /*if (minigame.autoPlay)
                     {
                         if(input.curHit >= input.desHit && !input.HasHit)
                         {
                             input.onHit?.Invoke();
                             input.HasHit = true;
                         }
-                    }
+                    }*/
                 }
-*/
+
             }
         }
 
@@ -173,6 +184,10 @@ public class MinigameManager : MonoBehaviour
 
         if(accuracyText != null) accuracyText.text = Mathf.Round(totalAccuracy * 100) + "%";
         if (livesText != null) livesText.text = Mathf.Clamp(lives, 0, Mathf.Infinity).ToString();
+        if (beatsText != null) beatsText.text = conductor.curBeat.ToString();
+
+        if (hearts != null)
+            hearts.SetLives(lives);
 
         if (accuracies.Count != 0)
         {
@@ -230,38 +245,65 @@ public class MinigameManager : MonoBehaviour
     {
         paused = !paused;
         minigame.paused = paused;
-        if(paused)
+
+        if(canPause)
         {
-            if(Conductor.instance.isPlaying)
+            if (paused)
             {
-                Conductor.instance.music.Pause();
-                foreach(KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+                Time.timeScale = 0;
+                if (Conductor.instance.isPlaying)
                 {
-                    tween.Value.Pause();
+                    Conductor.instance.music.Pause();
+                    foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+                    {
+                        tween.Value.Pause();
+                    }
+
+                    foreach (RhythmInput input in inputs)
+                    {
+                        input.Disable();
+                    }
                 }
 
-                foreach(RhythmInput input in inputs)
+                if (pauseGameOver != null)
                 {
-                    input.Disable();
+                    pauseTween = TweenManager.XTween(pauseGameOver, -800, 0, 0.5f, Eases.EaseInOutQuad).SetIgnoreTimeScale();
+                }
+            }
+            else
+            {
+                if (pauseGameOver != null)
+                {
+                    if (pauseTween != null) pauseTween.OnCompleteKill();
+                    canPause = false;
+                    pauseTween = TweenManager.XTween(pauseGameOver, 0, -800, 0.5f, Eases.EaseInOutQuad, Unpause).SetIgnoreTimeScale();
+                }
+                else
+                {
+                    Unpause();
+                }
+
+                void Unpause()
+                {
+                    canPause = true;
+                    Time.timeScale = 1;
+                    if (Conductor.instance.isPaused)
+                    {
+                        Conductor.instance.music.UnPause();
+                        foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+                        {
+                            tween.Value.Resume();
+                        }
+
+                        foreach (RhythmInput input in inputs)
+                        {
+                            input.Enable();
+                        }
+                    }
                 }
             }
         }
-        else
-        {
-            if (Conductor.instance.isPaused)
-            {
-                Conductor.instance.music.UnPause();
-                foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
-                {
-                    tween.Value.Resume();
-                }
 
-                foreach (RhythmInput input in inputs)
-                {
-                    input.Enable();
-                }
-            }
-        }
     }
 
     public static void Clear()

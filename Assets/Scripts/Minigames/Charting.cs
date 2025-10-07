@@ -12,7 +12,8 @@ namespace Starborn.InputSystem
     public class Charting
     {
         public List<Section> sections = new List<Section>();
-
+        public bool setBPM = false;
+        public float bpm;
         public Charting()
         {
 

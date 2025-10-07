@@ -43,7 +43,8 @@ namespace Starborn.Tosstail
                 .SetDestination(beat)
                     .SetRange(0.5f, 0.5f)
                         .SetOnHit(shaker.SuccessfulCatch)
-                            .SetOnHalfHit(shaker.UnsuccessfulCatch);
+                            .SetOnHalfHit(shaker.UnsuccessfulCatch)
+                                .SetOnMiss(shaker.MissedCatched);
             input.Enable();
         }
         public override void onA(InputAction.CallbackContext context)

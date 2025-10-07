@@ -188,7 +188,7 @@ public abstract class Minigame : MonoBehaviour
         }
         else
         {
-            StartSong();
+            //StartSong();
         }
         //selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
     }
@@ -199,12 +199,15 @@ public abstract class Minigame : MonoBehaviour
         if (song != null) Conductor.instance.music.clip = song;
         Conductor.instance.SetUpBPM();
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
-        StartCoroutine(PlayMusic());
-        IEnumerator PlayMusic()
-        {
-            yield return new WaitForSeconds(1);
-            Conductor.instance.music.Play();
-        }
+        Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.music.Play);
+
+        //StartCoroutine(PlayMusic());
+        //IEnumerator PlayMusic()
+        //{
+        //yield return new WaitForSeconds(1);
+        Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.music.Play);
+            //Conductor.instance.music.Play();
+        //}
     }
 
     protected int curBeat = 0;

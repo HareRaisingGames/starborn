@@ -186,6 +186,10 @@ namespace Starborn.Tosstail
             yTween.OnCompleteKill();
             angleTween.OnCompleteKill();
 
+            MinigameManager.instance.LoseALife(0.5f);
+
+            if (missSfx != null) missSfx.Play();
+
             //MinigameManager.instance.canPlay = false;
 
             isTossed = false;
@@ -206,6 +210,12 @@ namespace Starborn.Tosstail
             TweenManager.RollTween(gameObject, 0, _right ? -270 : 270, reset * 0.75f, Eases.Linear);
 
             //MinigameManager.instance.LoseALife();
+        }
+
+        public void MissedCatched()
+        {
+            if(!_canPlay)
+                MinigameManager.instance.LoseALife(1f);
         }
 
         void TossBack(float startX, float startY, float duration, float delay = 0)

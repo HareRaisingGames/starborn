@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Starborn
 {
@@ -9,6 +10,8 @@ namespace Starborn
         // Song beats per minute
         // This is determined by the song you're trying to sync up to
         public float songBpm { get; private set; }
+
+        public float manualBpm;
 
         // The number of seconds for each song beat
         //public float secPerBeat => (float)secPerBeatAsDouble;
@@ -21,9 +24,16 @@ namespace Starborn
 
         private double songPosPerBeat;
 
-        private float dspTime;
+        private double dspTime;
+
+        private double dspStart;
+        private float dspStartTime => (float)dspStart;
+        public double dspStartTimeAsDouble => dspStart;
+        DateTime startTime;
 
         double dspSizeSeconds;
+
+        public float increment = 2;
 
         public float offset = 0f;
 
@@ -61,14 +71,35 @@ namespace Starborn
         {
             if (music != null)
             {
-                songBpm = UniBpmAnalyzer.AnalyzeBpm(music.clip) / 2;
+                if(manualBpm > 0)
+                {
+                    songBpm = manualBpm;
+                }
+                else
+                {
+                    songBpm = UniBpmAnalyzer.AnalyzeBpm(music.clip) / increment;
+                }
+
                 dspTime = (float)AudioSettings.dspTime;
             }
+        }
+
+        public void ManualSetUpBPM(float bpm)
+        {
+            songBpm = bpm;
         }
 
         public void Play()
         {
             if (isPlaying) return;
+
+            double dspTime = AudioSettings.dspTime;
+            dspStart = dspTime;
+            if(music != null)
+            {
+                music.PlayScheduled(dspStart);
+            }
+
         }
 
         private void Update()
@@ -76,10 +107,13 @@ namespace Starborn
             isPlaying = music != null && music.clip != null && music.isPlaying;
             isPaused = music != null && music.clip != null && !music.isPlaying;
 
+            double dsp = AudioSettings.dspTime;
             if(isPlaying)
             {
                 //songPos = (float)(AudioSettings.dspTime - dspTime);
                 //songPosPerBeat = songPos / crochet;
+
+                dspTime = dsp - dspStart;
 
                 songPos = music.time;
 
@@ -92,6 +126,31 @@ namespace Starborn
                 curBeat = Mathf.FloorToInt(adjustedTime * bps);
 
                 curStep = Mathf.FloorToInt(adjustedTime * sps);
+            }
+        }
+
+        private void LateUpdate()
+        {
+            
+        }
+
+        void SeekMusicToTime(double fStartPos, double offset)
+        {
+            if (music.clip != null && fStartPos < music.clip.length - offset)
+            {
+                // https://www.desmos.com/calculator/81ywfok6xk
+                double musicStartDelay = -offset - fStartPos;
+                if (musicStartDelay > 0)
+                {
+                    music.timeSamples = 0;
+                }
+                else
+                {
+                    int freq = music.clip.frequency;
+                    int samples = (int)(freq * (fStartPos + offset));
+
+                    music.timeSamples = samples;
+                }
             }
         }
     }
