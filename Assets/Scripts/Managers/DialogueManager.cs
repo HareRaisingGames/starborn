@@ -42,7 +42,7 @@ public class DialogueManager : MonoBehaviour
     /// 4. Set all game objects in other scenes to false
     /// </summary>
     /// 
-    List<string> minigames = new List<string>() { "Tosstail" };
+    List<string> minigames = new List<string>();
     public Dictionary<string, Dictionary<GameObject, bool>> sceneVisibilities 
         = new Dictionary<string, Dictionary<GameObject, bool>>();
     int minigameCount = 0;
@@ -71,6 +71,7 @@ public class DialogueManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        filename = "minigame_test";
         var path = Path.Combine(Application.streamingAssetsPath, $"Dialogue/{filename}.sbd");
         if(File.Exists(path))
         {
@@ -212,7 +213,6 @@ public class DialogueManager : MonoBehaviour
 
             string overallScenePath = $"Assets/{scenePath}.unity";
 
-            Debug.Log(StaticProperties.DoesSceneExistInBuild(overallScenePath));
             if (StaticProperties.DoesSceneExistInBuild(overallScenePath))
             {
                 SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive).completed += delegate (AsyncOperation op) {
@@ -245,6 +245,7 @@ public class DialogueManager : MonoBehaviour
         if(minigameCount >= minigames.Count && !loadedMinigames)
         {
             loadedMinigames = true;
+            Debug.Log("Loaded!");
             //TransIn();
         }
     }
