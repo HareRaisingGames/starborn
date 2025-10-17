@@ -92,47 +92,10 @@ public class DialogueManager : MonoBehaviour
 
                 backgrounds[curBG].SetActive(true);
             }
-
-            /*for(int i = minigames.Count - 1; i >= 0; i--)
-            {
-                string game = minigames[i];
-                string scenePath = $"Scenes/Minigames/{game}";
-
-                string overallScenePath = $"Assets/{scenePath}.unity";
-
-                Debug.Log(StaticProperties.DoesSceneExistInBuild(overallScenePath));
-                if(StaticProperties.DoesSceneExistInBuild(overallScenePath))
-                {
-
-                }
-                else
-                {
-                    minigames.Remove(game);
-                }
-            }*/
             //TweenManager.AlphaTween(fade, 1, 1, 0.25f);
             //TweenManager.AlphaTween(fade, 1, 0, 2).SetStartDelay(0.5f);
         }
 
-        for (int i = minigames.Count - 1; i >= 0; i--)
-        {
-            string game = minigames[i];
-            string scenePath = $"Scenes/Minigames/{game}";
-
-            string overallScenePath = $"Assets/{scenePath}.unity";
-
-            Debug.Log(StaticProperties.DoesSceneExistInBuild(overallScenePath));
-            if (StaticProperties.DoesSceneExistInBuild(overallScenePath))
-            {
-                SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive).completed += delegate(AsyncOperation op) {
-                    HideEverythingInScene(game);
-                };
-            }
-            else
-            {
-                minigames.Remove(game);
-            }
-        }
         /*StartCoroutine(LoadMinigame());
         IEnumerator LoadMinigame()
         {
@@ -233,13 +196,40 @@ public class DialogueManager : MonoBehaviour
 
                 dialogueAudios.Add(lines.IndexOf(line), clip);
             }
+
+            if(line.minigame != null || line.minigame != "")
+            {
+                minigames.Add(line.minigame);
+            }
+        }
+
+        minigames = minigames.Distinct().ToList();
+
+        for (int i = minigames.Count - 1; i >= 0; i--)
+        {
+            string game = minigames[i];
+            string scenePath = $"Scenes/Minigames/{game}";
+
+            string overallScenePath = $"Assets/{scenePath}.unity";
+
+            Debug.Log(StaticProperties.DoesSceneExistInBuild(overallScenePath));
+            if (StaticProperties.DoesSceneExistInBuild(overallScenePath))
+            {
+                SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive).completed += delegate (AsyncOperation op) {
+                    HideEverythingInScene(game);
+                };
+            }
+            else
+            {
+                minigames.Remove(game);
+            }
         }
     }
 
     void HideEverythingInScene(string name)
     {
         Scene scene = SceneManager.GetSceneByName($"Scenes/Minigames/{name}");
-        if(scene != null && scene.isLoaded)
+        if(scene != null && scene.isLoaded && !sceneVisibilities.ContainsKey(name))
         {
             Dictionary<GameObject, bool> rootVisibilities = new Dictionary<GameObject, bool>();
             GameObject[] rootObjects = scene.GetRootGameObjects();
@@ -255,7 +245,7 @@ public class DialogueManager : MonoBehaviour
         if(minigameCount >= minigames.Count && !loadedMinigames)
         {
             loadedMinigames = true;
-            TransIn();
+            //TransIn();
         }
     }
 

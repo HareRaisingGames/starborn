@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 using Starborn.InputSystem;
 using System.Reflection;
 using Starborn;
 using System.Linq;
 using UnityEditor;
-using UnityEngine.EventSystems;
 
 public abstract class Minigame : MonoBehaviour
 {
@@ -236,11 +236,11 @@ public abstract class Minigame : MonoBehaviour
         }
             
 
-        if (prevBeat != curBeat) OnBeatChange();
+        if (prevBeat != curBeat) OnBeatChange?.Invoke();
         prevBeat = curBeat;
     }
 
-    public virtual void OnBeatChange() { }
+    public System.Action OnBeatChange;
 
     public virtual void onA(InputAction.CallbackContext context)
     {
