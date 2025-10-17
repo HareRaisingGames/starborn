@@ -32,6 +32,7 @@ namespace Starborn.SafeCracker
         {
             safeCracker = this;
             base.Awake();
+            OnBeatChange = ChangeNumber;
         }
 
         // Start is called before the first frame update
@@ -98,11 +99,11 @@ namespace Starborn.SafeCracker
             }
         }
 
-        public override void OnBeatChange()
+        /*public override void OnBeatChange()
         {
             base.OnBeatChange();
             ChangeNumber();
-        }
+        }*/
 
         bool CorrectCode()
         {
