@@ -120,7 +120,7 @@ public class MinigameManager : MonoBehaviour
         conductor = FindObjectOfType<Conductor>();
         Conductor.instance.SetUpBPM();
 
-        text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();
+        //text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.Pause.performed += OnPause;
 
@@ -144,7 +144,28 @@ public class MinigameManager : MonoBehaviour
             _lives -= amount;
     }
 
-    float totalAccuracy = 0;
+    [HideInInspector]
+    public float displayAccuracy = 0;
+    
+    public float totalAccuracy
+    {
+        get
+        {
+            if (accuracies.Count != 0)
+            {
+                return MathUtils.ListAverage(accuracies);
+            }
+            return 0;
+        }
+    }
+
+    public float accuracy
+    {
+        get
+        {
+            return Mathf.Round(totalAccuracy * 100);
+        }
+    }
 
     // Update is called once per frame
     void Update()
@@ -182,17 +203,14 @@ public class MinigameManager : MonoBehaviour
             MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f);
         }
 
-        if(accuracyText != null) accuracyText.text = Mathf.Round(totalAccuracy * 100) + "%";
+        if(accuracyText != null) accuracyText.text = Mathf.Round(displayAccuracy * 100) + "%";
         if (livesText != null) livesText.text = Mathf.Clamp(lives, 0, Mathf.Infinity).ToString();
         if (beatsText != null) beatsText.text = conductor.curBeat.ToString();
 
         if (hearts != null)
             hearts.SetLives(lives);
 
-        if (accuracies.Count != 0)
-        {
-            totalAccuracy = Mathf.Lerp(totalAccuracy, MathUtils.ListAverage(accuracies), Time.deltaTime * 10);
-        }
+        displayAccuracy = Mathf.Lerp(displayAccuracy, totalAccuracy, Time.deltaTime * 10);
 
         foreach (RhythmInput input in inputs) input.canPlay = _canPlay;
 

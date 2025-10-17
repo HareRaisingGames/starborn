@@ -135,6 +135,7 @@ namespace Starborn.InputSystem
                 }
 
                 MinigameManager.instance.accuracies.Add(accurary);
+                MinigameManager.instance.displayAccuracy = 0;
 
                 hasHit = true;
             }
@@ -249,6 +250,7 @@ namespace Starborn.InputSystem
                         onHit?.Invoke();
                         success = true;
                         hasHit = true;
+                        //Debug.Log("Brrrap!");
                     }
                 }
 

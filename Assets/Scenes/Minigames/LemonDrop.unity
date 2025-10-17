@@ -312,6 +312,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d64cc6d52430c048854cc5e9fa426ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  manualBpm: 0
+  increment: 2
   offset: 0
   music: {fileID: 1449119415}
   isPlaying: 0
@@ -332,6 +334,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.LemonDrop
   conductor: {fileID: 214271017}
+  autoPlay: 0
+  isTutorial: 0
+  song: {fileID: 0}
+  tutorialSong: {fileID: 0}
+  paused: 0
   eventsList:
   - LemonToss
   chartings:
@@ -344,6 +351,12 @@ MonoBehaviour:
       startLength: 0
       length: 4
       loops: 1
+    setBPM: 0
+    bpm: 0
+  tutorial:
+    lines: []
+    skipLine: 
+  endlessChartings: []
   events: []
   lemonPrefab: {fileID: 7886987621521735152, guid: 45f603872cb79ee4b995118d344cc2b0, type: 3}
 --- !u!1 &691606400

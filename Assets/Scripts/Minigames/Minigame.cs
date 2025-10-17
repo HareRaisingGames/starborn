@@ -7,6 +7,7 @@ using System.Reflection;
 using Starborn;
 using System.Linq;
 using UnityEditor;
+using UnityEngine.EventSystems;
 
 public abstract class Minigame : MonoBehaviour
 {
@@ -43,6 +44,14 @@ public abstract class Minigame : MonoBehaviour
     public static double aceLateTime => aceLateTimeBase * Conductor.instance?.music.pitch ?? 1;
     public static double justLateTime => justLateTimeBase * Conductor.instance?.music.pitch ?? 1;
     public static double ngLateTime => ngLateTimeBase * Conductor.instance?.music.pitch ?? 1;
+
+    [Header("Camera")]
+    public float zoom = 5f;
+    public Color bgColor;
+    public Vector3 camPosition;
+
+    [HideInInspector]
+    public EventSystem eventSystem;
 
     public static double NgEarlyTime(float pitch = -1, double margin = 0)
     {
@@ -154,6 +163,7 @@ public abstract class Minigame : MonoBehaviour
     public virtual void Awake()
     {
         instance = this;
+        eventSystem = FindFirstObjectByType<EventSystem>();
         //Debug.Log(ReflectionUtils.GetTypesInNamespace(System.AppDomain.CurrentDomain.GetAssemblies()[1],"Starborn." + minigameName).Length);
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Rhythm.A.performed += onA;
@@ -205,7 +215,7 @@ public abstract class Minigame : MonoBehaviour
         //IEnumerator PlayMusic()
         //{
         //yield return new WaitForSeconds(1);
-        Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.music.Play);
+        //Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.music.Play);
             //Conductor.instance.music.Play();
         //}
     }
@@ -276,6 +286,7 @@ public class MinigameDrawer : PropertyDrawer
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         List<string> events = null;
+        //List<List<Attribute>> attributes = new List<List<Attribute>>();
         if(property.serializedObject.targetObject.GetType() == typeof(Minigame) || property.serializedObject.targetObject.GetType().IsSubclassOf(typeof(Minigame)))
         {
             System.Type t = property.serializedObject.targetObject.GetType();

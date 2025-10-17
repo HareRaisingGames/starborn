@@ -29,7 +29,7 @@ namespace Starborn.LemonDrop
             {
                 yield return new WaitForSeconds(1);
                 //Debug.Log("Go!");
-                Conductor.instance.music.Play();
+                StartSong();
             }
         }
         int i = 0;

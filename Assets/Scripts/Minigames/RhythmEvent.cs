@@ -27,6 +27,17 @@ namespace Starborn.InputSystem
 
         //Where to start the event
         [HideInInspector] public float startPoint;
+        public List<Attribute> attributes;
+        public void AddAttribute(string name, Func<dynamic> property, Type type, dynamic value = null)
+        {
+            foreach (Attribute attribute in attributes)
+            {
+                if (name == attribute.name)
+                    return;
+            }
+
+            attributes.Add(new Attribute(name, property, type, value));
+        }
 
         public string minigame;
 
@@ -77,7 +88,6 @@ namespace Starborn.InputSystem
             public CallForAction AddInput(float length, bool enable = false)
             {
                 input = new RhythmInput(inputMarker).SetDestination(beat).SetRange(_start * length, _end * length).SetOnHit(_onHit);
-
                 if (input.action != RhythmInputs.None && enable) input.Enable();
                 return this;
             }
@@ -140,6 +150,30 @@ namespace Starborn.InputSystem
             {
                 input.Update(time);
             }
+        }
+    }
+
+    public class Attribute
+    {
+        ///string name
+        ///Type type
+        ///dynamic value
+        ///dynamic property
+        
+        public string name;
+        public Type type;
+        public dynamic value;
+        public Func<dynamic> property;
+
+        public Attribute(string name, Func<dynamic> property, Type type, dynamic value = null)
+        {
+            this.name = name;
+            this.property = property;
+            this.value = value;
+            this.type = type;
+
+            if (this.value == null)
+                this.value = property.Invoke();
         }
     }
 }

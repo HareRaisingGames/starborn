@@ -379,8 +379,8 @@ RectTransform:
   - {fileID: 8272575350028739711}
   - {fileID: 7284261660754518501}
   - {fileID: 2203633361338390192}
-  - {fileID: 8433677017658835843}
   - {fileID: 8333422981671813902}
+  - {fileID: 8433677017658835843}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -472,6 +472,7 @@ MonoBehaviour:
   beatsText: {fileID: 4379038725590403531}
   pauseGameOver: {fileID: 733836951686101882}
   text: {fileID: 0}
+  displayAccuracy: 0
 --- !u!1 &6646077876558252469
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,6 +484,7 @@ GameObject:
   - component: {fileID: 2203633361338390192}
   - component: {fileID: 7321131026061039366}
   - component: {fileID: 3124952360522792848}
+  - component: {fileID: 1638568684836584208}
   m_Layer: 5
   m_Name: Acc
   m_TagString: Untagged
@@ -497,13 +499,13 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6646077876558252469}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.38268343, z: 0, w: 0.92387956}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7201102914263063708}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 45, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 125, y: -62.50002}
@@ -606,6 +608,21 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1638568684836584208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6646077876558252469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0976d7ccc8f5cf4184df70a924f5218, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textComponent: {fileID: 3124952360522792848}
+  start: 1
+  end: 0.5
 --- !u!1 &7410014491563798644
 GameObject:
   m_ObjectHideFlags: 0
@@ -943,7 +960,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3285710370794452321, guid: 8a15107222bc0c44280992fe0243bd6b, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -114
+      value: -125
       objectReference: {fileID: 0}
     - target: {fileID: 3285710370794452321, guid: 8a15107222bc0c44280992fe0243bd6b, type: 3}
       propertyPath: m_AnchoredPosition.y

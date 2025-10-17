@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Rabbyte;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -32,10 +33,27 @@ public class DialogueManager : MonoBehaviour
     public Dictionary<int, AudioClip> dialogueAudios = new Dictionary<int, AudioClip>();
     #endregion
 
+    #region Minigame Assets
+    /// <summary>
+    /// Steps for loading minigames
+    /// 1. Using the dialogue line, find every minigame name in dialogue and filter them so that they're all unique
+    /// 2. Preload all minigames avaiable into scene
+    /// 3. Grab all of their root game object's active in hiearchy and store them
+    /// 4. Set all game objects in other scenes to false
+    /// </summary>
+    /// 
+    List<string> minigames = new List<string>() { "Tosstail" };
+    public Dictionary<string, Dictionary<GameObject, bool>> sceneVisibilities 
+        = new Dictionary<string, Dictionary<GameObject, bool>>();
+    int minigameCount = 0;
+    bool loadedMinigames = false;
+    #endregion
+
     #region UI Properties
     public GameObject backgroundsObject;
     public GameObject spritesObject;
     public GameObject foregroundsObject;
+    public GameObject dialogueBox;
     public AudioSource dialogueSource;
     public AudioSource musicSource;
     public GameObject transition;
@@ -75,10 +93,57 @@ public class DialogueManager : MonoBehaviour
                 backgrounds[curBG].SetActive(true);
             }
 
+            /*for(int i = minigames.Count - 1; i >= 0; i--)
+            {
+                string game = minigames[i];
+                string scenePath = $"Scenes/Minigames/{game}";
 
-            TweenManager.AlphaTween(fade, 1, 1, 0.25f);
-            TweenManager.AlphaTween(fade, 1, 0, 2).SetStartDelay(0.5f);
+                string overallScenePath = $"Assets/{scenePath}.unity";
+
+                Debug.Log(StaticProperties.DoesSceneExistInBuild(overallScenePath));
+                if(StaticProperties.DoesSceneExistInBuild(overallScenePath))
+                {
+
+                }
+                else
+                {
+                    minigames.Remove(game);
+                }
+            }*/
+            //TweenManager.AlphaTween(fade, 1, 1, 0.25f);
+            //TweenManager.AlphaTween(fade, 1, 0, 2).SetStartDelay(0.5f);
         }
+
+        for (int i = minigames.Count - 1; i >= 0; i--)
+        {
+            string game = minigames[i];
+            string scenePath = $"Scenes/Minigames/{game}";
+
+            string overallScenePath = $"Assets/{scenePath}.unity";
+
+            Debug.Log(StaticProperties.DoesSceneExistInBuild(overallScenePath));
+            if (StaticProperties.DoesSceneExistInBuild(overallScenePath))
+            {
+                SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive).completed += delegate(AsyncOperation op) {
+                    HideEverythingInScene(game);
+                };
+            }
+            else
+            {
+                minigames.Remove(game);
+            }
+        }
+        /*StartCoroutine(LoadMinigame());
+        IEnumerator LoadMinigame()
+        {
+            yield return new WaitForSeconds(1f);
+            TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
+            {
+                SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive).completed += TransOut;
+
+            });
+
+        }*/
         //fileText.text = File.Exists(path).ToString();
     }
 
@@ -171,13 +236,85 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-
-
-    void TransOut(AsyncOperation op)
+    void HideEverythingInScene(string name)
     {
-        TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, () => {
-            SceneManager.SetActiveScene(SceneManager.GetSceneByBuildIndex(0));
-        }).SetStartDelay(0.25f);
+        Scene scene = SceneManager.GetSceneByName($"Scenes/Minigames/{name}");
+        if(scene != null && scene.isLoaded)
+        {
+            Dictionary<GameObject, bool> rootVisibilities = new Dictionary<GameObject, bool>();
+            GameObject[] rootObjects = scene.GetRootGameObjects();
+            foreach (GameObject obj in rootObjects)
+            {
+                rootVisibilities.Add(obj, obj.activeInHierarchy);
+                obj.SetActive(false);
+            }
+
+            sceneVisibilities.Add(name, rootVisibilities);
+        }
+        minigameCount++;
+        if(minigameCount >= minigames.Count && !loadedMinigames)
+        {
+            loadedMinigames = true;
+            TransIn();
+        }
+    }
+
+    void TransIn()
+    {
+        TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
+        {
+            TransOut("Tosstail");
+        });
+    }
+
+    void TransOut(string name)
+    {
+        string game = $"Scenes/Minigames/{name}";
+        TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic);
+
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(game));
+        List<GameObject> importantComponents = new List<GameObject>();
+
+        Scene targetScene = SceneManager.GetActiveScene();
+        if(targetScene.isLoaded)
+        {
+            GameObject[] rootObjects = targetScene.GetRootGameObjects();
+            foreach (GameObject obj in rootObjects)
+            {
+                bool on = sceneVisibilities[name][obj];
+                obj.SetActive(on);
+
+                Camera otherSceneCamera = obj.GetComponentInChildren<Camera>();
+                EventSystem otherHandler = obj.GetComponentInChildren<EventSystem>();
+
+                if (otherSceneCamera != null && otherSceneCamera.tag == "MainCamera")
+                {
+                    importantComponents.Add(otherSceneCamera.gameObject);
+                }
+
+                if (otherHandler != null)
+                    importantComponents.Add(otherHandler.gameObject);
+            }
+        }
+
+        Minigame minigame = FindObjectOfType<Minigame>();
+
+        Camera.main.orthographicSize = minigame.zoom;
+        Camera.main.backgroundColor = minigame.bgColor;
+        Camera.main.transform.position = minigame.camPosition;
+
+        foreach (GameObject obj in importantComponents)
+            obj.SetActive(false);
+
+        dialogueBox.SetActive(false);
+        backgroundsObject.SetActive(false);
+        spritesObject.SetActive(false);
+        foregroundsObject.SetActive(false);
+
+        //if(Camera.main != null) Camera.main.gameObject.SetActive(false);
+        //if(minigame.eventSystem != null) minigame.eventSystem.gameObject.SetActive(false);
+
+        //Debug.Log(StaticProperties.GetAllScenes().Length);
     }
     // Update is called once per frame
     void Update()

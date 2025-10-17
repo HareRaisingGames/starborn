@@ -18,8 +18,12 @@ public class Heart : MonoBehaviour
     public AnimationClip halfInstant;
     public AnimationClip emptyInstant;
 
+    [Header("Audio")]
+    public AudioSource lifeLost;
+
     [Header("Metadata")]
     public int id;
+    public bool instant;
     float _value;
     public float value
     {
@@ -66,12 +70,28 @@ public class Heart : MonoBehaviour
                     return;
                 }
 
-                if (value > id - 0.5f)
-                    animator.Play(full.name);
-                else if (value <= id - 0.5f && value > id - 1)
-                    animator.Play(half.name);
-                else if (value <= id - 1)
-                    animator.Play(empty.name);
+                if (instant)
+                {
+                    if (value > id - 0.5f)
+                        animator.Play(fullInstant.name);
+                    else if (value <= id - 0.5f && value > id - 1)
+                        animator.Play(halfInstant.name);
+                    else if (value <= id - 1)
+                        animator.Play(emptyInstant.name);
+                }
+                else
+                {
+                    if (value > id - 0.5f)
+                        animator.Play(full.name);
+                    else if (value <= id - 0.5f && value > id - 1)
+                        animator.Play(half.name);
+                    else if (value <= id - 1)
+                        animator.Play(empty.name);
+                }
+
+
+                if (lifeLost != null)
+                    lifeLost.Play();
             }
             _value = value;
         }

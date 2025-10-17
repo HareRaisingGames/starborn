@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main/DialogueState.unity
     guid: f285699e1f0132647b5a0fd2aa8df688
+  - enabled: 1
+    path: Assets/Scenes/Minigames/LemonDrop.unity
+    guid: 938d3733688e03248bfdc2b847e2884f
   m_configObjects: {}
