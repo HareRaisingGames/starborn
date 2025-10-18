@@ -28,6 +28,7 @@ public class MinigameManager : MonoBehaviour
     bool _consequences = true;
 
     bool _canPlay = true;
+    bool isTutorial = false;
 
     public bool canPlay
     {
@@ -197,10 +198,17 @@ public class MinigameManager : MonoBehaviour
             }
         }
 
-        if(_lives <= 0 && !_gameOver)
+        if(_lives <= 0 && !isTutorial && !_gameOver)
         {
             _gameOver = true;
-            MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f);
+            MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f, delegate() {
+                Conductor.instance.music.Stop();
+                if(FindObjectOfType<DialogueManager>(true) != null)
+                {
+                    FindObjectOfType<DialogueManager>(true).GameOver();
+                }
+                //Debug.Log();
+            });
         }
 
         if(accuracyText != null) accuracyText.text = Mathf.Round(displayAccuracy * 100) + "%";
@@ -213,6 +221,15 @@ public class MinigameManager : MonoBehaviour
         displayAccuracy = Mathf.Lerp(displayAccuracy, totalAccuracy, Time.deltaTime * 10);
 
         foreach (RhythmInput input in inputs) input.canPlay = _canPlay;
+
+        if(minigame != null)
+        {
+            //The requirement for when a minigame is completed
+            /*if(minigame.hasCompleted?.Invoke())
+            {
+
+            }*/
+        }
 
         /*if (Gamepad.current != null)
         {

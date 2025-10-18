@@ -9,6 +9,7 @@ namespace Starborn.Tosstail
 {
     public class Tosstail : Minigame
     {
+        [Header("Tosstail")]
         public Shaker shaker;
         public override void Start()
         {

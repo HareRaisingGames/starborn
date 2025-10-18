@@ -10,14 +10,21 @@ using System;
 using System.Linq;
 using TMPro;
 using System.Threading.Tasks;
+using UnityEngine.InputSystem;
+using Starborn.InputSystem;
 
 public class DialogueManager : MonoBehaviour
 {
     #region Dialogue Properties
     public static string filename;
+    public static string sceneName;
     SimpleSBDFile dialogueFile;
     int curLine;
+    int dialogueLine;
     int jumpToLine;
+
+    bool interact = false;
+    bool isGameOver;
 
     public delegate void StartCallback();
     public delegate void EndCallback();
@@ -25,8 +32,10 @@ public class DialogueManager : MonoBehaviour
     #endregion
 
     #region Dialogue Assets
+    List<BetaDialogueSequence> curLines = new List<BetaDialogueSequence>();
     List<BetaDialogueSequence> lines = new List<BetaDialogueSequence>();
     List<BetaDialogueSequence> gameOverLines = new List<BetaDialogueSequence>();
+    BetaDialogueSequence previousLine;
     public Dictionary<string, CharacterSprite> sprites = new Dictionary<string, CharacterSprite>();
     public Dictionary<string, GameObject> backgrounds = new Dictionary<string, GameObject>();
     public Dictionary<string, GameObject> foregrounds = new Dictionary<string, GameObject>();
@@ -53,26 +62,44 @@ public class DialogueManager : MonoBehaviour
     public GameObject backgroundsObject;
     public GameObject spritesObject;
     public GameObject foregroundsObject;
-    public GameObject dialogueBox;
+    public DialogueBox dialogueBox;
     public AudioSource dialogueSource;
     public AudioSource musicSource;
+    public GameObject transitionCanvas;
     public GameObject transition;
     public GameObject fade;
+    public GameObject loadingIcon;
     #endregion
 
     #region Audio
     Dictionary<int, AudioClip> dialogueClips = new Dictionary<int, AudioClip>();
     #endregion
 
+    private StarbornInputSystem m_inputSystem;
+
     private void Awake()
     {
-        
+        m_inputSystem = new StarbornInputSystem();
+        m_inputSystem.Dialogue.A.performed += onA;
+    }
+
+    private void OnEnable()
+    {
+        m_inputSystem.Dialogue.A.Enable();
+    }
+
+    private void OnDisable()
+    {
+        m_inputSystem.Dialogue.A.Disable();
     }
     // Start is called before the first frame update
     void Start()
     {
-        filename = "minigame_test";
+        sceneName = SceneManager.GetActiveScene().name;
+        filename = "dialogue_test";
         var path = Path.Combine(Application.streamingAssetsPath, $"Dialogue/{filename}.sbd");
+        fade.SetActive(true);
+        dialogueBox.gameObject.SetActive(false);
         if(File.Exists(path))
         {
             StarbornFileHandler.ExtractDialogue(path);
@@ -103,7 +130,7 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(1f);
             TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
             {
-                SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive).completed += TransOut;
+                SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive).completed += GameOut;
 
             });
 
@@ -215,15 +242,34 @@ public class DialogueManager : MonoBehaviour
 
             if (StaticProperties.DoesSceneExistInBuild(overallScenePath))
             {
-                SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive).completed += delegate (AsyncOperation op) {
-                    HideEverythingInScene(game);
-                };
+                LoadScene(scenePath, game);
             }
             else
             {
                 minigames.Remove(game);
             }
         }
+
+        if (minigames.Count == 0)
+            SceneFadeOut();
+    }
+
+    async void LoadScene(string path, string name)
+    {
+        var scene = SceneManager.LoadSceneAsync(path, LoadSceneMode.Additive);
+        scene.completed += delegate (AsyncOperation op) {
+            HideEverythingInScene(name);
+        };
+        scene.allowSceneActivation = false;
+        do
+        {
+            await Task.Delay(100);
+            //Debug.Log(scene.progress);
+        }
+        while (scene.progress < 0.9f);
+
+        await Task.Delay(1000);
+        scene.allowSceneActivation = true;
     }
 
     void HideEverythingInScene(string name)
@@ -246,23 +292,83 @@ public class DialogueManager : MonoBehaviour
         {
             loadedMinigames = true;
             Debug.Log("Loaded!");
-            //TransIn();
+            SceneFadeOut();
         }
     }
 
-    void TransIn()
+    void SceneFadeOut()
     {
+        if (loadingIcon != null) TweenManager.AlphaTween(loadingIcon, 1, 0, 0.5f, Eases.EaseInOutQuad);
+        TweenManager.AlphaTween(fade, 1, 0, 2, Eases.Linear, delegate () {
+            dialogueBox.gameObject.SetActive(true);
+            TweenManager.YTween(dialogueBox.gameObject, 25, 75, 0.25f, Eases.EaseInOutCubic);
+            foreach (Transform child in dialogueBox.transform)
+            {
+                if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<SpriteRenderer>())
+                    TweenManager.AlphaTween(child.gameObject, 0, 1, 0.25f, Eases.EaseInOutCubic, delegate () {
+                        StartDialogue();
+                    });
+            }
+
+        }).SetStartDelay(1f);
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("Hey!");
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
+        gameObject.SetActive(true);
+        backgroundsObject.SetActive(true);
+        GameObject baseBG = null;
+        foreach(Transform child in backgroundsObject.transform)
+        {
+            if (child.tag == "Base") baseBG = child.gameObject;
+            else child.gameObject.SetActive(false);
+        }
+
+        dialogueBox.text = "";
+        dialogueBox.gameObject.SetActive(true);
+        if(baseBG != null) TweenManager.AlphaTween(baseBG, 0, 0.5f, 0.25f, Eases.EaseInOutCubic);
+        TweenManager.YTween(dialogueBox.gameObject, 25, 75, 0.25f, Eases.EaseInOutCubic);
+        foreach (Transform child in dialogueBox.transform)
+        {
+            if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<SpriteRenderer>())
+                TweenManager.AlphaTween(child.gameObject, 0, 1, 0.25f, Eases.EaseInOutCubic, delegate () {
+                    GameOverDialogue();
+                });
+        }
+    }
+
+    void GameIn(string minigame)
+    {
+        gameOverLines.Clear();
+        int line = curLine;
+        interact = false;
+        while (line < lines.Count && lines[line].minigame == minigame)
+        {
+            gameOverLines.Add(lines[line]);
+            line++;
+        }
+
+        Debug.Log(gameOverLines.Count);
+        jumpToLine = line;
+        curLine = 0;
+
         TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
         {
-            TransOut("Tosstail");
+            GameOut(minigame);
         });
     }
 
-    void TransOut(string name)
+    void GameOut(string name)
     {
         string game = $"Scenes/Minigames/{name}";
-        TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic);
-
+        TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate() {
+            if (transitionCanvas != null)
+                transitionCanvas.SetActive(false);
+        });
+        if (SceneManager.GetSceneByName(game) == null)
+            return;
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(game));
         List<GameObject> importantComponents = new List<GameObject>();
 
@@ -297,10 +403,11 @@ public class DialogueManager : MonoBehaviour
         foreach (GameObject obj in importantComponents)
             obj.SetActive(false);
 
-        dialogueBox.SetActive(false);
+        dialogueBox.gameObject.SetActive(false);
         backgroundsObject.SetActive(false);
         spritesObject.SetActive(false);
         foregroundsObject.SetActive(false);
+        gameObject.SetActive(false);
 
         //if(Camera.main != null) Camera.main.gameObject.SetActive(false);
         //if(minigame.eventSystem != null) minigame.eventSystem.gameObject.SetActive(false);
@@ -312,15 +419,96 @@ public class DialogueManager : MonoBehaviour
     {
         
     }
-
+    void PlayDialogue()
+    {
+        interact = true;
+        NextLine(curLine);
+    }
     public void StartDialogue()
     {
+        curLines = lines;
+        PlayDialogue();
+    }
 
+    public void GameOverDialogue()
+    {
+        curLines = gameOverLines;
+        isGameOver = true;
+        PlayDialogue();
+    }
+
+    public void BackToDialogue()
+    {
+        curLines = lines;
+        curLine = jumpToLine;
+        dialogueLine = jumpToLine;
+        PlayDialogue();
+    }
+
+    public void onA(InputAction.CallbackContext context)
+    {
+        if(interact)
+        {
+            if (dialogueBox != null)
+            {
+                if (dialogueBox.canInteract)
+                    NextLine(curLine);
+                else
+                    dialogueBox.text = lines[curLine].text;
+            }
+        }
     }
 
     void NextLine(int line)
     {
+        //Stop everything before moving onto the next line
+        if (dialogueSource != null && dialogueSource.isPlaying)
+            dialogueSource.Stop();
+        dialogueSource.clip = null;
 
+        if(line >= curLines.Count)
+        {
+            interact = false;
+            //close the box or call a game over if it's under a game over
+            return;
+        }
+
+        if (curLines[line].minigame != null && curLines[line].minigame != "" && !isGameOver)
+        {
+            GameIn(lines[line].minigame);
+            return;
+        }
+
+        dialogueBox.onTextFinish = delegate () {
+            curLine++;
+            dialogueLine++;
+        };
+        dialogueBox.typedText = curLines[line].text;
+
+        if(!isGameOver)
+        {
+            if(previousLine != null)
+            {
+                if(previousLine.background != curLines[line].background)
+                {
+                    GameObject bg = backgrounds[curLines[line].background];
+                    bg.SetActive(true);
+                    TweenManager.AlphaTween(bg, 0, 1, 0.5f, Eases.Linear, delegate() { 
+                        foreach(KeyValuePair<string, GameObject> background in backgrounds)
+                        {
+                            if (background.Value != bg)
+                                background.Value.SetActive(false);
+                        }
+                    });
+                }
+            }
+        }
+
+        if (dialogueClips.ContainsKey(dialogueLine))
+            dialogueSource.clip = dialogueClips[dialogueLine];
+        dialogueSource.Play();
+
+        previousLine = lines[line];
     }
 
     #region Utils

@@ -46,12 +46,19 @@ public abstract class Minigame : MonoBehaviour
     public static double ngLateTime => ngLateTimeBase * Conductor.instance?.music.pitch ?? 1;
 
     [Header("Camera")]
+    public Camera defaultCamera;
     public float zoom = 5f;
-    public Color bgColor;
-    public Vector3 camPosition;
+    public Color bgColor = new Color(0.19215686274f, 0.30196078431f, 0.47450980392f);
+    public Vector3 camPosition = new Vector3(0,0,-10);
 
     [HideInInspector]
     public EventSystem eventSystem;
+
+    [Space]
+    [Header("Minigame")]
+    public System.Func<bool> hasCompleted;
+
+
 
     public static double NgEarlyTime(float pitch = -1, double margin = 0)
     {
@@ -163,6 +170,12 @@ public abstract class Minigame : MonoBehaviour
     public virtual void Awake()
     {
         instance = this;
+        if(defaultCamera != null)
+        {
+            zoom = defaultCamera.orthographicSize;
+            bgColor = defaultCamera.backgroundColor;
+            camPosition = defaultCamera.transform.position;
+        }
         eventSystem = FindFirstObjectByType<EventSystem>();
         //Debug.Log(ReflectionUtils.GetTypesInNamespace(System.AppDomain.CurrentDomain.GetAssemblies()[1],"Starborn." + minigameName).Length);
         m_inputSystem = new StarbornInputSystem();

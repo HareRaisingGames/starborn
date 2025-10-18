@@ -16337,7 +16337,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.Tosstail
   conductor: {fileID: 1202914535}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 0
   song: {fileID: 8300000, guid: eb0abd3f3ec615f429b5cda92d7f7ac0, type: 3}
   tutorialSong: {fileID: 0}
@@ -16742,6 +16742,7 @@ MonoBehaviour:
     skipLine: 
   endlessChartings: []
   events: []
+  defaultCamera: {fileID: 519420031}
   zoom: 5.25
   bgColor: {r: 0.105286576, g: 0.16128516, b: 0.24528301, a: 0}
   camPosition: {x: 0, y: 0, z: -10}

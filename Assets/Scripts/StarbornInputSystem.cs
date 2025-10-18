@@ -1080,6 +1080,17 @@ namespace Starborn.InputSystem
                 },
                 {
                     ""name"": """",
+                    ""id"": ""3cd1db42-59ea-4ed2-a042-e1d58940be6c"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""f55ba551-9a75-4eb8-b1a5-d8794e0ca4cc"",
                     ""path"": ""<Keyboard>/escape"",
                     ""interactions"": """",
