@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class DialogueBox : MonoBehaviour
 {
@@ -16,11 +17,6 @@ public class DialogueBox : MonoBehaviour
                 StopAllCoroutines();
             }
             _interacting = true;
-            if(onTextFinish != null)
-            {
-                onTextFinish();
-                onTextFinish = null;
-            }
         }
     }
     public string typedText
@@ -36,8 +32,12 @@ public class DialogueBox : MonoBehaviour
     }
 
     public TMP_Text textField;
-    public delegate void OnTextFinish();
-    public OnTextFinish onTextFinish;
+
+    public AudioSource click;
+
+    public Action onStart;
+    public Action<int> onChar;
+    public Action onFinish;
 
     bool _interacting = true;
     public bool canInteract => _interacting;
@@ -62,7 +62,8 @@ public class DialogueBox : MonoBehaviour
     {
         field.text = "";
         _interacting = false;
-        //i = 0;
+        onStart?.Invoke();
+        onStart = null;
         StartCoroutine(Type(text, field, time));
     }
 
@@ -74,10 +75,14 @@ public class DialogueBox : MonoBehaviour
         foreach (char letter in letters)
         {
             field.text += letter;
+            onChar?.Invoke(new List<char>(letters).IndexOf(letter));
             //i++;
             yield return new WaitForSeconds(time);
         }
 
         this.text = field.text;
+        onChar = null;
+        onFinish?.Invoke();
+        onFinish = null;
     }
 }

@@ -5,6 +5,7 @@ using Starborn;
 using Starborn.InputSystem;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
+using UnityEngine.SceneManagement;
 using TMPro;
 
 public class MinigameManager : MonoBehaviour
@@ -28,6 +29,7 @@ public class MinigameManager : MonoBehaviour
     bool _consequences = true;
 
     bool _canPlay = true;
+    bool finishedGame = false;
     bool isTutorial = false;
 
     public bool canPlay
@@ -80,6 +82,8 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    Scene scene;
+
     private static MinigameManager _instance;
 
     public static MinigameManager instance
@@ -124,6 +128,8 @@ public class MinigameManager : MonoBehaviour
         //text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.Pause.performed += OnPause;
+
+        scene = SceneManager.GetActiveScene();
 
     }
 
@@ -196,6 +202,8 @@ public class MinigameManager : MonoBehaviour
                 }
 
             }
+
+            CheckForAdditionalAssets();
         }
 
         if(_lives <= 0 && !isTutorial && !_gameOver)
@@ -224,11 +232,19 @@ public class MinigameManager : MonoBehaviour
 
         if(minigame != null)
         {
+            bool done = minigame.hasCompleted.Invoke();
+            //Debug.Log(done);
             //The requirement for when a minigame is completed
-            /*if(minigame.hasCompleted?.Invoke())
+            if(minigame.hasCompleted != null && minigame.hasCompleted.Invoke() && !finishedGame && !_gameOver)
             {
+                finishedGame = true;
 
-            }*/
+                if (FindObjectOfType<DialogueManager>(true) != null)
+                {
+                    totalAccuracies.Add(totalAccuracy);
+                    FindObjectOfType<DialogueManager>(true).FromGame();
+                }
+            }
         }
 
         /*if (Gamepad.current != null)
@@ -251,6 +267,21 @@ public class MinigameManager : MonoBehaviour
         //inputs = new List<RhythmInput>(FindObjectsOfType<RhythmInput>());
     }
 
+    public void CheckForAdditionalAssets()
+    {
+        if(FindObjectOfType<DialogueManager>(true) != null)
+        {
+            DialogueManager manager = FindObjectOfType<DialogueManager>(true);
+            GameObject[] rootObjects = scene.GetRootGameObjects();
+
+            foreach (GameObject obj in rootObjects)
+            {
+                if(!manager.sceneVisibilities[scene.name].ContainsKey(obj))
+                    manager.sceneVisibilities[scene.name].Add(obj, obj.activeInHierarchy);
+            }
+
+        }
+    }
     public void StartTutorial()
     {
         if(minigame != null)
@@ -346,5 +377,10 @@ public class MinigameManager : MonoBehaviour
         instance.events.Clear();
         instance.inputs.Clear();
         instance.accuracies.Clear();
+    }
+
+    public static void EndChapter()
+    {
+        ClearAccuracies();
     }
 }

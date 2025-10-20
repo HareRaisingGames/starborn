@@ -15,7 +15,14 @@ namespace Starborn.Tosstail
         {
             base.Start();
             TweenManager.instance.AddManager();
-            TweenManager.XTween(shaker.gameObject, shaker.transform.position.x, shaker.transform.position.x, 0.01f, Eases.Linear);
+            TweenManager.XTween(shaker.gameObject, 
+                shaker.transform.position.x, 
+                shaker.transform.position.x, 0.01f, Eases.Linear);
+
+            hasCompleted = delegate ()
+            {
+                return Conductor.instance.isFinished;
+            };
 
             /*ShortToss shortT = new ShortToss();
             shortT.AddToChart(Conductor.instance.crochet * 2, Conductor.instance.crochet);

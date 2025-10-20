@@ -31,6 +31,13 @@ namespace Starborn
         public double dspStartTimeAsDouble => dspStart;
         DateTime startTime;
 
+        public float songLength => (music != null && music.clip != null) ? music.clip.length : 0;
+        bool _isFinished;
+        public bool isFinished => _isFinished;
+
+        public Action onSongFinished = null;
+
+
         double dspSizeSeconds;
 
         public float increment = 2;
@@ -100,6 +107,19 @@ namespace Starborn
                 music.PlayScheduled(dspStart);
             }
 
+        }
+
+        public void PlayMusic()
+        {
+            _isFinished = false;
+            music.Play();
+            Invoke("Done", songLength);
+        }
+        void Done()
+        {
+            _isFinished = true;
+            onSongFinished?.Invoke();
+            onSongFinished = null;
         }
 
         private void Update()

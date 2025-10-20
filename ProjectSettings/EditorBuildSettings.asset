@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Main/TitleScreen.unity
+    guid: 3060f66dc0ce20b47aff1b0f6f41d785
+  - enabled: 1
     path: Assets/Scenes/Main/DialogueState.unity
     guid: f285699e1f0132647b5a0fd2aa8df688
   - enabled: 1
@@ -14,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Minigames/LemonDrop.unity
     guid: 938d3733688e03248bfdc2b847e2884f
+  - enabled: 1
+    path: Assets/Scenes/LoadingScreen.unity
+    guid: ce831a98f4df37249a16eda24332b4e9
   m_configObjects: {}

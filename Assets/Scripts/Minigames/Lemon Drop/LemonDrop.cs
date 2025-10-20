@@ -17,6 +17,10 @@ namespace Starborn.LemonDrop
         public override void Start()
         {
             lemon = FindObjectOfType<Lemon>();
+            hasCompleted = delegate ()
+            {
+                return Conductor.instance.songPosition >= Conductor.instance.music.clip.length;
+            };
             //lemonEvent.AddToChart(Conductor.instance.crochet * 13, Conductor.instance.crochet);
             //input = new RhythmInput(RhythmInputs.A).SetDestination(Conductor.instance.crochet * 12).SetRange(Conductor.instance.crochet, Conductor.instance.crochet);
             //input.Enable();

@@ -222,7 +222,7 @@ public abstract class Minigame : MonoBehaviour
         if (song != null) Conductor.instance.music.clip = song;
         Conductor.instance.SetUpBPM();
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
-        Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.music.Play);
+        Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusic);
 
         //StartCoroutine(PlayMusic());
         //IEnumerator PlayMusic()
