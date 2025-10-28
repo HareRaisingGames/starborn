@@ -11,6 +11,9 @@ namespace Starborn.Tosstail
     {
         [Header("Tosstail")]
         public Shaker shaker;
+
+        public readonly string rightCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.controller}_A\"> to do a right catch";
+        public readonly string leftCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.controller}_Pad\"> to do a left catch";
         public override void Start()
         {
             base.Start();

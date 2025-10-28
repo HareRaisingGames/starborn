@@ -59,7 +59,7 @@ namespace Starborn.InputSystem
     public class Tutorial
     {
         public List<TutorialLine> lines = new List<TutorialLine>();
-        public string skipLine;
+        public List<TutorialLine> skipTutorial = new List<TutorialLine>();
         public Tutorial()
         {
 

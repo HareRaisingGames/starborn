@@ -1020,6 +1020,24 @@ namespace Starborn.InputSystem
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Skip"",
+                    ""type"": ""Button"",
+                    ""id"": ""79559826-163e-4609-90e2-810487b0658e"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Log"",
+                    ""type"": ""Button"",
+                    ""id"": ""a8b45b23-68a5-4b7b-b656-8b1267113d44"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1132,6 +1150,83 @@ namespace Starborn.InputSystem
                     ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""af31e9e7-1281-4860-ac9a-77bf20c8e409"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""de0cbff5-16f0-4b7a-b5e5-c1e35459121a"",
+                    ""path"": ""<XInputController>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5519da3c-2376-4b03-ad7f-04a23c68c55e"",
+                    ""path"": ""<DualShockGamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""59bf03e8-1b04-4e23-949a-aa06bfa506f0"",
+                    ""path"": ""<SwitchProControllerHID>/select"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Skip"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""59763d17-c76d-444a-a9dc-d5316e216205"",
+                    ""path"": ""<SwitchProControllerHID>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Log"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a1a8fab0-596e-4cbf-b05e-efa2b7320333"",
+                    ""path"": ""<XInputController>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Log"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""05d42074-0f29-4f3c-ac6b-1c8b8ca14a9a"",
+                    ""path"": ""<DualShockGamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Log"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1223,6 +1318,8 @@ namespace Starborn.InputSystem
             m_Dialogue = asset.FindActionMap("Dialogue", throwIfNotFound: true);
             m_Dialogue_A = m_Dialogue.FindAction("A", throwIfNotFound: true);
             m_Dialogue_Pause = m_Dialogue.FindAction("Pause", throwIfNotFound: true);
+            m_Dialogue_Skip = m_Dialogue.FindAction("Skip", throwIfNotFound: true);
+            m_Dialogue_Log = m_Dialogue.FindAction("Log", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -1490,12 +1587,16 @@ namespace Starborn.InputSystem
         private List<IDialogueActions> m_DialogueActionsCallbackInterfaces = new List<IDialogueActions>();
         private readonly InputAction m_Dialogue_A;
         private readonly InputAction m_Dialogue_Pause;
+        private readonly InputAction m_Dialogue_Skip;
+        private readonly InputAction m_Dialogue_Log;
         public struct DialogueActions
         {
             private @StarbornInputSystem m_Wrapper;
             public DialogueActions(@StarbornInputSystem wrapper) { m_Wrapper = wrapper; }
             public InputAction @A => m_Wrapper.m_Dialogue_A;
             public InputAction @Pause => m_Wrapper.m_Dialogue_Pause;
+            public InputAction @Skip => m_Wrapper.m_Dialogue_Skip;
+            public InputAction @Log => m_Wrapper.m_Dialogue_Log;
             public InputActionMap Get() { return m_Wrapper.m_Dialogue; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -1511,6 +1612,12 @@ namespace Starborn.InputSystem
                 @Pause.started += instance.OnPause;
                 @Pause.performed += instance.OnPause;
                 @Pause.canceled += instance.OnPause;
+                @Skip.started += instance.OnSkip;
+                @Skip.performed += instance.OnSkip;
+                @Skip.canceled += instance.OnSkip;
+                @Log.started += instance.OnLog;
+                @Log.performed += instance.OnLog;
+                @Log.canceled += instance.OnLog;
             }
 
             private void UnregisterCallbacks(IDialogueActions instance)
@@ -1521,6 +1628,12 @@ namespace Starborn.InputSystem
                 @Pause.started -= instance.OnPause;
                 @Pause.performed -= instance.OnPause;
                 @Pause.canceled -= instance.OnPause;
+                @Skip.started -= instance.OnSkip;
+                @Skip.performed -= instance.OnSkip;
+                @Skip.canceled -= instance.OnSkip;
+                @Log.started -= instance.OnLog;
+                @Log.performed -= instance.OnLog;
+                @Log.canceled -= instance.OnLog;
             }
 
             public void RemoveCallbacks(IDialogueActions instance)
@@ -1609,6 +1722,8 @@ namespace Starborn.InputSystem
         {
             void OnA(InputAction.CallbackContext context);
             void OnPause(InputAction.CallbackContext context);
+            void OnSkip(InputAction.CallbackContext context);
+            void OnLog(InputAction.CallbackContext context);
         }
     }
 }

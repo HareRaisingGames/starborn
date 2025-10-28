@@ -7,6 +7,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
 
 public class MinigameManager : MonoBehaviour
 {
@@ -43,6 +44,7 @@ public class MinigameManager : MonoBehaviour
     bool canPause = true;
     Tween<float> pauseTween;
 
+    public GameObject accuracyObj;
     public TMP_Text accuracyText;
     public TMP_Text livesText;
     public TMP_Text beatsText;
@@ -128,6 +130,7 @@ public class MinigameManager : MonoBehaviour
         //text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.Pause.performed += OnPause;
+        m_inputSystem.Dialogue.A.performed += OnA;
 
         scene = SceneManager.GetActiveScene();
 
@@ -214,6 +217,7 @@ public class MinigameManager : MonoBehaviour
                 if(FindObjectOfType<DialogueManager>(true) != null)
                 {
                     FindObjectOfType<DialogueManager>(true).GameOver();
+                    if(GetComponent<Canvas>()) GetComponent<Canvas>().sortingOrder = -2;
                 }
                 //Debug.Log();
             });
@@ -282,12 +286,18 @@ public class MinigameManager : MonoBehaviour
 
         }
     }
+
+    bool inTutorial;
+    bool skipTutorial;
+    List<TutorialLine> lines = new List<TutorialLine>();
     public void StartTutorial()
     {
         if(minigame != null)
         {
             if(minigame.isTutorial && minigame.tutorial.lines.Count != 0)
             {
+                lines = minigame.tutorial.lines;
+                inTutorial = true;
                 if(text != null)
                 {
                     NextLine();
@@ -299,12 +309,22 @@ public class MinigameManager : MonoBehaviour
     int t = 0;
     public void NextLine()
     {
-        if(minigame.tutorial.lines.Count <= t)
+        if (minigame != null)
         {
-            return;
+            if (lines.Count <= t)
+            {
+                text.text = "";
+                StartCoroutine(SetUp());
+                IEnumerator SetUp()
+                {
+                    yield return new WaitForSeconds(1f);
+                    minigame.StartSong();
+                }
+                return;
+            }
+            text.text = lines[t].dialogue;
+            t++;
         }
-        text.text = minigame.tutorial.lines[t].dialogue;
-        t++;
     }
 
     public void OnPause(InputAction.CallbackContext context)
@@ -370,6 +390,23 @@ public class MinigameManager : MonoBehaviour
             }
         }
 
+    }
+
+    public void OnA(InputAction.CallbackContext context)
+    {
+        if(inTutorial)
+        {
+            NextLine();
+        }
+    }
+
+    public void OnSkip(InputAction.CallbackContext context)
+    {
+        lines = minigame.tutorial.skipTutorial;
+        t = 0;
+        //Stop whatever music/minigame is happening if there is any happening
+        Clear();
+        NextLine();
     }
 
     public static void Clear()

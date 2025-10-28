@@ -19,7 +19,7 @@ public class LoadingManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
-        //DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(this.gameObject);
     }
 
     // Start is called before the first frame update
@@ -48,5 +48,27 @@ public class LoadingManager : MonoBehaviour
         sceneToLoad = scene;
         currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene("Scenes/LoadingScreen", LoadSceneMode.Additive);
+    }
+
+    public static void FadeOut(Action callback = null)
+    {
+        if (instance == null)
+            return;
+
+        TweenManager.AlphaTween(instance.blackScreen, 1, 0, 1f, Eases.EaseInOutCubic, delegate () {
+            callback?.Invoke();
+            FindObjectOfType<MonoBehaviour>().StartCoroutine(RemoveScene());
+            IEnumerator RemoveScene()
+            {
+                yield return new WaitForSeconds(0.25f);
+                SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
+                Destroy(instance.gameObject);
+                Destroy(instance);
+            }
+        }).SetStartDelay(1f);
+        TweenManager.XTween(instance.bugz, -70, 1000, 1f, Eases.EaseInCubic, delegate () {
+
+        }).SetStartDelay(1f);
+
     }
 }

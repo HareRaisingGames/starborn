@@ -996,6 +996,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Skip",
+                    "type": "Button",
+                    "id": "79559826-163e-4609-90e2-810487b0658e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Log",
+                    "type": "Button",
+                    "id": "a8b45b23-68a5-4b7b-b656-8b1267113d44",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -1106,6 +1124,83 @@
                     "processors": "",
                     "groups": "",
                     "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "af31e9e7-1281-4860-ac9a-77bf20c8e409",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "de0cbff5-16f0-4b7a-b5e5-c1e35459121a",
+                    "path": "<XInputController>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5519da3c-2376-4b03-ad7f-04a23c68c55e",
+                    "path": "<DualShockGamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59bf03e8-1b04-4e23-949a-aa06bfa506f0",
+                    "path": "<SwitchProControllerHID>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Skip",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59763d17-c76d-444a-a9dc-d5316e216205",
+                    "path": "<SwitchProControllerHID>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Log",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a1a8fab0-596e-4cbf-b05e-efa2b7320333",
+                    "path": "<XInputController>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Log",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "05d42074-0f29-4f3c-ac6b-1c8b8ca14a9a",
+                    "path": "<DualShockGamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Log",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

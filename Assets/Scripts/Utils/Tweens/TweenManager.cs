@@ -141,6 +141,8 @@ public class TweenManager : MonoBehaviour
         dynamic spriteRenderer = null;
         if (gameObject.GetComponent<Image>() != null)
             spriteRenderer = gameObject.GetComponent<Image>();
+        else if (gameObject.GetComponent<TMPro.TMP_Text>() != null)
+            spriteRenderer = gameObject.GetComponent<TMPro.TMP_Text>();
         else
             spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
@@ -251,5 +253,10 @@ public class TweenManager : MonoBehaviour
         }, type, onComplete);
 
         return tween;
+    }
+
+    public static bool ContainsType(dynamic obj, List<Type> list)
+    {
+        return false;
     }
 }

@@ -8,6 +8,8 @@ using System.Reflection;
 using Starborn;
 using System.Linq;
 using UnityEditor;
+using UnityEngine.UI;
+using TMPro;
 
 public abstract class Minigame : MonoBehaviour
 {
@@ -203,9 +205,19 @@ public abstract class Minigame : MonoBehaviour
     public virtual void Start()
     {
         //Debug.Log(events.Count);
+        StartCoroutine(SongSetUp());
+        IEnumerator SongSetUp()
+        {
+            yield return new WaitForSeconds(1);
+            SetUpSong();
+        }
+    }
+
+    public void SetUpSong()
+    {
         TweenManager.instance.AddManager();
         Conductor.instance.SetUpBPM();
-        if(isTutorial)
+        if (isTutorial)
         {
             MinigameManager.instance.StartTutorial();
         }
@@ -213,9 +225,7 @@ public abstract class Minigame : MonoBehaviour
         {
             //StartSong();
         }
-        //selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
     }
-
     public void StartSong()
     {
         MinigameManager.Clear();
@@ -223,13 +233,32 @@ public abstract class Minigame : MonoBehaviour
         Conductor.instance.SetUpBPM();
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
         Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusic);
+        MinigameManager.instance.hearts.gameObject.SetActive(true);
+        foreach (Transform child in MinigameManager.instance.hearts.gameObject.transform)
+        {
+            if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<SpriteRenderer>())
+            {
+                ColorUtils.SetAlpha(child.gameObject, 0);
+                TweenManager.AlphaTween(child.gameObject, 0, 1, 1f, Eases.EaseInOutCubic).SetStartDelay(0.25f);
+            }
+        }
+        MinigameManager.instance.accuracyObj.SetActive(true);
+        foreach (Transform child in MinigameManager.instance.accuracyObj.transform)
+        {
+            if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<TMP_Text>())
+            {
+                ColorUtils.SetAlpha(child.gameObject, 0);
+                TweenManager.AlphaTween(child.gameObject, 0, 1, 1f, Eases.EaseInOutCubic).SetStartDelay(0.25f);
+            }
+        }
+
 
         //StartCoroutine(PlayMusic());
         //IEnumerator PlayMusic()
         //{
         //yield return new WaitForSeconds(1);
         //Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.music.Play);
-            //Conductor.instance.music.Play();
+        //Conductor.instance.music.Play();
         //}
     }
 
