@@ -32,7 +32,12 @@ public abstract class Minigame : MonoBehaviour
     //public List<RhythmInput> inputs = new List<RhythmInput>();
     [HideInInspector]
     public List<string> eventsList = new List<string>();
+    [SerializeField]
     public List<Charting> chartings = new List<Charting>();
+    [SerializeField]
+    [HideInInspector]
+    public List<Charting> checkChartings = new List<Charting>();
+
     public Tutorial tutorial;
     public List<Charting> endlessChartings = new List<Charting>();
     [HideInInspector] public List<RhythmEvent> events = new List<RhythmEvent>();
@@ -104,20 +109,16 @@ public abstract class Minigame : MonoBehaviour
         return 1 + ((aceLateTime + margin) * pitch);
     }
 
-    public static Minigame instance; 
+    public static Minigame instance;
 
+    bool minigameListRecieved;
+
+#if UNITY_EDITOR
     public virtual void OnValidate()
     {
-        foreach (Charting chart in chartings)
-        {
-            foreach (Section section in chart.sections)
-            {
-                foreach (Inputs input in section.inputList)
-                {
-                    input.events.Clear();
-                }
-            }
-        }
+        System.Type myType = GetType();
+        minigameName = myType.Namespace;
+        Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
 
         if(GetType().GetField("chartings") != null)
         {
@@ -125,9 +126,6 @@ public abstract class Minigame : MonoBehaviour
         }
 
         eventsList.Clear();
-        System.Type myType = GetType();
-        minigameName = myType.Namespace;
-        Assembly[] assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
         foreach (Assembly assembly in assemblies)
         {
             System.Type[] classes = ReflectionUtils.GetTypesInNamespace(assembly, minigameName);
@@ -149,26 +147,16 @@ public abstract class Minigame : MonoBehaviour
             {
                 foreach (Inputs input in section.inputList)
                 {
-                    /*input.events = eventsList;*/
-                    foreach (Assembly assembly in assemblies)
+                    input.events.Clear();
+                    for (int i = 0; i < eventsList.Count; i++)
                     {
-                        System.Type[] classes = ReflectionUtils.GetTypesInNamespace(assembly, minigameName);
-                        if (classes.Length != 0)
-                        {
-                            for (int i = 0; i < classes.Length; i++)
-                            {
-                                if (classes[i].IsSubclassOf(typeof(RhythmEvent)))
-                                {
-                                    input.events.Add(classes[i].Name);
-                                }
-                            }
-                        }
+                        input.events.Add(eventsList[i]);
                     }
                 }
             }
         }
     }
-
+#endif
     public virtual void Awake()
     {
         instance = this;

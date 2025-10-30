@@ -297,6 +297,7 @@ public class MinigameManager : MonoBehaviour
             if(minigame.isTutorial && minigame.tutorial.lines.Count != 0)
             {
                 lines = minigame.tutorial.lines;
+                _consequences = false;
                 inTutorial = true;
                 if(text != null)
                 {
@@ -314,6 +315,7 @@ public class MinigameManager : MonoBehaviour
             if (lines.Count <= t)
             {
                 text.text = "";
+                _consequences = true;
                 StartCoroutine(SetUp());
                 IEnumerator SetUp()
                 {
@@ -402,11 +404,16 @@ public class MinigameManager : MonoBehaviour
 
     public void OnSkip(InputAction.CallbackContext context)
     {
-        lines = minigame.tutorial.skipTutorial;
-        t = 0;
-        //Stop whatever music/minigame is happening if there is any happening
-        Clear();
-        NextLine();
+        if(inTutorial && !skipTutorial)
+        {
+            skipTutorial = true;
+            lines = minigame.tutorial.skipTutorial;
+            t = 0;
+            //Stop whatever music/minigame is happening if there is any happening
+            Clear();
+            NextLine();
+        }
+
     }
 
     public static void Clear()

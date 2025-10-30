@@ -11,10 +11,6 @@ namespace Starborn.Test
     {
         TestEvent newEvent;
         RhythmInput input;
-        public override void OnValidate()
-        {
-            base.OnValidate();
-        }
 
         public override void Start()
         {
