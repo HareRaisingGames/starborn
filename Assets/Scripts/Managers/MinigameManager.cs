@@ -49,6 +49,8 @@ public class MinigameManager : MonoBehaviour
     public TMP_Text livesText;
     public TMP_Text beatsText;
     public GameObject pauseGameOver;
+
+    public GameObject cleared;
     public bool gameOver
     {
         get
@@ -141,11 +143,18 @@ public class MinigameManager : MonoBehaviour
         m_inputSystem.Dialogue.Enable();
     }
 
+    private void OnDisable()
+    {
+        m_inputSystem.Dialogue.Disable();
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         _lives = maxLives;
         minigame = FindObjectOfType<Minigame>();
+        if (cleared != null)
+            cleared.SetActive(false);
     }
 
     public void LoseALife(float amount = 1)
@@ -242,12 +251,8 @@ public class MinigameManager : MonoBehaviour
             if(minigame.hasCompleted != null && minigame.hasCompleted.Invoke() && !finishedGame && !_gameOver)
             {
                 finishedGame = true;
-
-                if (FindObjectOfType<DialogueManager>(true) != null)
-                {
-                    totalAccuracies.Add(totalAccuracy);
-                    FindObjectOfType<DialogueManager>(true).FromGame();
-                }
+                if (cleared != null)
+                    cleared.SetActive(true);
             }
         }
 
@@ -399,6 +404,14 @@ public class MinigameManager : MonoBehaviour
         if(inTutorial)
         {
             NextLine();
+        }
+        else if(finishedGame)
+        {
+            if (FindObjectOfType<DialogueManager>(true) != null)
+            {
+                totalAccuracies.Add(totalAccuracy);
+                FindObjectOfType<DialogueManager>(true).FromGame();
+            }
         }
     }
 

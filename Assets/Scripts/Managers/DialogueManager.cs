@@ -30,6 +30,7 @@ public class DialogueManager : MonoBehaviour
     bool interact = false;
     bool isGameOver;
     bool minigameNext;
+    bool minigameIsFinal;
 
     public delegate void StartCallback();
     public delegate void EndCallback();
@@ -378,6 +379,10 @@ public class DialogueManager : MonoBehaviour
             string nextMinigame = lines[jumpToLine].minigame;
             GameIn(nextMinigame);
         }
+        else if(minigameIsFinal)
+        {
+            ExitDialogue();
+        }
         else
         {
             TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
@@ -413,6 +418,7 @@ public class DialogueManager : MonoBehaviour
 
         jumpToLine = line;
         minigameNext = line < lines.Count && lines[jumpToLine].minigame != null && lines[jumpToLine].minigame != "";
+        minigameIsFinal = line >= lines.Count;
         curLine = 0;
 
         TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
@@ -618,6 +624,7 @@ public class DialogueManager : MonoBehaviour
                         //Color color = child.GetComponent<Image>().color;
                         //child.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 1);
                         TweenManager.AlphaTween(child.gameObject, 1, 0, 0.25f, Eases.EaseInOutCubic, delegate () {
+                            ExitDialogue();
                         }).SetStartDelay(0.125f);
                     }
 
@@ -633,6 +640,7 @@ public class DialogueManager : MonoBehaviour
         if (curLines[line].minigame != null && curLines[line].minigame != "" && !isGameOver)
         {
             GameIn(lines[line].minigame);
+            previousLine = null;
             return;
         }
 
@@ -728,6 +736,19 @@ public class DialogueManager : MonoBehaviour
                 };
             };
         });
+
+    }
+
+    public void ExitDialogue()
+    {
+        if(fade != null)
+        {
+            fade.SetActive(true);
+            ColorUtils.SetAlpha(fade, 0);
+            TweenManager.AlphaTween(fade, 0, 1, 1, Eases.EaseInOutCubic, delegate() {
+                SceneManager.LoadScene("TitleScreen");
+            }).SetStartDelay(0.25f);
+        }
 
     }
 
