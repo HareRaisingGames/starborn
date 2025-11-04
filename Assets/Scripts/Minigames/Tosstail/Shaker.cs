@@ -215,7 +215,12 @@ namespace Starborn.Tosstail
         public void MissedCatched()
         {
             if(!_canPlay)
+            {
                 MinigameManager.instance.LoseALife(1f);
+                MinigameManager.instance.accuracies.Add(-0.1f);
+                MinigameManager.instance.displayAccuracy = 0;
+            }
+                
         }
 
         void TossBack(float startX, float startY, float duration, float delay = 0)

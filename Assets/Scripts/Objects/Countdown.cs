@@ -1,8 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 using System;
 using System.Threading.Tasks;
+using System.Threading;
+
 
 public class Countdown : MonoBehaviour
 {
@@ -15,6 +18,17 @@ public class Countdown : MonoBehaviour
     AudioSource go;
 
     static string _folder = "base";
+
+    static PauseToken pauseToken;
+    public static PauseTokenSource pauseTokenSource;
+
+    static CancellationTokenSource cancellationTokenSource;
+    static CancellationToken cancellationToken;
+
+    static bool _activatedCountdown;
+    public static bool activatedCountdown => _activatedCountdown;
+
+    static bool stop;
 
     public static Countdown instance
     {
@@ -97,7 +111,7 @@ public class Countdown : MonoBehaviour
     {
         instance.Start();
 
-        switch(i)
+        /*switch(i)
         {
             case 0:
                 instance.three.Play();
@@ -122,7 +136,17 @@ public class Countdown : MonoBehaviour
         int milliseconds = (int)(time * 1000 / 2);
         await Task.Delay(milliseconds);
         i++;
-        StartCountdown(time, callback, i);
+        StartCountdown(time, callback, i);*/
+
+        _activatedCountdown = true;
+        pauseTokenSource = new PauseTokenSource();
+        pauseToken = pauseTokenSource.Token;
+        pauseTokenSource.Resume();
+        cancellationTokenSource = new CancellationTokenSource();
+        cancellationToken = cancellationTokenSource.Token;
+        stop = false;
+
+        await CountdownTask(time, callback);
     }
 
     static AudioSource SetAudioSource(string name, Transform parent)
@@ -132,6 +156,64 @@ public class Countdown : MonoBehaviour
         source.playOnAwake = false;
         obj.transform.parent = parent;
         return source;
+    }
+
+    static async Task CountdownTask(float time, Action callback = null, int i = 0)
+    {
+        if (stop) return;
+
+        if (pauseToken != null)
+            await pauseToken.WaitWhilePaused();
+
+        switch (i)
+        {
+            case 0:
+                instance.three.Play();
+                break;
+            case 2:
+                instance.two.Play();
+                break;
+            case 4:
+                instance.one.Play();
+                break;
+            case 5:
+                instance.lets.Play();
+                break;
+            case 6:
+                instance.go.Play();
+                break;
+            case 8:
+                callback?.Invoke();
+                _activatedCountdown = false;
+                return;
+        }
+        int milliseconds = (int)(time * 1000 / 2);
+        await Task.Delay(milliseconds);
+        i++;
+        await CountdownTask(time, callback, i);
+
+    }
+
+    public static void PauseCountdown()
+    {
+        pauseTokenSource.Pause();
+    }
+
+    public static void ResumeCountdown()
+    {
+        pauseTokenSource.Resume();
+    }
+
+    public static void CancelCountdown()
+    {
+        if(cancellationTokenSource != null)
+            cancellationTokenSource.Cancel();
+        instance.three.Stop();
+        instance.two.Stop();
+        instance.one.Stop();
+        instance.lets.Stop();
+        instance.go.Stop();
+        stop = true;
     }
 
     // Start is called before the first frame update
@@ -145,4 +227,37 @@ public class Countdown : MonoBehaviour
     {
         
     }
+
+    #region Editor Properties
+#if UNITY_EDITOR
+    /// This method is called when the script is loaded or a recompile occurs
+    [InitializeOnLoadMethod]
+    private static void OnInitialize()
+    {
+        // Subscribe to the 'quitting' event
+        EditorApplication.quitting += OnEditorQuitting;
+    }
+
+    // This method will be called when the Editor is quitting
+    private static void OnEditorQuitting()
+    {
+        CancelCountdown();
+        // Add any specific actions or cleanup logic here,
+        // such as saving data, releasing resources, etc.
+    }
+#endif
+    #endregion
+
+    #region Runtime Properties
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void OnRuntimeInitialize()
+    {
+        Application.quitting += onRuntimeQutting;
+    }
+
+    private static void onRuntimeQutting()
+    {
+        CancelCountdown();
+    }
+    #endregion
 }

@@ -7,7 +7,7 @@ using Rabbyte;
 public static class StaticProperties
 {
     public static string controlType;
-
+    public static bool canPause;
     public static Scene[] GetAllScenes()
     {
         List<Scene> scenes = new List<Scene>();

@@ -27,6 +27,8 @@ public class DialogueManager : MonoBehaviour
     bool firstLineHasName;
     string startWithName;
 
+    bool paused = false;
+
     bool interact = false;
     bool isGameOver;
     bool minigameNext;
@@ -91,16 +93,17 @@ public class DialogueManager : MonoBehaviour
     {
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.A.performed += onA;
+        m_inputSystem.Dialogue.Pause.performed += OnPause;
     }
 
     private void OnEnable()
     {
-        m_inputSystem.Dialogue.A.Enable();
+        m_inputSystem.Dialogue.Enable();
     }
 
     private void OnDisable()
     {
-        m_inputSystem.Dialogue.A.Disable();
+        m_inputSystem.Dialogue.Disable();
     }
     // Start is called before the first frame update
     void Start()
@@ -109,6 +112,13 @@ public class DialogueManager : MonoBehaviour
         sceneName = scene.name;
         filename = "dialogue_test";
         var path = Path.Combine(Application.streamingAssetsPath, $"Dialogue/{filename}.sbd");
+
+        GameObject prefab = Resources.Load<GameObject>("Prefabs/Pause Menu");
+        if (prefab != null)
+        {
+            Instantiate(prefab, Vector3.zero, Quaternion.identity).name = "Pause";
+        }
+
         //fade.SetActive(true);
         dialogueBox.gameObject.SetActive(false);
         if(File.Exists(path))
@@ -334,11 +344,16 @@ public class DialogueManager : MonoBehaviour
         if(LoadingManager.instance != null)
             LoadingManager.FadeOut(delegate ()
             {
+                if(!isGameOver)
+                    StaticProperties.canPause = true;
                 dialogueBox.gameObject.SetActive(true);
                 BoxTransition(true, StartDialogue);
             });
         else
             TweenManager.AlphaTween(fade, 1, 0, 2, Eases.Linear, delegate () {
+
+                if(!isGameOver)
+                    StaticProperties.canPause = true;
                 dialogueBox.gameObject.SetActive(true);
                 BoxTransition(true, StartDialogue);
             }).SetStartDelay(1f);
@@ -408,6 +423,7 @@ public class DialogueManager : MonoBehaviour
     void GameIn(string minigame)
     {
         gameOverLines.Clear();
+        StaticProperties.canPause = false;
         int line = curLine;
         interact = false;
         while (line < lines.Count && lines[line].minigame == minigame)
@@ -444,10 +460,19 @@ public class DialogueManager : MonoBehaviour
         string game = $"Scenes/Minigames/{name}";
 
         if(trans)
-        TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate() {
-            if (transitionCanvas != null)
-                transitionCanvas.SetActive(false);
-        }).SetStartDelay(0.1f);
+            TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate() {
+                if (transitionCanvas != null)
+                    transitionCanvas.SetActive(false);
+                StaticProperties.canPause = true;
+                Minigame.instance.SetUpSong();
+                Minigame.instance.setUpSong = true;
+
+            }).SetStartDelay(0.1f);
+        else
+        {
+            StaticProperties.canPause = true;
+        }
+            
         if (SceneManager.GetSceneByName(game) == null)
             return;
 
@@ -580,6 +605,11 @@ public class DialogueManager : MonoBehaviour
 
     public void onA(InputAction.CallbackContext context)
     {
+        if(paused)
+        {
+
+        }
+        else
         if(interact)
         {
             if (dialogueBox != null)
@@ -598,6 +628,55 @@ public class DialogueManager : MonoBehaviour
 
             }
         }
+    }
+
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if(StaticProperties.canPause && !PauseMenu.pauseTrans)
+        {
+            if(paused)
+            {
+                if(PauseMenu.inMainMenu)
+                    PauseMenu.Close(CloseCallback);
+            }
+            else
+            {
+                PauseMenu.Open(OpenCallback, CloseCallback, delegate() {
+                    StaticProperties.canPause = true;
+                });
+                PauseMenu.additionalClose = delegate ()
+                {
+                    paused = false;
+                    StaticProperties.canPause = false;
+                };
+            }
+            paused = !paused;
+            StaticProperties.canPause = false;
+        }
+    }
+
+    void OpenCallback()
+    {
+        Time.timeScale = 0;
+        foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+        {
+            tween.Value.Pause();
+        }
+
+        if (dialogueSource.clip != null)
+            dialogueSource.Pause();
+    }
+
+    void CloseCallback()
+    {
+        StaticProperties.canPause = true;
+        Time.timeScale = 1;
+        foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+        {
+            tween.Value.Resume();
+        }
+        if (dialogueSource.clip != null)
+            dialogueSource.UnPause();
     }
 
     void NextLine(int line)
@@ -632,6 +711,7 @@ public class DialogueManager : MonoBehaviour
             }
             else
             {
+                Minigame.gotGameOver = true;
                 RestartGame();
             }
             return;
@@ -711,7 +791,13 @@ public class DialogueManager : MonoBehaviour
     void RestartGame()
     {
         //curMinigame
+        MinigameManager.Clear();
         if (transitionCanvas != null) transitionCanvas.SetActive(true);
+        if(fade != null)
+        {
+            fade.SetActive(true);
+            ColorUtils.SetAlpha(fade, 0);
+        }
         TweenManager.AlphaTween(fade, 0, 1, 0.5f, Eases.Linear, delegate () {
             Scene latestMinigame = SceneManager.GetSceneByName(curMinigame);
 
@@ -746,6 +832,8 @@ public class DialogueManager : MonoBehaviour
             fade.SetActive(true);
             ColorUtils.SetAlpha(fade, 0);
             TweenManager.AlphaTween(fade, 0, 1, 1, Eases.EaseInOutCubic, delegate() {
+                if (FindObjectOfType<PauseMenu>(true) != null)
+                    Destroy(FindObjectOfType<PauseMenu>(true).gameObject);
                 SceneManager.LoadScene("TitleScreen");
             }).SetStartDelay(0.25f);
         }

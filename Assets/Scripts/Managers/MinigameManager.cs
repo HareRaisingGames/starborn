@@ -41,7 +41,6 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
-    bool canPause = true;
     Tween<float> pauseTween;
 
     public GameObject accuracyObj;
@@ -51,6 +50,7 @@ public class MinigameManager : MonoBehaviour
     public GameObject pauseGameOver;
 
     public GameObject cleared;
+    
     public bool gameOver
     {
         get
@@ -133,6 +133,7 @@ public class MinigameManager : MonoBehaviour
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.Pause.performed += OnPause;
         m_inputSystem.Dialogue.A.performed += OnA;
+        m_inputSystem.Dialogue.Skip.performed += OnSkip;
 
         scene = SceneManager.GetActiveScene();
 
@@ -182,7 +183,7 @@ public class MinigameManager : MonoBehaviour
     {
         get
         {
-            return Mathf.Round(totalAccuracy * 100);
+            return Mathf.Clamp(Mathf.Round(totalAccuracy * 100), 0, 100);
         }
     }
 
@@ -253,6 +254,7 @@ public class MinigameManager : MonoBehaviour
                 finishedGame = true;
                 if (cleared != null)
                     cleared.SetActive(true);
+                StaticProperties.canPause = false;
             }
         }
 
@@ -321,6 +323,7 @@ public class MinigameManager : MonoBehaviour
             {
                 text.text = "";
                 _consequences = true;
+                inTutorial = false;
                 StartCoroutine(SetUp());
                 IEnumerator SetUp()
                 {
@@ -336,81 +339,90 @@ public class MinigameManager : MonoBehaviour
 
     public void OnPause(InputAction.CallbackContext context)
     {
-        paused = !paused;
-        minigame.paused = paused;
-
-        if(canPause)
+        if(StaticProperties.canPause && !PauseMenu.pauseTrans)
         {
+            paused = !paused;
+            StaticProperties.canPause = false;
             if (paused)
             {
-                Time.timeScale = 0;
-                if (Conductor.instance.isPlaying)
+                PauseMenu.Open(OpenCallback, Unpause, delegate() {
+                    StaticProperties.canPause = true;
+                });
+                PauseMenu.additionalClose = delegate ()
                 {
-                    Conductor.instance.music.Pause();
-                    foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
-                    {
-                        tween.Value.Pause();
-                    }
-
-                    foreach (RhythmInput input in inputs)
-                    {
-                        input.Disable();
-                    }
-                }
-
-                if (pauseGameOver != null)
-                {
-                    pauseTween = TweenManager.XTween(pauseGameOver, -800, 0, 0.5f, Eases.EaseInOutQuad).SetIgnoreTimeScale();
-                }
+                    paused = false;
+                };
             }
             else
             {
-                if (pauseGameOver != null)
-                {
-                    if (pauseTween != null) pauseTween.OnCompleteKill();
-                    canPause = false;
-                    pauseTween = TweenManager.XTween(pauseGameOver, 0, -800, 0.5f, Eases.EaseInOutQuad, Unpause).SetIgnoreTimeScale();
-                }
-                else
-                {
-                    Unpause();
-                }
-
-                void Unpause()
-                {
-                    canPause = true;
-                    Time.timeScale = 1;
-                    if (Conductor.instance.isPaused)
-                    {
-                        Conductor.instance.music.UnPause();
-                        foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
-                        {
-                            tween.Value.Resume();
-                        }
-
-                        foreach (RhythmInput input in inputs)
-                        {
-                            input.Enable();
-                        }
-                    }
-                }
+                PauseMenu.Close(Unpause);
             }
         }
 
     }
 
+    void OpenCallback()
+    {
+        if(minigame != null)
+            minigame.paused = true;
+        Time.timeScale = 0;
+        if (Conductor.instance.isPlaying)
+        {
+            Conductor.instance.music.Pause();
+            foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+            {
+                tween.Value.Pause();
+            }
+
+            foreach (RhythmInput input in inputs)
+            {
+                input.Disable();
+            }
+        }
+
+        if (Countdown.activatedCountdown)
+            Countdown.PauseCountdown();
+    }
+
+    void Unpause()
+    {
+        if (minigame != null)
+            minigame.paused = true;
+        StaticProperties.canPause = true;
+        Time.timeScale = 1;
+        if (Conductor.instance.isPaused)
+        {
+            Conductor.instance.music.UnPause();
+            foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+            {
+                tween.Value.Resume();
+            }
+
+            foreach (RhythmInput input in inputs)
+            {
+                input.Enable();
+            }
+        }
+        if (Countdown.activatedCountdown)
+            Countdown.ResumeCountdown();
+    }
+
     public void OnA(InputAction.CallbackContext context)
     {
-        if(inTutorial)
+        if(!paused)
         {
-            NextLine();
-        }
-        else if(finishedGame)
-        {
-            if (FindObjectOfType<DialogueManager>(true) != null)
+            if (inTutorial)
             {
-                totalAccuracies.Add(totalAccuracy);
-                FindObjectOfType<DialogueManager>(true).FromGame();
+                NextLine();
+            }
+            else if (finishedGame)
+            {
+                if (FindObjectOfType<DialogueManager>(true) != null)
+                {
+                    totalAccuracies.Add(totalAccuracy);
+                    Clear();
+                    FindObjectOfType<DialogueManager>(true).FromGame();
+                }
             }
         }
     }

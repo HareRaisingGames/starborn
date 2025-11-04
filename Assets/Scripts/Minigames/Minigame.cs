@@ -112,6 +112,7 @@ public abstract class Minigame : MonoBehaviour
     public static Minigame instance;
 
     bool minigameListRecieved;
+    public static bool gotGameOver;
 
 #if UNITY_EDITOR
     public virtual void OnValidate()
@@ -193,30 +194,35 @@ public abstract class Minigame : MonoBehaviour
     public virtual void Start()
     {
         //Debug.Log(events.Count);
-        StartCoroutine(SongSetUp());
-        IEnumerator SongSetUp()
+        if(gotGameOver)
         {
-            yield return new WaitForSeconds(1);
-            SetUpSong();
+            StartCoroutine(SongSetUp());
+            IEnumerator SongSetUp()
+            {
+                yield return new WaitForSeconds(2.1f);
+                setUpSong = true;
+                SetUpSong();
+                gotGameOver = false;
+            }
         }
     }
 
+    [HideInInspector]
+    public bool setUpSong = false;
     public void SetUpSong()
     {
         TweenManager.instance.AddManager();
-        Conductor.instance.SetUpBPM();
         if (isTutorial)
         {
             MinigameManager.instance.StartTutorial();
         }
         else
         {
-            //StartSong();
+            StartSong();
         }
     }
     public void StartSong()
     {
-        MinigameManager.Clear();
         if (song != null) Conductor.instance.music.clip = song;
         Conductor.instance.SetUpBPM();
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);

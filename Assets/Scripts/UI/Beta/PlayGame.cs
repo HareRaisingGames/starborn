@@ -31,7 +31,7 @@ public class PlayGame : MonoBehaviour
 
     public void StartGame()
     {
-        minigame.StartSong();
+        minigame.SetUpSong();
         gameObject.SetActive(false);
     }
 
