@@ -492,6 +492,7 @@ MonoBehaviour:
   navigate: {fileID: 0}
   blackBG: {fileID: 8816168245500152703}
   menu: {fileID: 8848391363380187238}
+  glow: 1
 --- !u!1 &6237903334758285650
 GameObject:
   m_ObjectHideFlags: 0

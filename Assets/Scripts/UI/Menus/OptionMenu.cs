@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 using Starborn.InputSystem;
 using UnityEngine.Serialization;
 
@@ -32,12 +33,15 @@ public class OptionMenu : MonoBehaviour
     {
         inputActions = new StarbornInputSystem();
         inputActions.Menu.Navigate.performed += OnNavigate;
-        inputActions.Menu.Navigate.canceled += OnNavigate;
+        inputActions.Menu.Navigate.canceled += delegate (InputAction.CallbackContext context) {
+            release = 0;
+        };
         inputActions.Menu.Select.performed += OnSelect;
         inputActions.Menu.Back.performed += OnBack;
     }
 
     bool mouseMovement;
+    float release = 0;
 
     [HideInInspector]
     public bool hasSelected = false;
@@ -117,16 +121,36 @@ public class OptionMenu : MonoBehaviour
                 }
             }
 
-            if (curItem != null && options.IndexOf(curItem) != _curOption)
+            if (startScroll)
             {
-                SetSelection(options.IndexOf(curItem));
+                scrollFactor += Time.unscaledDeltaTime * 2;
+                if (scrollFactor >= 1)
+                {
+                    changeFactor += Time.unscaledDeltaTime * 5 * Mathf.Abs(scrollSpeed);
+                    //Debug.Log(Mathf.Round(changeFactor));
+
+                    if (setNum != Mathf.Round(changeFactor))
+                        ChangeSelection(scrollDirection);
+
+                    setNum = Mathf.Round(changeFactor);
+                }
+            }
+
+            if (curItem != null && options.IndexOf(curItem) != _curOption && !startScroll)
+            {
+                curOption = options.IndexOf(curItem);
                 navigateSource.Play();
             }
         }
 
             
     }
-
+    public virtual void OnControllerNavigate(InputAction.CallbackContext context)
+    {
+        InputDevice device = context.control.device;
+        if(device is Gamepad)
+            Debug.Log("Joystick");
+    }
     public virtual void OnNavigate(InputAction.CallbackContext context)
     {
         if (hasSelected)
@@ -135,8 +159,42 @@ public class OptionMenu : MonoBehaviour
         int c = 0;
         if (motion.y > 0) c = 1;
         else if (motion.y < 0) c = -1;
-        ChangeSelection(c);
+
+        scrollSpeed = motion.y;
+
+        scrollDirection = c;
+
+        if(context.action.IsPressed())
+        {
+            if(!justPressed)
+            {
+                startScroll = true;
+                if (c != 0 && release != c)
+                    ChangeSelection(c);
+                justPressed = true;
+            }
+
+        }
+        else
+        {
+            startScroll = false;
+            scrollFactor = 0;
+            setNum = -1;
+            justPressed = false;
+            //Debug.Log("I pressed");
+        }
+
+        release = c;
+            
     }
+
+    bool justPressed;
+    bool startScroll; //Determines when to start the scroll procedure
+    float scrollFactor = 0; //The factor of the scroll for starting
+    float changeFactor = 0;
+    int scrollDirection = 0; //The direction
+    float scrollSpeed;
+    float setNum = -1; //Check to see if numbers are different before performing action
 
     public virtual void OnSelect(InputAction.CallbackContext context)
     {
@@ -185,7 +243,7 @@ public class OptionMenu : MonoBehaviour
         curOption = opt;
     }
 
-    void SetSelection(int s)
+    protected virtual void SetSelection(int s)
     {
         float itemWidth = Mathf.Abs(options[s].item.sizeDelta.x / 2);
         if(cursor != null)

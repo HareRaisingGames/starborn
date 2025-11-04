@@ -29,6 +29,8 @@ public class PauseMenu : OptionMenu
 
     public static Action additionalClose;
 
+    public bool glow;
+
     // Start is called before the first frame update
     public override void Start()
     {
@@ -41,7 +43,6 @@ public class PauseMenu : OptionMenu
     {
         base.Update();
     }
-
     public static void Open(Action enter = null, Action exit = null, Action transition = null, Action onBack = null)
     {
         pauseTrans = true;
@@ -111,6 +112,62 @@ public class PauseMenu : OptionMenu
 
     }
 
+    Tween<float> glowTween;
+    protected override void SetSelection(int s)
+    {
+        base.SetSelection(s);
+
+        if(glow)
+        {
+            if (glowTween != null)
+                glowTween.FullKill();
+
+            foreach (Option option in options)
+            {
+                if (option.item == null)
+                    continue;
+
+                TMP_Text text = option.item.GetComponent<TMP_Text>();
+
+                if (text == null)
+                    continue;
+
+                text.fontMaterials[0].DisableKeyword("GLOW_ON");
+                text.fontMaterials[0].SetFloat(ShaderUtilities.ID_GlowPower, 0);
+
+                if (options.IndexOf(option) == s)
+                {
+                    text.fontMaterials[0].EnableKeyword("GLOW_ON");
+                    text.fontMaterials[0].SetFloat(ShaderUtilities.ID_GlowOuter, 1);
+                    text.fontMaterials[0].SetColor(ShaderUtilities.ID_GlowColor, Color.white);
+                    text.fontMaterials[0].SetFloat(ShaderUtilities.ID_GlowPower, 1);
+                    glowTween = TweenManager.NumTween(() => text.fontMaterials[0].GetFloat(ShaderUtilities.ID_GlowPower), (value) => {
+                        text.fontMaterials[0].SetFloat(ShaderUtilities.ID_GlowPower, value);
+                    }, 0.08f, 0.5f, Eases.EaseOutQuart).SetIgnoreTimeScale();
+                    glowTween = TweenManager.NumTween(() => text.fontMaterials[0].GetFloat(ShaderUtilities.ID_GlowOuter), (value) => {
+                        text.fontMaterials[0].SetFloat(ShaderUtilities.ID_GlowOuter, value);
+                    }, 0.5f, 0.5f, Eases.EaseOutQuart).SetIgnoreTimeScale();
+                }
+            }
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        foreach (Option option in options)
+        {
+            if (option.item == null)
+                continue;
+
+            TMP_Text text = option.item.GetComponent<TMP_Text>();
+
+            if (text == null)
+                continue;
+
+            text.fontMaterials[0].DisableKeyword("GLOW_ON");
+            text.fontMaterials[0].SetFloat(ShaderUtilities.ID_GlowPower, 0);
+        }
+    }
     public void Resume()
     {
         Close();

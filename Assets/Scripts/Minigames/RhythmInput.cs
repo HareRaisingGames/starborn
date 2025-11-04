@@ -143,7 +143,12 @@ namespace Starborn.InputSystem
 
         }
 
-        void Generate()
+        public void onInputRelease (InputAction.CallbackContext context)
+        {
+
+        }
+
+            void Generate()
         {
             //Debug.Log(m_inputSystem.Rhythm.A);
             //m_inputSystem = new StarbornInputSystem();
@@ -187,7 +192,11 @@ namespace Starborn.InputSystem
             mustHit = _action != RhythmInputs.None;
             //Debug.Log(InputAction);
             if (mustHit && !autoplay)
+            {
                 InputAction.performed += onInputHit;
+                InputAction.canceled += onInputRelease;
+            }
+                
 
             //desHit = destination;
         }
