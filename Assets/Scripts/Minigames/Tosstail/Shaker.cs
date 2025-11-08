@@ -34,6 +34,12 @@ namespace Starborn.Tosstail
         public ParticleSystem rightCatch;
         public ParticleSystem leftCatch;
 
+        [HideInInspector]
+        public int doubleCatches;
+
+        bool catchRight;
+        bool catchLeft;
+
         bool inRuntime;
         // Start is called before the first frame update
         void Start()
@@ -169,11 +175,22 @@ namespace Starborn.Tosstail
             {
                 if (rightCatch != null)
                     rightCatch.Play();
+
+                catchRight = true;
             }
             else
             {
                 if (leftCatch != null)
                     leftCatch.Play();
+
+                catchLeft = true;
+            }
+
+            if(catchRight && catchLeft)
+            {
+                doubleCatches++;
+                catchRight = false;
+                catchLeft = false;
             }
 
 
@@ -187,6 +204,8 @@ namespace Starborn.Tosstail
             angleTween.OnCompleteKill();
 
             MinigameManager.instance.LoseALife(0.5f);
+
+            catchLeft = catchRight = false;
 
             if (missSfx != null) missSfx.Play();
 
@@ -220,7 +239,9 @@ namespace Starborn.Tosstail
                 MinigameManager.instance.accuracies.Add(-0.1f);
                 MinigameManager.instance.displayAccuracy = 0;
             }
-                
+
+            catchLeft = catchRight = false;
+
         }
 
         void TossBack(float startX, float startY, float duration, float delay = 0)

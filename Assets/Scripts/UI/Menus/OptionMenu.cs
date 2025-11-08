@@ -41,7 +41,7 @@ public class OptionMenu : MonoBehaviour
     }
 
     bool mouseMovement;
-    float release = 0;
+    protected float release = 0;
 
     [HideInInspector]
     public bool hasSelected = false;
@@ -52,8 +52,8 @@ public class OptionMenu : MonoBehaviour
     public AudioClip select;
     public AudioClip navigate;
 
-    AudioSource selectSource;
-    AudioSource navigateSource;
+    protected AudioSource selectSource;
+    protected AudioSource navigateSource;
 
     // Start is called before the first frame update
     public virtual void Start()
@@ -126,7 +126,7 @@ public class OptionMenu : MonoBehaviour
                 scrollFactor += Time.unscaledDeltaTime * 2;
                 if (scrollFactor >= 1)
                 {
-                    changeFactor += Time.unscaledDeltaTime * 5 * Mathf.Abs(scrollSpeed);
+                    changeFactor += Time.unscaledDeltaTime * 7.5f * Mathf.Abs(scrollSpeed);
                     //Debug.Log(Mathf.Round(changeFactor));
 
                     if (setNum != Mathf.Round(changeFactor))
@@ -145,12 +145,7 @@ public class OptionMenu : MonoBehaviour
 
             
     }
-    public virtual void OnControllerNavigate(InputAction.CallbackContext context)
-    {
-        InputDevice device = context.control.device;
-        if(device is Gamepad)
-            Debug.Log("Joystick");
-    }
+
     public virtual void OnNavigate(InputAction.CallbackContext context)
     {
         if (hasSelected)
@@ -188,7 +183,7 @@ public class OptionMenu : MonoBehaviour
             
     }
 
-    bool justPressed;
+    protected bool justPressed;
     bool startScroll; //Determines when to start the scroll procedure
     float scrollFactor = 0; //The factor of the scroll for starting
     float changeFactor = 0;

@@ -32,6 +32,7 @@ public class MinigameManager : MonoBehaviour
     bool _canPlay = true;
     bool finishedGame = false;
     bool isTutorial = false;
+    bool inTutorialMinigame = false;
 
     public bool canPlay
     {
@@ -246,16 +247,36 @@ public class MinigameManager : MonoBehaviour
 
         if(minigame != null)
         {
-            bool done = minigame.hasCompleted.Invoke();
+            bool? done = minigame.hasCompleted?.Invoke();
             //Debug.Log(done);
             //The requirement for when a minigame is completed
-            if(minigame.hasCompleted != null && minigame.hasCompleted.Invoke() && !finishedGame && !_gameOver)
+            if(!inTutorialMinigame)
             {
-                finishedGame = true;
-                if (cleared != null)
-                    cleared.SetActive(true);
-                StaticProperties.canPause = false;
+                if (minigame.hasCompleted != null && minigame.hasCompleted.Invoke() && !finishedGame && !_gameOver)
+                {
+                    finishedGame = true;
+                    if (cleared != null)
+                        cleared.SetActive(true);
+                    StaticProperties.canPause = false;
+                }
             }
+            else
+            {
+                minigame.TutorialAdditionals();
+                if(Conductor.instance.music.isPlaying)
+                {
+                    if (Conductor.instance.music.timeSamples < previousTimeSamples && previousTimeSamples > 0)
+                    {
+                        Clear();
+                        lines[t].section.AddCharting(Conductor.instance.crochet, minigame.minigameName);
+                    }
+
+                    previousTimeSamples = Conductor.instance.music.timeSamples;
+                    //Debug.Log(previousTimeSamples);
+                }
+
+            }
+
         }
 
         /*if (Gamepad.current != null)
@@ -325,6 +346,7 @@ public class MinigameManager : MonoBehaviour
                 _consequences = true;
                 inTutorial = false;
                 StartCoroutine(SetUp());
+                minigame.hasCompleted = delegate () { return false; };
                 IEnumerator SetUp()
                 {
                     yield return new WaitForSeconds(1f);
@@ -333,10 +355,25 @@ public class MinigameManager : MonoBehaviour
                 return;
             }
             text.text = lines[t].dialogue;
+            if (lines[t].section.sections.Count != 0)
+            {
+                if (minigame.tutorialSong != null) Conductor.instance.music.clip = minigame.tutorialSong;
+                Conductor.instance.music.loop = true;
+                previousTimeSamples = Conductor.instance.music.timeSamples;
+                if (lines[t].section.setBPM && lines[t].section.bpm > 0)
+                    Conductor.instance.manualBpm = lines[t].section.bpm;
+                inTutorialMinigame = true;
+                Conductor.instance.SetUpBPM();
+                minigame.TutorialOnComplete(lines[t].amount);
+                lines[t].section.AddCharting(Conductor.instance.crochet, minigame.minigameName);
+                Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusicWithoutCallback);
+                return;
+                //Debug.Log(events.Count);
+            }
             t++;
         }
     }
-
+    private int previousTimeSamples;
     public void OnPause(InputAction.CallbackContext context)
     {
         if(StaticProperties.canPause && !PauseMenu.pauseTrans)
@@ -355,7 +392,7 @@ public class MinigameManager : MonoBehaviour
             }
             else
             {
-                PauseMenu.Close(Unpause);
+                PauseMenu.Close(Unpause, true);
             }
         }
 
@@ -411,7 +448,7 @@ public class MinigameManager : MonoBehaviour
     {
         if(!paused)
         {
-            if (inTutorial)
+            if (inTutorial && !inTutorialMinigame)
             {
                 NextLine();
             }
@@ -431,10 +468,19 @@ public class MinigameManager : MonoBehaviour
     {
         if(inTutorial && !skipTutorial)
         {
+            //
             skipTutorial = true;
             lines = minigame.tutorial.skipTutorial;
             t = 0;
             //Stop whatever music/minigame is happening if there is any happening
+            if(Conductor.instance.music.isPlaying)
+            {
+                Conductor.instance.music.Stop();
+                Conductor.instance.ManualSetUpBPM(0);
+                inTutorialMinigame = false;
+                Conductor.instance.music.loop = false;
+            }
+            minigame.hasCompleted = delegate () { return false; };
             Clear();
             NextLine();
         }

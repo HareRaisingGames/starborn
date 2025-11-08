@@ -34,11 +34,30 @@ public class PopupMenu : OptionMenu
     {
         if (hasSelected)
             return;
+
         Vector2 motion = context.ReadValue<Vector2>();
         int c = 0;
         if (motion.x > 0) c = -1;
         else if (motion.x < 0) c = 1;
-        ChangeSelection(c);
+
+        if (context.action.IsPressed())
+        {
+            if (!justPressed)
+            {
+                if (c != 0 && release != c)
+                    ChangeSelection(c);
+                justPressed = true;
+            }
+
+        }
+        else
+        {
+            justPressed = false;
+            //Debug.Log("I pressed");
+        }
+
+        release = c;
+
     }
 
     public static void SetPopUp()

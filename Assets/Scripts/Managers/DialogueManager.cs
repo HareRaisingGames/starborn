@@ -51,6 +51,9 @@ public class DialogueManager : MonoBehaviour
     public Dictionary<string, GameObject> backgrounds = new Dictionary<string, GameObject>();
     public Dictionary<string, GameObject> foregrounds = new Dictionary<string, GameObject>();
     public Dictionary<int, AudioClip> dialogueAudios = new Dictionary<int, AudioClip>();
+
+    protected List<CharacterSprite> curSprites = new List<CharacterSprite>();
+    protected List<CharacterSprite> prevSprites = new List<CharacterSprite>();
     #endregion
 
     #region Minigame Assets
@@ -140,6 +143,14 @@ public class DialogueManager : MonoBehaviour
                 }
 
                 backgrounds[curBG].SetActive(true);
+            }
+
+            if(sprites.Count != 0)
+            {
+                foreach(KeyValuePair<string, CharacterSprite> character in sprites)
+                {
+                    character.Value.gameObject.SetActive(false);
+                }
             }
             //TweenManager.AlphaTween(fade, 1, 1, 0.25f);
             //TweenManager.AlphaTween(fade, 1, 0, 2).SetStartDelay(0.5f);
@@ -637,7 +648,7 @@ public class DialogueManager : MonoBehaviour
             if(paused)
             {
                 if(PauseMenu.inMainMenu)
-                    PauseMenu.Close(CloseCallback);
+                    PauseMenu.Close(CloseCallback, true);
             }
             else
             {
@@ -730,6 +741,8 @@ public class DialogueManager : MonoBehaviour
         };
         dialogueBox.typedText = curLines[line].text;
 
+        LoadCharacters(curLines[line].characters, previousLine != null ? previousLine.characters : null);
+
         if (previousLine != null)
         {
             if(previousLine.name == null || previousLine.name == "")
@@ -755,6 +768,7 @@ public class DialogueManager : MonoBehaviour
                 }
             }
         }
+        //Debug.Log(previousLine);
 
         if (curLines[line].name != null && curLines[line].name != "")
             nameTxt.text = curLines[line].name;
@@ -779,6 +793,8 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
+        //curLines[line].characters;
+
         if (dialogueAudios.ContainsKey(dialogueLine))
             dialogueSource.clip = dialogueAudios[dialogueLine];
         dialogueSource.Play();
@@ -788,6 +804,178 @@ public class DialogueManager : MonoBehaviour
         previousLine = lines[line];
     }
 
+    public void LoadCharacters(List<CharacterPack> curPack, List<CharacterPack> prevPack = null, int index = 0)
+    {
+        //Grab characters from list
+        curSprites.Clear();
+        foreach(CharacterPack pack in curPack)
+        {
+            if (sprites.ContainsKey(pack.character))
+                curSprites.Add(sprites[pack.character]);
+        }
+
+        List<CharacterSprite> charactersInOnlyCurScene = new List<CharacterSprite>();
+        List<CharacterSprite> charactersInOnlyPrevScene = new List<CharacterSprite>();
+        List<CharacterSprite> charactersInBoth = new List<CharacterSprite>();
+
+        if (prevPack != null && prevPack.Count != 0)
+        {
+            //For characters transitioning out
+            foreach (CharacterSprite charact in curSprites)
+            {
+                if (!prevSprites.Contains(charact))
+                    charactersInOnlyCurScene.Add(charact);
+                else
+                    charactersInBoth.Add(charact);
+            }
+            //For characters transitioning out
+            foreach (CharacterSprite charact in prevSprites)
+            {
+                if (!curSprites.Contains(charact))
+                    charactersInOnlyPrevScene.Add(charact);
+            }
+        }
+        else
+        {
+            //If there isn't a previous pack, then all characters in that line get added on
+            charactersInOnlyCurScene.AddRange(curSprites);
+        }
+
+        //Check if character is contained in both curPack and prevPack
+        //Check if character is contained in curPack but not prevPack or is the start of the dialogue, TransIn
+        //Check if character is contained in prevPack but not curPack or is end of dialogue, TransOut
+
+        //Characters fading out
+        foreach (CharacterSprite character in charactersInOnlyPrevScene)
+        {
+            TransitionSprite(character, prevPack[charactersInOnlyPrevScene.IndexOf(character)]);
+        }
+
+        //Characters fading in
+        foreach (CharacterSprite character in charactersInOnlyCurScene)
+        {
+            TransitionSprite(character, curPack[charactersInOnlyCurScene.IndexOf(character)], true);
+        }
+
+        foreach (CharacterSprite character in charactersInBoth)
+        {
+            //foreach(KeyValuePairTweenManager.instance.activeTweens)
+        }
+
+        //Set up sprites for each character
+        foreach (CharacterSprite character in curSprites)
+        {
+            foreach(CharacterPack pack in curPack)
+            {
+                if(character.charName == pack.character)
+                {
+                    character.gameObject.SetActive(true);
+                    character.flipX = pack.flipX;
+                    character.expression = pack.emotion;
+                    //Alignment align = pack.alignment;
+                    break;
+                }
+            }
+
+
+
+        }
+
+        prevSprites.Clear();
+        prevSprites.AddRange(curSprites);
+    }
+
+    void TransitionSprite(CharacterSprite character, CharacterPack pack, bool transIn = false)
+    {
+        List<SpriteTransition> fade = new List<SpriteTransition>() { SpriteTransition.Fade, SpriteTransition.FadeLeft, SpriteTransition.FadeRight, SpriteTransition.FadeVertical };
+        List<SpriteTransition> left = new List<SpriteTransition>() { SpriteTransition.Left, SpriteTransition.FadeLeft };
+        List<SpriteTransition> right = new List<SpriteTransition>() { SpriteTransition.Right, SpriteTransition.FadeRight };
+        List<SpriteTransition> vertical = new List<SpriteTransition>() { SpriteTransition.Vertical, SpriteTransition.FadeVertical };
+
+        Alignment align = pack.alignment;
+        float xPos = 0;
+        switch (align)
+        {
+            case Alignment.left:
+                xPos = -325;
+                break;
+            case Alignment.right:
+                xPos = 325;
+                break;
+            default:
+                xPos = 0;
+                break;
+        }
+
+        if (transIn) //Transition in
+        {
+            if(fade.Contains(pack.transition))
+            {
+                ColorUtils.SetAlpha(character.gameObject, 0);
+                TweenManager.AlphaTween(character.gameObject, 0, 1, transTime, Eases.EaseInOutQuart);
+            }
+
+            character.xOffset = pack.offset;
+
+            if(left.Contains(pack.transition))
+            {
+                float x = -400 - character.rectTransform.sizeDelta.x / 2;
+                character.position = new Vector2(x, 0);
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime, Eases.EaseInOutQuart);
+            }
+            else if(right.Contains(pack.transition))
+            {
+                float x = 400 + character.rectTransform.sizeDelta.x / 2;
+                character.position = new Vector2(x, 0);
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime, Eases.EaseInOutQuart);
+            }
+            else if(vertical.Contains(pack.transition))
+            {
+                float y = -450 - character.rectTransform.sizeDelta.y / 2;
+                character.position = new Vector2(xPos, y);
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(xPos, value); }, 0, transTime, Eases.EaseInOutQuart);
+            }
+            else
+            {
+                character.position = new Vector2(xPos, 0);
+            }
+        }
+        else
+        {
+            if (fade.Contains(pack.transition))
+            {
+                ColorUtils.SetAlpha(character.gameObject, 1);
+                TweenManager.AlphaTween(character.gameObject, 1, 0, transTime, Eases.EaseInOutQuart);
+            }
+
+            if (left.Contains(pack.transition))
+            {
+                float x = -400 - character.rectTransform.sizeDelta.x / 2;
+                character.position = new Vector2(xPos, 0);
+
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, x, transTime, Eases.EaseInOutQuart);
+            }
+            else if (right.Contains(pack.transition))
+            {
+                float x = 400 + character.rectTransform.sizeDelta.x / 2;
+                character.position = new Vector2(xPos, 0);
+
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, x, transTime, Eases.EaseInOutQuart);
+            }
+            else if (vertical.Contains(pack.transition))
+            {
+                float y = -450 - character.rectTransform.sizeDelta.y / 2;
+                character.position = new Vector2(xPos, 0);
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(xPos, value); }, y, transTime, Eases.EaseInOutQuart);
+            }
+            else
+            {
+                character.position = new Vector2(xPos, 0);
+            }
+        }
+    }
+
+    float transTime = 0.5f;
     void RestartGame()
     {
         //curMinigame

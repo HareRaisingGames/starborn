@@ -113,8 +113,16 @@ namespace Starborn
         {
             _isFinished = false;
             music.Play();
+            CancelInvoke();
             Invoke("Done", songLength);
         }
+
+        public void PlayMusicWithoutCallback()
+        {
+            _isFinished = false;
+            music.Play();
+        }
+
         void Done()
         {
             _isFinished = true;

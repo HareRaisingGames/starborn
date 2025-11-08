@@ -26,6 +26,8 @@ public abstract class Minigame : MonoBehaviour
     public AudioClip song;
     public AudioClip tutorialSong;
 
+    protected bool inTutorial;
+
     [HideInInspector]
     public bool paused;
 
@@ -65,6 +67,8 @@ public abstract class Minigame : MonoBehaviour
     [Header("Minigame")]
     public System.Func<bool> hasCompleted;
 
+    [HideInInspector]
+    public int amountJudger;
 
 
     public static double NgEarlyTime(float pitch = -1, double margin = 0)
@@ -193,7 +197,6 @@ public abstract class Minigame : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Start()
     {
-        //Debug.Log(events.Count);
         if(gotGameOver)
         {
             StartCoroutine(SongSetUp());
@@ -205,6 +208,8 @@ public abstract class Minigame : MonoBehaviour
                 gotGameOver = false;
             }
         }
+
+        //SetUpSong();
     }
 
     [HideInInspector]
@@ -215,16 +220,20 @@ public abstract class Minigame : MonoBehaviour
         if (isTutorial)
         {
             MinigameManager.instance.StartTutorial();
+            inTutorial = true;
         }
         else
         {
             StartSong();
         }
     }
-    public void StartSong()
+    public virtual void StartSong()
     {
         if (song != null) Conductor.instance.music.clip = song;
+        if (selectedCharting.setBPM && selectedCharting.bpm > 0)
+            Conductor.instance.manualBpm = selectedCharting.bpm;
         Conductor.instance.SetUpBPM();
+        inTutorial = false;
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
         Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusic);
         MinigameManager.instance.hearts.gameObject.SetActive(true);
@@ -245,6 +254,8 @@ public abstract class Minigame : MonoBehaviour
                 TweenManager.AlphaTween(child.gameObject, 0, 1, 1f, Eases.EaseInOutCubic).SetStartDelay(0.25f);
             }
         }
+
+        Debug.Log(MinigameManager.instance.events.Count);
 
 
         //StartCoroutine(PlayMusic());
@@ -277,6 +288,21 @@ public abstract class Minigame : MonoBehaviour
     }
 
     public System.Action OnBeatChange;
+
+    public virtual void TutorialAdditionals()
+    {
+
+    }
+
+    public virtual void PostTutorialAdditionals()
+    {
+
+    }
+
+    public virtual void TutorialOnComplete(int amount)
+    {
+
+    }
 
     public virtual void onA(InputAction.CallbackContext context)
     {

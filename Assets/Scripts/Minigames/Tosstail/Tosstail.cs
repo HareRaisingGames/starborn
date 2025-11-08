@@ -22,11 +22,8 @@ namespace Starborn.Tosstail
                 shaker.transform.position.x, 
                 shaker.transform.position.x, 0.01f, Eases.Linear);
 
-            hasCompleted = delegate ()
-            {
-                return Conductor.instance.isFinished;
-            };
-
+            amountJudger = shaker.doubleCatches;
+            //OnBeatChange = CheckForActivity;
             /*ShortToss shortT = new ShortToss();
             shortT.AddToChart(Conductor.instance.crochet * 2, Conductor.instance.crochet);
             LongToss longT = new LongToss();
@@ -45,6 +42,50 @@ namespace Starborn.Tosstail
                 //Debug.Log("Go!");
                 Conductor.instance.music.Play();
             }*/
+        }
+
+        void CheckForActivity()
+        {
+            if(curBeat % 4 == 0 || curBeat == 0)
+            {
+                Debug.Log("Bam!");
+            }
+        }
+
+        public override void StartSong()
+        {
+            hasCompleted = delegate ()
+            {
+                return Conductor.instance.isFinished;
+            };
+            base.StartSong();
+        }
+
+        public override void TutorialAdditionals()
+        {
+            base.TutorialAdditionals();
+            if (shaker.direction)
+                MinigameManager.instance.text.text = leftCatch;
+            else
+                MinigameManager.instance.text.text = rightCatch;
+        }
+
+        public override void PostTutorialAdditionals()
+        {
+            base.PostTutorialAdditionals();
+            if(shaker.direction)
+            {
+
+            }
+        }
+
+        public override void TutorialOnComplete(int amount)
+        {
+            base.TutorialOnComplete(amount);
+            hasCompleted = delegate ()
+            {
+                return shaker.doubleCatches >= amount;
+            };
         }
 
         public void Toss(float time, float beat = 0, float reset = 1, bool tall = false)

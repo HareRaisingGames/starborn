@@ -30,11 +30,17 @@ public class PauseMenu : OptionMenu
     public static Action additionalClose;
 
     public bool glow;
+    AudioSource pauseSource;
 
     // Start is called before the first frame update
     public override void Start()
     {
         base.Start();
+        GameObject obj = new GameObject("Pause");
+        pauseSource = obj.AddComponent<AudioSource>();
+        pauseSource.playOnAwake = false;
+        pauseSource.clip = Resources.Load<AudioClip>("Audio/pause");
+        obj.transform.parent = transform;
         gameObject.SetActive(false);
     }
 
@@ -50,6 +56,7 @@ public class PauseMenu : OptionMenu
         instance.exitCallback = exit;
         inMainMenu = true;
         enter?.Invoke();
+        instance.pauseSource.Play();
         instance.curOption = 0;
         if (instance.blackBG != null)
         {
@@ -77,12 +84,16 @@ public class PauseMenu : OptionMenu
         }
     }
 
-    public static void Close(Action exit = null)
+    public static void Close(Action exit = null, bool sfx = false)
     {
         if (exit != null)
             instance.exitCallback = exit;
         pauseTrans = true;
         instance.hasSelected = true;
+
+        if (sfx)
+            instance.selectSource.Play();
+
         if (instance.blackBG != null)
         {
             TweenManager.XTween(instance.blackBG, 0, -800, 0.5f, Eases.EaseInOutQuad).SetIgnoreTimeScale().SetStartDelay(0.1f);

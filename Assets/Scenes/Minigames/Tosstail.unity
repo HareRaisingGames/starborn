@@ -16504,7 +16504,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   manualBpm: 0
-  increment: 3
+  increment: 0
   offset: 0
   music: {fileID: 469418584}
   isPlaying: 0
@@ -16543,7 +16543,7 @@ MonoBehaviour:
   autoPlay: 0
   isTutorial: 1
   song: {fileID: 8300000, guid: eb0abd3f3ec615f429b5cda92d7f7ac0, type: 3}
-  tutorialSong: {fileID: 0}
+  tutorialSong: {fileID: 8300000, guid: f06e1aa4543413c40b518124a48fc0f6, type: 3}
   paused: 0
   eventsList:
   - ShortToss
@@ -16926,8 +16926,8 @@ MonoBehaviour:
       startLength: 0
       length: 8
       loops: 1
-    setBPM: 0
-    bpm: 0
+    setBPM: 1
+    bpm: 110
   checkChartings:
   - sections:
     - inputList:
@@ -17322,6 +17322,26 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+    - dialogue: 
+      section:
+        sections:
+        - inputList:
+          - events: []
+            Event: ShortToss
+            mark: 6
+          startLength: 0
+          length: 8
+          loops: 1
+        - inputList:
+          - events: []
+            Event: ShortToss
+            mark: 5.5
+          startLength: 0
+          length: 8
+          loops: 16
+        setBPM: 1
+        bpm: 162
+      amount: 0
     skipTutorial:
     - dialogue: Oh! You already know it? Well, let's get into it.
       section:
@@ -17336,6 +17356,8 @@ MonoBehaviour:
   bgColor: {r: 0.105286576, g: 0.16128516, b: 0.24528301, a: 0}
   camPosition: {x: 0, y: 0, z: -10}
   eventSystem: {fileID: 0}
+  amountJudger: 0
+  setUpSong: 0
   shaker: {fileID: 1280518595}
 --- !u!1 &1273281386
 GameObject:
@@ -17579,6 +17601,7 @@ MonoBehaviour:
   missSfx: {fileID: 1728398265}
   rightCatch: {fileID: 1938213884}
   leftCatch: {fileID: 404370933}
+  doubleCatches: 0
 --- !u!1 &1301932588
 GameObject:
   m_ObjectHideFlags: 0
