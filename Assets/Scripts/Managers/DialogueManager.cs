@@ -867,6 +867,7 @@ public class DialogueManager : MonoBehaviour
             foreach (CharacterSprite character in charactersInBoth)
             {
                 //foreach(KeyValuePairTweenManager.instance.activeTweens)
+                MoveCharacter(character, curPack[charactersInBoth.IndexOf(character)]);
             }
         }
         else
@@ -877,7 +878,7 @@ public class DialogueManager : MonoBehaviour
                 {
                     if (character.charName == pack.character)
                     {
-                        character.xOffset = pack.offset;
+                        character.offsetX = pack.offset;
                         Alignment align = pack.alignment;
                         float xPos = 0;
                         switch (align)
@@ -956,7 +957,7 @@ public class DialogueManager : MonoBehaviour
                 TweenManager.AlphaTween(character.gameObject, 0, 1, transTime, Eases.EaseInOutQuart);
             }
 
-            character.xOffset = pack.offset;
+            character.offsetX = pack.offset;
 
             if(left.Contains(pack.transition))
             {
@@ -1018,9 +1019,26 @@ public class DialogueManager : MonoBehaviour
     }
 
     float transTime = 0.5f;
-    void MoveCharacter(CharacterSprite character, Vector2 position, float offset)
+    void MoveCharacter(CharacterSprite character, CharacterPack pack)
     {
-        //Vector2 
+        //Vector2
+        float xPos = 0;
+        Alignment align = pack.alignment;
+        switch (align)
+        {
+            case Alignment.left:
+                xPos = -325;
+                break;
+            case Alignment.right:
+                xPos = 325;
+                break;
+            default:
+                xPos = 0;
+                break;
+        }
+
+        character.offsetX = pack.offset;
+        TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime * 2, Eases.EaseOutQuart);
     }
     void RestartGame()
     {
