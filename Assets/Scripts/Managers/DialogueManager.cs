@@ -602,15 +602,18 @@ public class DialogueManager : MonoBehaviour
     {
         curLines = gameOverLines;
         isGameOver = true;
+        returnFromMinigame = true;
         PlayDialogue();
     }
 
+    bool returnFromMinigame;
     public void BackToDialogue()
     {
         curLines = lines;
         curLine = jumpToLine;
         dialogueLine = jumpToLine;
         curMinigame = "";
+        returnFromMinigame = true;
         PlayDialogue();
     }
 
@@ -727,7 +730,7 @@ public class DialogueManager : MonoBehaviour
             }
             return;
         }
-
+        spritesObject.SetActive(true);
         if (curLines[line].minigame != null && curLines[line].minigame != "" && !isGameOver)
         {
             GameIn(lines[line].minigame);
@@ -740,8 +743,8 @@ public class DialogueManager : MonoBehaviour
             dialogueLine++;
         };
         dialogueBox.typedText = curLines[line].text;
-
-        LoadCharacters(curLines[line].characters, previousLine != null ? previousLine.characters : null);
+            //sprites.Add(character.Key, characterSprite);
+            LoadCharacters(curLines[line].characters, previousLine != null ? previousLine.characters : null);
 
         if (previousLine != null)
         {
@@ -802,6 +805,8 @@ public class DialogueManager : MonoBehaviour
         minigameNext = line + 1 < lines.Count && lines[line + 1].minigame != null && lines[line + 1].minigame != "";
 
         previousLine = lines[line];
+
+        returnFromMinigame = false;
     }
 
     public void LoadCharacters(List<CharacterPack> curPack, List<CharacterPack> prevPack = null, int index = 0)
@@ -845,22 +850,58 @@ public class DialogueManager : MonoBehaviour
         //Check if character is contained in curPack but not prevPack or is the start of the dialogue, TransIn
         //Check if character is contained in prevPack but not curPack or is end of dialogue, TransOut
 
-        //Characters fading out
-        foreach (CharacterSprite character in charactersInOnlyPrevScene)
+        if(!returnFromMinigame)
         {
-            TransitionSprite(character, prevPack[charactersInOnlyPrevScene.IndexOf(character)]);
+            //Characters fading out
+            foreach (CharacterSprite character in charactersInOnlyPrevScene)
+            {
+                TransitionSprite(character, prevPack[charactersInOnlyPrevScene.IndexOf(character)]);
+            }
+
+            //Characters fading in
+            foreach (CharacterSprite character in charactersInOnlyCurScene)
+            {
+                TransitionSprite(character, curPack[charactersInOnlyCurScene.IndexOf(character)], true);
+            }
+
+            foreach (CharacterSprite character in charactersInBoth)
+            {
+                //foreach(KeyValuePairTweenManager.instance.activeTweens)
+            }
+        }
+        else
+        {
+            foreach (CharacterSprite character in curSprites)
+            {
+                foreach (CharacterPack pack in curPack)
+                {
+                    if (character.charName == pack.character)
+                    {
+                        character.xOffset = pack.offset;
+                        Alignment align = pack.alignment;
+                        float xPos = 0;
+                        switch (align)
+                        {
+                            case Alignment.left:
+                                xPos = -325;
+                                break;
+                            case Alignment.right:
+                                xPos = 325;
+                                break;
+                            default:
+                                xPos = 0;
+                                break;
+                        }
+                        character.position = new Vector2(xPos, -50);
+                        TweenManager.NumTween(() => character.position.y, (value) => { character.position = new Vector2(xPos, value); }, 0, 0.25f, Eases.EaseInOutQuart);
+                        ColorUtils.SetAlpha(character.gameObject, 0);
+                        TweenManager.AlphaTween(character.gameObject, 0, 1, 0.25f, Eases.EaseInOutQuart);
+                        break;
+                    }
+                }
+            }
         }
 
-        //Characters fading in
-        foreach (CharacterSprite character in charactersInOnlyCurScene)
-        {
-            TransitionSprite(character, curPack[charactersInOnlyCurScene.IndexOf(character)], true);
-        }
-
-        foreach (CharacterSprite character in charactersInBoth)
-        {
-            //foreach(KeyValuePairTweenManager.instance.activeTweens)
-        }
 
         //Set up sprites for each character
         foreach (CharacterSprite character in curSprites)
@@ -953,29 +994,34 @@ public class DialogueManager : MonoBehaviour
                 float x = -400 - character.rectTransform.sizeDelta.x / 2;
                 character.position = new Vector2(xPos, 0);
 
-                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, x, transTime, Eases.EaseInOutQuart);
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, x, transTime, Eases.EaseInOutQuart, delegate () { character.gameObject.SetActive(false); });
             }
             else if (right.Contains(pack.transition))
             {
                 float x = 400 + character.rectTransform.sizeDelta.x / 2;
                 character.position = new Vector2(xPos, 0);
 
-                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, x, transTime, Eases.EaseInOutQuart);
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, x, transTime, Eases.EaseInOutQuart, delegate() { character.gameObject.SetActive(false); });
             }
             else if (vertical.Contains(pack.transition))
             {
                 float y = -450 - character.rectTransform.sizeDelta.y / 2;
                 character.position = new Vector2(xPos, 0);
-                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(xPos, value); }, y, transTime, Eases.EaseInOutQuart);
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(xPos, value); }, y, transTime, Eases.EaseInOutQuart, delegate () { character.gameObject.SetActive(false); });
             }
             else
             {
                 character.position = new Vector2(xPos, 0);
+                character.gameObject.SetActive(false);
             }
         }
     }
 
     float transTime = 0.5f;
+    void MoveCharacter(CharacterSprite character, Vector2 position, float offset)
+    {
+        //Vector2 
+    }
     void RestartGame()
     {
         //curMinigame
