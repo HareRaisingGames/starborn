@@ -107,7 +107,7 @@ public class Countdown : MonoBehaviour
         }
     }
 
-    public async static void StartCountdown(float time, Action callback = null, int i = 0)
+    public async static void StartCountdown(float time, Action callback = null)
     {
         instance.Start();
 
@@ -197,11 +197,21 @@ public class Countdown : MonoBehaviour
     public static void PauseCountdown()
     {
         pauseTokenSource.Pause();
+        instance.three.Pause();
+        instance.two.Pause();
+        instance.one.Pause();
+        instance.lets.Pause();
+        instance.go.Pause();
     }
 
     public static void ResumeCountdown()
     {
         pauseTokenSource.Resume();
+        instance.three.UnPause();
+        instance.two.UnPause();
+        instance.one.UnPause();
+        instance.lets.UnPause();
+        instance.go.UnPause();
     }
 
     public static void CancelCountdown()
@@ -226,6 +236,20 @@ public class Countdown : MonoBehaviour
     void Update()
     {
         
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if(focus)
+        {
+            //Debug.Log("Resume");
+            pauseTokenSource.Resume();
+        }
+        else
+        {
+            //Debug.Log("Pause");
+            pauseTokenSource.Pause();
+        }
     }
 
     #region Editor Properties

@@ -78,19 +78,20 @@ public class OptionMenu : MonoBehaviour
             if(option.item.GetComponent<Button>())
             {
                 Button button = option.item.GetComponent<Button>();
-                /*for(int i = 0; i < button.onClick.GetPersistentEventCount(); i++)
-                {
-                    ]
-                    for(int j = 0; j < option.action.GetPersistentEventCount(); j++)
-                    {
-                        if(option.ac)
-                    }
-                    //if(option.action.GetPersistentTarget(i))
-                }*/
-
-                button.onClick.AddListener(selectSource.Play);
+                button.onClick.RemoveAllListeners();
+                button.onClick.AddListener(delegate() 
+                { 
+                    selectSource.Play();
+                    Invoke("OnAudioFinished", selectSource.clip.length);
+                });
+                button.onClick.AddListener(Select);
             }
         }
+
+    }
+
+    protected virtual void OnAudioFinished()
+    {
 
     }
 
@@ -193,6 +194,11 @@ public class OptionMenu : MonoBehaviour
 
     public virtual void OnSelect(InputAction.CallbackContext context)
     {
+        Select();
+    }
+
+    void Select()
+    {
         if (hasSelected)
             return;
 
@@ -245,7 +251,7 @@ public class OptionMenu : MonoBehaviour
         {
             float cursorWidth = Mathf.Abs(cursor.rectTransform.sizeDelta.x / 2);
             cursor.rectTransform.anchoredPosition
-                = new Vector2(options[s].item.anchoredPosition.x - itemWidth - cursorWidth - Mathf.Abs(offset), options[s].item.anchoredPosition.y);
+                = new Vector2(options[s].item.anchoredPosition.x - itemWidth - cursorWidth - offset, options[s].item.anchoredPosition.y);
         }
         
     }
@@ -282,6 +288,7 @@ public class Option
                 }
             }
         }
+
         return action.GetPersistentEventCount() == listeners;
     }
 

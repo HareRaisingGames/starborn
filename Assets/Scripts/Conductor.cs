@@ -33,7 +33,7 @@ namespace Starborn
 
         public float songLength => (music != null && music.clip != null) ? music.clip.length : 0;
         bool _isFinished;
-        public bool isFinished => _isFinished;
+        public bool isFinished => Conductor.instance.music.timeSamples < timeSamples && timeSamples > 0 && startSong;
 
         public Action onSongFinished = null;
 
@@ -62,6 +62,8 @@ namespace Starborn
         [HideInInspector] public int curBeat;
 
         [HideInInspector] public int curStep;
+
+        public static bool startSong;
 
         void Awake()
         {
@@ -114,13 +116,21 @@ namespace Starborn
             _isFinished = false;
             music.Play();
             //CancelInvoke();
-            Invoke("Done", songLength);
+            timeSamples = music.timeSamples;
+            startSong = true;
+            //Invoke("Done", songLength);
+            if (FindObjectOfType<Minigame>() != null)
+                FindObjectOfType<Minigame>().OnSongStart?.Invoke();
         }
 
         public void PlayMusicWithoutCallback()
         {
             _isFinished = false;
+            startSong = true;
             music.Play();
+            timeSamples = music.timeSamples;
+            if (FindObjectOfType<Minigame>() != null)
+                FindObjectOfType<Minigame>().OnSongStart?.Invoke();
         }
 
         void Done()
@@ -129,6 +139,8 @@ namespace Starborn
             onSongFinished?.Invoke();
             onSongFinished = null;
         }
+
+        int timeSamples;
 
         private void Update()
         {
@@ -154,6 +166,8 @@ namespace Starborn
                 curBeat = Mathf.FloorToInt(adjustedTime * bps);
 
                 curStep = Mathf.FloorToInt(adjustedTime * sps);
+
+                timeSamples = music.timeSamples;
             }
         }
 

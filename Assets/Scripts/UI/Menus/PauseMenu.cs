@@ -5,6 +5,7 @@ using System;
 using Starborn.InputSystem;
 using TMPro;
 using UnityEngine.UI;
+using Starborn;
 
 public class PauseMenu : OptionMenu
 {
@@ -21,6 +22,7 @@ public class PauseMenu : OptionMenu
     #region GameObjects
     public GameObject blackBG;
     public GameObject menu;
+    public PopupMenu popup;
     #endregion
 
     public static PauseMenu instance;
@@ -28,6 +30,7 @@ public class PauseMenu : OptionMenu
     public static bool pauseTrans = false;
 
     public static Action additionalClose;
+    public Action restart;
 
     public bool glow;
     AudioSource pauseSource;
@@ -49,7 +52,7 @@ public class PauseMenu : OptionMenu
     {
         base.Update();
     }
-    public static void Open(Action enter = null, Action exit = null, Action transition = null, Action onBack = null)
+    public static void Open(Action enter = null, Action exit = null, Action transition = null, Action onBack = null, Action restart = null)
     {
         pauseTrans = true;
         instance.gameObject.SetActive(true);
@@ -57,6 +60,8 @@ public class PauseMenu : OptionMenu
         inMainMenu = true;
         enter?.Invoke();
         instance.pauseSource.Play();
+        additionalClose = onBack;
+        instance.restart = restart;
         instance.curOption = 0;
         if (instance.blackBG != null)
         {
@@ -182,5 +187,63 @@ public class PauseMenu : OptionMenu
     public void Resume()
     {
         Close();
+    }
+    public static string restartMessage;
+    public void Restart()
+    {
+        Minigame.gotGameOver = false;
+        StaticProperties.canPause = false;
+        PopupMenu.Open($"Are you sure you want to restart{restartMessage}? Any unsaved progress here will be lost", 
+            delegate() {
+                restart?.Invoke();
+            }, 
+            delegate () {
+            StartCoroutine(PauseDelay());
+            IEnumerator PauseDelay()
+            {
+                yield return new WaitForSecondsRealtime(0.1f);
+                hasSelected = false;
+                StaticProperties.canPause = true;
+            }
+
+        }, transform);
+        //restart?.Invoke();
+    }
+
+    public void ExitToMainMenu()
+    {
+        Minigame.gotGameOver = false;
+        StaticProperties.canPause = false;
+        PopupMenu.Open("Are you sure you want to exit to the main menu? Any unsaved progress here will be lost", delegate () {
+            Conductor.startSong = false;
+            Destroy(this.gameObject);
+            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+        }, delegate () {
+            StartCoroutine(PauseDelay());
+            IEnumerator PauseDelay()
+            {
+                yield return new WaitForSecondsRealtime(0.1f);
+                hasSelected = false;
+                StaticProperties.canPause = true;
+            }
+
+        }, transform);
+    }
+
+    public void QuitGame()
+    {
+        Minigame.gotGameOver = false;
+        StaticProperties.canPause = false;
+        PopupMenu.Open("Are you sure you want to quit? Any unsaved progress here will be lost", delegate() {
+            Application.Quit();
+        }, delegate() {
+            StartCoroutine(PauseDelay());
+            IEnumerator PauseDelay()
+            {
+                yield return new WaitForSecondsRealtime(0.1f);
+                hasSelected = false;
+                StaticProperties.canPause = true;
+            }
+        }, transform);
     }
 }

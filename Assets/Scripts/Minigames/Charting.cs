@@ -11,6 +11,7 @@ namespace Starborn.InputSystem
     [System.Serializable]
     public class Charting
     {
+        public bool skipCountdown = false;
         public List<Section> sections = new List<Section>();
         public bool setBPM = false;
         public float bpm;

@@ -41,6 +41,8 @@ namespace Starborn.Tosstail
         bool catchLeft;
 
         bool inRuntime;
+
+        public Niko niko;
         // Start is called before the first frame update
         void Start()
         {
@@ -88,6 +90,13 @@ namespace Starborn.Tosstail
                 this.reset = reset;
                 isTossed = true;
                 _canPlay = false;
+
+                if(niko != null)
+                {
+                    niko.curArm.isOpen = true;
+                    niko.curArm.isFree = true;
+                }
+
                 float start = _right ? startPosition : endPosition;
                 float end = _right ? endPosition : startPosition;
 
@@ -118,6 +127,14 @@ namespace Starborn.Tosstail
                     if (isTossed)
                     {
                         _right = !_right;
+                        if (niko != null)
+                        {
+                            niko.curArm = _right ? niko.rightArm : niko.leftArm;
+                            niko.curArm.SetHand(true);
+                            niko.curArm.isFree = false;
+                            niko.SetExpression("Nervous");
+                            niko.reaction = true;
+                        }
                         TossBack(newEnd, startY - yDistance / 2, reset);
                     }
                         
@@ -159,6 +176,62 @@ namespace Starborn.Tosstail
 
         }
 
+        public void AutoToss(float duration)
+        {
+            xTween.OnCompleteKill();
+            yTween.OnCompleteKill();
+            angleTween.OnCompleteKill();
+
+            if (niko != null)
+            {
+                niko.curArm.isOpen = true;
+                niko.curArm.isFree = true;
+            }
+
+            sfx.clip = Resources.Load<AudioClip>("Audio/Tosstail/donut");
+            sfx.Play();
+
+            float start = _right ? startPosition : endPosition;
+            float end = _right ? endPosition : startPosition;
+
+            xTween = TweenManager.XTween(gameObject, start, end, duration, Eases.Linear, () =>
+            {
+                transform.position = new Vector3(_right ? endPosition : startPosition, startY, transform.position.z);
+                _right = !_right;
+                if (niko != null)
+                {
+                    niko.curArm = _right ? niko.rightArm : niko.leftArm;
+                    niko.curArm.isOpen = false;
+                    niko.curArm.hand.sortingOrder = 10;
+                }
+
+                if (_right)
+                {
+                    if (rightCatch != null)
+                        rightCatch.Play();
+                }
+                else
+                {
+                    if (leftCatch != null)
+                        leftCatch.Play();
+                }
+                if (catchSfx != null) catchSfx.Play();
+            }).SetIgnoreTimeScale();
+
+            yTween = TweenManager.YTween(gameObject, startY, startY + shortHeight, duration / 2, Eases.EaseOutSine, () =>
+            {
+                yTween = TweenManager.YTween(gameObject, startY + shortHeight, startY, duration / 2, Eases.EaseInSine, () =>
+                {
+
+                }).SetIgnoreTimeScale();
+            }).SetIgnoreTimeScale();
+
+            angleTween = TweenManager.RollTween(gameObject, 0, _right ? 360 : -360, duration, Eases.Linear, () =>
+            {
+                gameObject.transform.rotation = Quaternion.identity;
+            }).SetIgnoreTimeScale();
+        }
+
         public void SuccessfulCatch()
         {
             xTween.OnCompleteKill();
@@ -170,6 +243,15 @@ namespace Starborn.Tosstail
             transform.position = new Vector3(_right ? endPosition : startPosition, startY, transform.position.z);
             transform.rotation = Quaternion.identity;
             _right = !_right;
+
+            if (niko != null)
+            {
+                niko.curArm = _right ? niko.rightArm : niko.leftArm;
+                niko.curArm.isOpen = niko.curArm.isFree = false;
+                niko.curArm.hand.sortingOrder = 10;
+                niko.SetExpression("Happy");
+                niko.reaction = true;
+            }
 
             if (_right)
             {
@@ -185,6 +267,7 @@ namespace Starborn.Tosstail
 
                 catchLeft = true;
             }
+
 
             if(catchRight && catchLeft)
             {
@@ -217,6 +300,12 @@ namespace Starborn.Tosstail
             transform.position = new Vector3(_right ? endPosition : startPosition, startY, transform.position.z);
             transform.rotation = Quaternion.identity;
             _right = !_right;
+            if (niko != null)
+            {
+                niko.curArm = _right ? niko.rightArm : niko.leftArm;
+                niko.SetExpression("Sad");
+                niko.reaction = true;
+            }
 
             TweenManager.XTween(gameObject, x, x + 3 * (early ? (x > 0 ? -1 : 1) : (x > 0 ? 1 : -1)), reset * 0.75f, Eases.EaseInSine, () =>
             {
@@ -248,6 +337,13 @@ namespace Starborn.Tosstail
         {
             //MinigameManager.instance.canPlay = false;
 
+            if(niko != null)
+            {
+                //niko.curArm.isOpen = true;
+                niko.curArm.SetHand(true);
+                niko.curArm.isFree = false;
+            }
+
             xTween.OnCompleteKill();
             yTween.OnCompleteKill();
             angleTween.OnCompleteKill();
@@ -257,6 +353,11 @@ namespace Starborn.Tosstail
                 isTossed = false;
                 _canPlay = true;
                 transform.position = new Vector3(_right ? startPosition : endPosition, this.startY);
+                niko.curArm.isOpen = false;
+                niko.curArm.hand.sortingOrder = 10;
+                niko.SetExpression("Neutral");
+                niko.reaction = false;
+                //if (catchSfx != null) catchSfx.Play();
 
             }).SetStartDelay(delay);
 

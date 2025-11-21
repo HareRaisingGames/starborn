@@ -87,7 +87,7 @@ namespace Starborn.SafeCracker
             }
         }
 
-        void ChangeNumber()
+        void ChangeNumber(int b = 0)
         {
             if (startSequence)
             {

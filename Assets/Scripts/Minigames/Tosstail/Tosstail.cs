@@ -11,6 +11,7 @@ namespace Starborn.Tosstail
     {
         [Header("Tosstail")]
         public Shaker shaker;
+        public Niko niko;
 
         public readonly string rightCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.controller}_A\"> to do a right catch";
         public readonly string leftCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.controller}_Pad\"> to do a left catch";
@@ -22,8 +23,9 @@ namespace Starborn.Tosstail
                 shaker.transform.position.x, 
                 shaker.transform.position.x, 0.01f, Eases.Linear);
 
-            amountJudger = shaker.doubleCatches;
-            //OnBeatChange = CheckForActivity;
+            amountJudger = () => shaker.doubleCatches;
+            OnSongStart = niko.Bounce;
+            OnStepChange = CheckForActivity;
             /*ShortToss shortT = new ShortToss();
             shortT.AddToChart(Conductor.instance.crochet * 2, Conductor.instance.crochet);
             LongToss longT = new LongToss();
@@ -42,13 +44,33 @@ namespace Starborn.Tosstail
                 //Debug.Log("Go!");
                 Conductor.instance.music.Play();
             }*/
+            niko.leftArm.SetUpDictionary(shaker.direction);
+            niko.rightArm.SetUpDictionary(!shaker.direction);
+
+            niko.leftArm.isFree = shaker.direction;
+            niko.rightArm.isFree = !shaker.direction;
+
+            //niko.leftArm.isOpen = niko.leftArm.isFree = shaker.direction;
+            //niko.rightArm.isOpen = niko.rightArm.isFree = !shaker.direction;
+
+            if (!niko.rightArm.isOpen) niko.curArm = niko.rightArm;
+            else if (!niko.leftArm.isOpen) niko.curArm = niko.leftArm;
+        }
+        [HideInInspector]
+        public int r = 0;
+        void CheckForActivity(int i)
+        {
+            if(i % 4 == r)
+                niko.Bounce();
         }
 
-        void CheckForActivity()
+        public override void AdditionalSongSetup()
         {
-            if(curBeat % 4 == 0 || curBeat == 0)
+            base.AdditionalSongSetup();
+            if(Conductor.instance != null && niko != null)
             {
-                Debug.Log("Bam!");
+                niko.leftArm.SetSpeed(Conductor.instance.songBpm);
+                niko.rightArm.SetSpeed(Conductor.instance.songBpm);
             }
         }
 
@@ -68,24 +90,35 @@ namespace Starborn.Tosstail
                 MinigameManager.instance.text.text = leftCatch;
             else
                 MinigameManager.instance.text.text = rightCatch;
+
+            //Debug.Log(amountJudger.Invoke());
         }
 
         public override void PostTutorialAdditionals()
         {
             base.PostTutorialAdditionals();
+            OnSongStart = null;
             if(shaker.direction)
             {
-
+                shaker.AutoToss(0.5f);
             }
         }
 
         public override void TutorialOnComplete(int amount)
         {
+            hasCompleted = null;
             base.TutorialOnComplete(amount);
             hasCompleted = delegate ()
             {
                 return shaker.doubleCatches >= amount;
             };
+        }
+
+        public override void TutorialReset()
+        {
+            base.TutorialReset();
+            shaker.doubleCatches = 0;
+            niko.SetExpression(niko.defaultExpression.name);
         }
 
         public void Toss(float time, float beat = 0, float reset = 1, bool tall = false)
@@ -101,19 +134,62 @@ namespace Starborn.Tosstail
         }
         public override void onA(InputAction.CallbackContext context)
         {
+            if (autoPlay || !Conductor.instance.isPlaying)
+                return;
+
             base.onA(context);
-            //shaker.Toss(0.5f);
+
+            if(niko.rightArm.isOpen && niko.rightArm.isFree)
+            {
+                niko.rightArm.SetArm("close", true);
+            }
+        }
+
+        public override void onReleaseA(InputAction.CallbackContext context)
+        {
+            if (autoPlay)
+                return;
+
+            base.onReleaseA(context);
+
+            if (niko.rightArm.isOpen)
+            {
+                niko.rightArm.SetArm("open", true);
+                niko.rightArm.hand.sortingOrder = 3;
+            }
         }
 
         public override void onPad(InputAction.CallbackContext context)
         {
+            if (autoPlay || !Conductor.instance.isPlaying)
+                return;
+
             base.onPad(context);
-            //Debug.Log("Pad!");
+            if (niko.leftArm.isOpen && niko.leftArm.isFree)
+            {
+                niko.leftArm.SetArm("close", true);
+                niko.rightArm.hand.sortingOrder = 10;
+            }
+        }
+
+        public override void onReleasePad(InputAction.CallbackContext context)
+        {
+            if (autoPlay)
+                return;
+
+            base.onReleasePad(context);
+            if (niko.leftArm.isOpen)
+            {
+                niko.leftArm.SetArm("open", true);
+            }
         }
 
         public override void Update()
         {
             base.Update();
+            niko.leftArm.Update();
+            niko.rightArm.Update();
+
         }
     }
 
@@ -143,6 +219,47 @@ namespace Starborn.Tosstail
             });
             actions = new List<CallForAction>() {
                 toss
+            };
+        }
+    }
+
+    public class StopBouncing : RhythmEvent
+    {
+        public Tosstail game;
+        public override void SetUp()
+        {
+            base.SetUp();
+            game = Object.FindObjectOfType<Tosstail>();
+        }
+        public StopBouncing()
+        {
+            //CallForAction toss = new CallForAction(() => { }, 1);
+            actions = new List<CallForAction>()
+            {
+                new CallForAction(() => { game.niko.StopBouncing(); }, 1)
+            };
+        }
+    }
+
+    public class StartBouncing : RhythmEvent
+    {
+        public Tosstail game;
+        public override void SetUp()
+        {
+            base.SetUp();
+            game = Object.FindObjectOfType<Tosstail>();
+        }
+        public StartBouncing()
+        {
+            //CallForAction toss = new CallForAction(() => { }, 1);
+            actions = new List<CallForAction>()
+            {
+                new CallForAction(() => { 
+                    game.niko.StartBouncing();
+                    game.r = Conductor.instance.curStep % 4;
+
+
+                }, 1)
             };
         }
     }

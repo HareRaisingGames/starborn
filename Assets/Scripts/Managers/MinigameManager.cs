@@ -31,7 +31,6 @@ public class MinigameManager : MonoBehaviour
 
     bool _canPlay = true;
     bool finishedGame = false;
-    bool isTutorial = false;
     bool inTutorialMinigame = false;
 
     public bool canPlay
@@ -48,9 +47,17 @@ public class MinigameManager : MonoBehaviour
     public TMP_Text accuracyText;
     public TMP_Text livesText;
     public TMP_Text beatsText;
+    public TMP_Text remainingText;
     public GameObject pauseGameOver;
 
     public GameObject cleared;
+
+    AudioSource applause;
+    AudioSource pressSource;
+    AudioSource releaseSource;
+
+    public AudioClip press;
+    public AudioClip release;
     
     public bool gameOver
     {
@@ -75,6 +82,7 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    public GameObject backdrop;
     public TMP_Text text;
 
     bool paused;
@@ -134,6 +142,7 @@ public class MinigameManager : MonoBehaviour
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.Pause.performed += OnPause;
         m_inputSystem.Dialogue.A.performed += OnA;
+        m_inputSystem.Dialogue.A.canceled += OnReleaseA;
         m_inputSystem.Dialogue.Skip.performed += OnSkip;
 
         scene = SceneManager.GetActiveScene();
@@ -157,6 +166,28 @@ public class MinigameManager : MonoBehaviour
         minigame = FindObjectOfType<Minigame>();
         if (cleared != null)
             cleared.SetActive(false);
+
+        if(Resources.Load<AudioClip>("Audio/applause") != null)
+        {
+            GameObject applauseObj = new GameObject("Applause");
+            applause = applauseObj.AddComponent<AudioSource>();
+            applause.playOnAwake = false;
+            applause.clip = Resources.Load<AudioClip>("Audio/applause");
+        }
+
+        GameObject pressObj = new GameObject("Press");
+        pressSource = pressObj.AddComponent<AudioSource>();
+        pressSource.playOnAwake = false;
+        if (press != null)
+            pressSource.clip = press;
+
+        GameObject releaseObj = new GameObject("Release");
+        releaseSource = releaseObj.AddComponent<AudioSource>();
+        releaseSource.playOnAwake = false;
+        if (release != null)
+            releaseSource.clip = release;
+
+        if (remainingText != null) remainingText.text = "";
     }
 
     public void LoseALife(float amount = 1)
@@ -220,7 +251,7 @@ public class MinigameManager : MonoBehaviour
             CheckForAdditionalAssets();
         }
 
-        if(_lives <= 0 && !isTutorial && !_gameOver)
+        if(_lives <= 0 && !inTutorial && !_gameOver)
         {
             _gameOver = true;
             MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f, delegate() {
@@ -237,6 +268,7 @@ public class MinigameManager : MonoBehaviour
         if(accuracyText != null) accuracyText.text = Mathf.Round(displayAccuracy * 100) + "%";
         if (livesText != null) livesText.text = Mathf.Clamp(lives, 0, Mathf.Infinity).ToString();
         if (beatsText != null) beatsText.text = conductor.curBeat.ToString();
+        if (backdrop != null && text != null) backdrop.SetActive(text.text != "");
 
         if (hearts != null)
             hearts.SetLives(lives);
@@ -262,9 +294,9 @@ public class MinigameManager : MonoBehaviour
             }
             else
             {
-                minigame.TutorialAdditionals();
                 if(Conductor.instance.music.isPlaying)
                 {
+                    minigame.TutorialAdditionals();
                     if (Conductor.instance.music.timeSamples < previousTimeSamples && previousTimeSamples > 0)
                     {
                         Clear();
@@ -347,6 +379,8 @@ public class MinigameManager : MonoBehaviour
                 inTutorial = false;
                 StartCoroutine(SetUp());
                 minigame.hasCompleted = delegate () { return false; };
+                minigame.OnBeatTutorial = null;
+                minigame.PostTutorialAdditionals();
                 IEnumerator SetUp()
                 {
                     yield return new WaitForSeconds(1f);
@@ -365,14 +399,68 @@ public class MinigameManager : MonoBehaviour
                 inTutorialMinigame = true;
                 Conductor.instance.SetUpBPM();
                 minigame.TutorialOnComplete(lines[t].amount);
+                requiredAmount = lines[t].amount;
+                minigame.OnBeatTutorial = OnCompleteTutorialSection;
                 lines[t].section.AddCharting(Conductor.instance.crochet, minigame.minigameName);
-                Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusicWithoutCallback);
+                StartCoroutine(SetUp());
+                IEnumerator SetUp()
+                {
+                    yield return new WaitForSeconds(0.5f);
+                    minigame.AdditionalSongSetup();
+                    if (lines[t].section.skipCountdown)
+                        Conductor.instance.PlayMusicWithoutCallback();
+                    else
+                        Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusicWithoutCallback);
+
+                    if (remainingText != null && minigame.amountJudger != null)
+                        remainingText.text = $"{requiredAmount - minigame.amountJudger.Invoke()}\n<size=25>left</size>";
+                }
+
                 return;
                 //Debug.Log(events.Count);
             }
             t++;
         }
     }
+
+    int requiredAmount = 0;
+
+    private void OnCompleteTutorialSection(int b)
+    {
+        if(b % 4 == 0 || b == 0)
+        {
+            if (minigame == null)
+                return;
+
+            if(remainingText != null && minigame.amountJudger != null)
+            {
+                remainingText.text = $"{requiredAmount - minigame.amountJudger.Invoke()}\n<size=25>left</size>";
+            }
+
+            if(minigame.hasCompleted != null && minigame.hasCompleted.Invoke())
+            {
+                Conductor.instance.music.Stop();
+                minigame.hasCompleted = null;
+                t++;
+                text.text = "";
+                Conductor.instance.music.loop = false;
+                if (remainingText != null) remainingText.text = "";
+                if (applause != null)
+                    applause.Play();
+                Conductor.startSong = false;
+                minigame.TutorialReset();
+                Clear();
+                StartCoroutine(Next());
+                IEnumerator Next()
+                {
+                    yield return new WaitForSeconds(1.5f);
+                    inTutorialMinigame = false;
+                    NextLine();
+                }
+            }
+        }
+    }
+
     private int previousTimeSamples;
     public void OnPause(InputAction.CallbackContext context)
     {
@@ -384,11 +472,13 @@ public class MinigameManager : MonoBehaviour
             {
                 PauseMenu.Open(OpenCallback, Unpause, delegate() {
                     StaticProperties.canPause = true;
-                });
-                PauseMenu.additionalClose = delegate ()
+                }, delegate ()
                 {
                     paused = false;
-                };
+                }, RestartMinigame
+                );
+                PauseMenu.restartMessage = 
+                    $"{(minigame != null ? " " + minigame.minigameName.Split(".")[minigame.minigameName.Split(".").Length - 1] : "")}";
             }
             else
             {
@@ -396,6 +486,29 @@ public class MinigameManager : MonoBehaviour
             }
         }
 
+    }
+
+    void RestartMinigame()
+    {
+        if (FindObjectOfType<DialogueManager>(true) != null)
+        {
+            DialogueManager manager = FindObjectOfType<DialogueManager>(true);
+            manager.gameObject.SetActive(true);
+            Clear();
+            if (manager.transitionCanvas != null) manager.transitionCanvas.SetActive(true);
+            if (manager.fade != null)
+            {
+                manager.fade.SetActive(true);
+                ColorUtils.SetAlpha(manager.fade, 0);
+            }
+            manager.TryAgain(delegate () { Time.timeScale = 1; });
+            PauseMenu.instance.gameObject.SetActive(false);
+            PopupMenu.instance.SolidDestroy();
+            Countdown.CancelCountdown();
+        }
+
+        Minigame.gotGameOver = true;
+        Conductor.startSong = false;
     }
 
     void OpenCallback()
@@ -448,6 +561,18 @@ public class MinigameManager : MonoBehaviour
     {
         if(!paused)
         {
+            if (inTutorial && !inTutorialMinigame || finishedGame)
+            {
+                hasPressed = true;
+                pressSource.Play();
+            }
+        }
+    }
+    bool hasPressed;
+    public void OnReleaseA(InputAction.CallbackContext context)
+    {
+        if(hasPressed)
+        {
             if (inTutorial && !inTutorialMinigame)
             {
                 NextLine();
@@ -461,6 +586,8 @@ public class MinigameManager : MonoBehaviour
                     FindObjectOfType<DialogueManager>(true).FromGame();
                 }
             }
+            hasPressed = false;
+            releaseSource.Play();
         }
     }
 
@@ -480,6 +607,8 @@ public class MinigameManager : MonoBehaviour
                 inTutorialMinigame = false;
                 Conductor.instance.music.loop = false;
             }
+            if (remainingText != null) remainingText.text = "";
+            minigame.OnBeatTutorial = null;
             minigame.hasCompleted = delegate () { return false; };
             Clear();
             NextLine();

@@ -23,6 +23,11 @@ public class TweenManager : MonoBehaviour
         }
     }
 
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
+
     public void AddManager()
     {
         UnityEngine.Random.InitState(1000);
@@ -31,7 +36,11 @@ public class TweenManager : MonoBehaviour
     private Dictionary<string, ITween> _activeTweens = new Dictionary<string, ITween>();
     public Dictionary<string, ITween> activeTweens => _activeTweens;
 
-
+    /// <summary>
+    /// Adds a new tween
+    /// </summary>
+    /// <typeparam name="T">Type of tween</typeparam>
+    /// <param name="tween">The tween itself</param>
     public void AddTween<T>(Tween<T> tween)
     {
         //Debug.Log(_activeTweens.Count);
@@ -41,7 +50,11 @@ public class TweenManager : MonoBehaviour
 
     public void RemoveTween(string identifier)
     {
-        _activeTweens.Remove(identifier);
+        if(_activeTweens.ContainsKey(identifier))
+        {
+            _activeTweens[identifier].OnCompleteKill();
+            _activeTweens.Remove(identifier);
+        }
     }
 
     private void Update()
@@ -66,7 +79,7 @@ public class TweenManager : MonoBehaviour
         }
     }
 
-    public static Tween<float> XTween(GameObject gameObject, float startX, float endX, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    public static Tween<float> XTween(GameObject gameObject, float startX, float endX, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
     {
         dynamic tranformation = null;
         bool is2D = false;
@@ -79,7 +92,7 @@ public class TweenManager : MonoBehaviour
             tranformation = gameObject.GetComponent<Transform>();
 
         float value = UnityEngine.Random.value;
-        string identifier = $"{tranformation.GetInstanceID()}_X_{value}";
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_X_{value}";
 
         Tween<float> tween = new Tween<float>(gameObject, identifier, startX, endX, duration, value =>
         {
@@ -101,7 +114,7 @@ public class TweenManager : MonoBehaviour
 
     }
 
-    public static Tween<float> YTween(GameObject gameObject, float startY, float endY, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    public static Tween<float> YTween(GameObject gameObject, float startY, float endY, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
     {
         dynamic tranformation = null;
         bool is2D = false;
@@ -114,7 +127,7 @@ public class TweenManager : MonoBehaviour
             tranformation = gameObject.GetComponent<Transform>();
 
         float value = UnityEngine.Random.value;
-        string identifier = $"{tranformation.GetInstanceID()}_Y_{value}";
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_Y_{value}";
 
         Tween<float> tween = new Tween<float>(gameObject, identifier, startY, endY, duration, value =>
         {
@@ -136,7 +149,7 @@ public class TweenManager : MonoBehaviour
 
     }
 
-    public static Tween<float> AlphaTween(GameObject gameObject, float startAlpha, float endAlpha, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    public static Tween<float> AlphaTween(GameObject gameObject, float startAlpha, float endAlpha, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
     {
         dynamic spriteRenderer = null;
         if (gameObject.GetComponent<Image>() != null)
@@ -147,7 +160,7 @@ public class TweenManager : MonoBehaviour
             spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
 
         float value = UnityEngine.Random.value;
-        string identifier = $"{gameObject.GetInstanceID()}_Alpha_{value}";
+        string identifier = id != "" ? id : $"{gameObject.GetInstanceID()}_Alpha_{value}";
 
         Tween<float> tween = new Tween<float>(gameObject, identifier, startAlpha, endAlpha, duration, value =>
         {
@@ -161,7 +174,7 @@ public class TweenManager : MonoBehaviour
 
     }
 
-    public static Tween<float> PitchTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    public static Tween<float> PitchTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
     {
         dynamic tranformation = null;
         if (gameObject.GetComponent<RectTransform>() != null)
@@ -172,7 +185,7 @@ public class TweenManager : MonoBehaviour
             tranformation = gameObject.GetComponent<Transform>();
 
         float value = UnityEngine.Random.value;
-        string identifier = $"{tranformation.GetInstanceID()}_Pitch_{value}";
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_Pitch_{value}";
 
         Tween<float> tween = new Tween<float>(gameObject, identifier, startAngle, endAngle, duration, value =>
         {
@@ -187,7 +200,7 @@ public class TweenManager : MonoBehaviour
 
     }
 
-    public static Tween<float> YawTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    public static Tween<float> YawTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
     {
         dynamic tranformation = null;
         if (gameObject.GetComponent<RectTransform>() != null)
@@ -198,7 +211,7 @@ public class TweenManager : MonoBehaviour
             tranformation = gameObject.GetComponent<Transform>();
 
         float value = UnityEngine.Random.value;
-        string identifier = $"{tranformation.GetInstanceID()}_Yaw_{value}";
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_Yaw_{value}";
 
         Tween<float> tween = new Tween<float>(gameObject, identifier, startAngle, endAngle, duration, value =>
         {
@@ -213,7 +226,7 @@ public class TweenManager : MonoBehaviour
 
     }
 
-    public static Tween<float> RollTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    public static Tween<float> RollTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
     {
         dynamic tranformation = null;
         if (gameObject.GetComponent<RectTransform>() != null)
@@ -224,7 +237,7 @@ public class TweenManager : MonoBehaviour
             tranformation = gameObject.GetComponent<Transform>();
 
         float value = UnityEngine.Random.value;
-        string identifier = $"{tranformation.GetInstanceID()}_Roll_{value}";
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_Roll_{value}";
 
         Tween<float> tween = new Tween<float>(gameObject, identifier, startAngle, endAngle, duration, value =>
         {
@@ -239,10 +252,10 @@ public class TweenManager : MonoBehaviour
 
     }
 
-    public static Tween<float> NumTween(Func<float> getFloat, Action<float> setFloat, float end, float duration, Eases type = default(Eases), Action onComplete = default(Action))
+    public static Tween<float> NumTween(Func<float> getFloat, Action<float> setFloat, float end, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
     {
         float value = UnityEngine.Random.value;
-        string identifier = $"{getFloat.Target.GetHashCode()}_Float_{value}";
+        string identifier = id != "" ? id : $"{getFloat.Target.GetHashCode()}_Float_{value}";
         object target = getFloat.Target;
 
         float start = getFloat();

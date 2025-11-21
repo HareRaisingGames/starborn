@@ -68,7 +68,7 @@ public abstract class Minigame : MonoBehaviour
     public System.Func<bool> hasCompleted;
 
     [HideInInspector]
-    public int amountJudger;
+    public System.Func<int> amountJudger;
 
 
     public static double NgEarlyTime(float pitch = -1, double margin = 0)
@@ -175,13 +175,15 @@ public abstract class Minigame : MonoBehaviour
         //Debug.Log(ReflectionUtils.GetTypesInNamespace(System.AppDomain.CurrentDomain.GetAssemblies()[1],"Starborn." + minigameName).Length);
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Rhythm.A.performed += onA;
+        m_inputSystem.Rhythm.A.canceled += onReleaseA;
         m_inputSystem.Rhythm.Left.performed += onLeft;
         m_inputSystem.Rhythm.Down.performed += onDown;
         m_inputSystem.Rhythm.Up.performed += onUp;
         m_inputSystem.Rhythm.Right.performed += onRight;
         m_inputSystem.Rhythm.Pad.performed += onPad;
+        m_inputSystem.Rhythm.Pad.canceled += onReleasePad;
 
-        if(chartings.Count != 0) selectedCharting = chartings[Random.Range(0, chartings.Count - 1)];
+        if (chartings.Count != 0) selectedCharting = chartings[Random.Range(0, chartings.Count - 1)];
     }
 
     private void OnEnable()
@@ -235,7 +237,12 @@ public abstract class Minigame : MonoBehaviour
         Conductor.instance.SetUpBPM();
         inTutorial = false;
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
-        Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusic);
+        AdditionalSongSetup();
+        if (selectedCharting.skipCountdown)
+            Conductor.instance.PlayMusic();
+        else
+            Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusic);
+
         MinigameManager.instance.hearts.gameObject.SetActive(true);
         foreach (Transform child in MinigameManager.instance.hearts.gameObject.transform)
         {
@@ -255,8 +262,6 @@ public abstract class Minigame : MonoBehaviour
             }
         }
 
-        Debug.Log(MinigameManager.instance.events.Count);
-
 
         //StartCoroutine(PlayMusic());
         //IEnumerator PlayMusic()
@@ -267,27 +272,58 @@ public abstract class Minigame : MonoBehaviour
         //}
     }
 
-    protected int curBeat = 0;
+    int _curBeat = 0;
     int prevBeat = 0;
+    public int curBeat => _curBeat;
+
+    int _curStep = 0;
+    int prevStep = 0;
 
     // Update is called once per frame
     public virtual void Update()
     {
         if (Conductor.instance.isPlaying)
         {
-            curBeat = Conductor.instance.curBeat;
-            foreach(RhythmEvent eventT in events)
-            {
-                eventT.CheckForInvoke(Conductor.instance.songPosition);
-            }
-        }
-            
+            _curBeat = Conductor.instance.curBeat;
+            _curStep = Conductor.instance.curStep;
+            BeatUpdate();
+            StepUpdate();
 
-        if (prevBeat != curBeat) OnBeatChange?.Invoke();
-        prevBeat = curBeat;
+        }
     }
 
-    public System.Action OnBeatChange;
+    public System.Action<int> OnBeatChange;
+    public System.Action<int> OnBeatTutorial;
+
+    public System.Action<int> OnStepChange;
+    public System.Action<int> OnStepTutorial;
+
+    public System.Action OnSongStart;
+
+    public void BeatUpdate()
+    {
+        if (prevBeat != _curBeat)
+        {
+            OnBeatChange?.Invoke(_curBeat);
+            OnBeatTutorial?.Invoke(_curBeat);
+        }
+        prevBeat = _curBeat;
+    }
+
+    public void StepUpdate()
+    {
+        if (prevStep != _curStep)
+        {
+            OnStepChange?.Invoke(_curStep);
+            OnStepTutorial?.Invoke(_curStep);
+        }
+        prevStep = _curStep;
+    }
+
+    public virtual void AdditionalSongSetup()
+    {
+
+    }
 
     public virtual void TutorialAdditionals()
     {
@@ -295,6 +331,12 @@ public abstract class Minigame : MonoBehaviour
     }
 
     public virtual void PostTutorialAdditionals()
+    {
+
+    }
+
+    //If you're in a tutorial and you need to do a reset of something
+    public virtual void TutorialReset()
     {
 
     }
@@ -307,6 +349,11 @@ public abstract class Minigame : MonoBehaviour
     public virtual void onA(InputAction.CallbackContext context)
     {
         //If the A button has been pressed
+    }
+
+    public virtual void onReleaseA(InputAction.CallbackContext context)
+    {
+        //If the A button has been released
     }
 
     public virtual void onLeft(InputAction.CallbackContext context)
@@ -332,6 +379,12 @@ public abstract class Minigame : MonoBehaviour
     public virtual void onPad(InputAction.CallbackContext context)
     {
         //If the arrow pad has been pressed
+    }
+
+
+    public virtual void onReleasePad(InputAction.CallbackContext context)
+    {
+        //If the arrow pad has been released
     }
 }
 

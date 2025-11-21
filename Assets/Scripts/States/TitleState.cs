@@ -18,6 +18,8 @@ public class TitleState : MonoBehaviour
 
     public void StartGame()
     {
+        //if (FindObjectOfType<LoadingManager>(true) != null)
+            //Destroy(FindObjectOfType<LoadingManager>(true).gameObject);
         LoadingManager.LoadScene("Scenes/Main/DialogueState");
     }
 }
