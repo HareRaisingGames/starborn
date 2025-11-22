@@ -57,6 +57,16 @@ public class TweenManager : MonoBehaviour
         }
     }
 
+    public void RemoveAllActiveTweens()
+    {
+        List<string> keyList = new List<string>(_activeTweens.Keys);
+        for(int i = keyList.Count - 1; i >= 0; i--)
+        {
+            _activeTweens[keyList[i]].KillButEndOnValue();
+            _activeTweens.Remove(keyList[i]);
+        }
+    }
+
     private void Update()
     {
         foreach(var pair in _activeTweens.ToList())

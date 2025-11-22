@@ -20,4 +20,13 @@ public static class MusicUtils
     {
         TweenManager.NumTween(() => audio.volume, (value) => { audio.volume = value; }, 0, duration, Eases.EaseOutInCubic, onComplete);
     }
+
+    public static void MusicFade(AudioSource audio, float end, float duration, Action onComplete = null, float? start = null)
+    {
+        if(start != null)
+        {
+            audio.volume = Mathf.Clamp01(start.Value);
+        }
+        TweenManager.NumTween(() => audio.volume, (value) => { audio.volume = value; }, end, duration, Eases.EaseOutInCubic, onComplete);
+    }
 }

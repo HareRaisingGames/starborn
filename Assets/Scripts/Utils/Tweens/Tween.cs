@@ -38,6 +38,7 @@ public class Tween<T>: ITween
     private int _loopCount = 1;
 
     private float _percentThreshold = -1f;
+    public float percentThreshold => _percentThreshold;
 
     private Action _onUpdate;
     private Action _onPercentCompleted;
@@ -147,6 +148,13 @@ public class Tween<T>: ITween
         OnCompleteKill();
         WasKilled = true;
         onComplete = null;
+    }
+
+    public void KillButEndOnValue()
+    {
+        _onTweenUpdate?.Invoke(_endValue);
+        onComplete?.Invoke();
+        OnCompleteKill();
     }
     public bool IsTargetDestroyed()
     {

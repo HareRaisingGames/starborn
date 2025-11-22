@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using UnityEngine.InputSystem;
 using Starborn.InputSystem;
 using Starborn;
+using Rabbyte.Gyotoku;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -71,6 +72,8 @@ public class DialogueManager : MonoBehaviour
         = new Dictionary<string, Dictionary<GameObject, bool>>();
     int minigameCount = 0;
     bool loadedMinigames = false;
+
+    static DialogueManager instance;
     #endregion
 
     #region UI Properties
@@ -80,8 +83,6 @@ public class DialogueManager : MonoBehaviour
     public DialogueBox dialogueBox;
     public GameObject nameObject; //Up = 115, Down = 65
     public TMP_Text nameTxt;
-    public AudioSource dialogueSource;
-    public AudioSource musicSource;
     public GameObject transitionCanvas;
     public GameObject transition;
     public GameObject fade;
@@ -89,12 +90,15 @@ public class DialogueManager : MonoBehaviour
     #endregion
 
     #region Audio
+    public AudioSource musicSource;
+    public AudioSource dialogueSource;
     #endregion
 
     private StarbornInputSystem m_inputSystem;
 
     private void Awake()
     {
+        instance = this;
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.A.performed += onA;
         m_inputSystem.Dialogue.Pause.performed += OnPause;
@@ -118,6 +122,8 @@ public class DialogueManager : MonoBehaviour
         //filename = "backgrounds";
         var path = Path.Combine(Application.streamingAssetsPath, $"Dialogue/{filename}.sbd");
 
+        LuaMethods.AddGlobal(musicGlobals);
+        
         GameObject prefab = Resources.Load<GameObject>("Prefabs/Pause Menu");
         if (prefab != null)
         {
@@ -131,8 +137,9 @@ public class DialogueManager : MonoBehaviour
             StarbornFileHandler.ExtractDialogue(path);
             dialogueFile = StarbornFileHandler.ReadSimpleDialogue(filename);
             UnpackDialogue(dialogueFile);
+            LuaFunctions.dialogueFile = dialogueFile;
 
-            if(backgrounds.Count != 0)
+            if (backgrounds.Count != 0)
             {
                 string curBG = dialogueFile.background;
                 if (backgrounds.ContainsKey(curBG))
@@ -592,6 +599,12 @@ public class DialogueManager : MonoBehaviour
     void PlayDialogue()
     {
         interact = true;
+        StartCoroutine(PlaySong());
+        IEnumerator PlaySong()
+        {
+            yield return new WaitForSeconds(0.1f);
+            MusicUtils.MusicFade(musicSource, 0.5f, 2f);
+        }
         NextLine(curLine);
     }
     public void StartDialogue()
@@ -599,6 +612,8 @@ public class DialogueManager : MonoBehaviour
         curLines = lines;
         curMinigame = "";
         returnFromMinigame = false;
+        musicSource.volume = 0;
+        musicSource.Play();
         PlayDialogue();
     }
 
@@ -618,6 +633,8 @@ public class DialogueManager : MonoBehaviour
         dialogueLine = jumpToLine;
         curMinigame = "";
         returnFromMinigame = true;
+        musicSource.volume = 0;
+        musicSource.Play();
         PlayDialogue();
     }
 
@@ -639,8 +656,9 @@ public class DialogueManager : MonoBehaviour
                 }   
                 else
                 {
+                    TweenManager.instance.RemoveAllActiveTweens();
                     dialogueBox.text = lines[curLine].text;
-                    dialogueBox.onFinish?.Invoke();
+                    dialogueBox.onFinish?.Invoke(curLine);
                     dialogueBox.onFinish = null;
                 }
 
@@ -689,6 +707,8 @@ public class DialogueManager : MonoBehaviour
 
         if (dialogueSource.clip != null)
             dialogueSource.Pause();
+
+        musicSource.Pause();
     }
 
     void CloseCallback()
@@ -701,11 +721,15 @@ public class DialogueManager : MonoBehaviour
         }
         if (dialogueSource.clip != null)
             dialogueSource.UnPause();
+
+        musicSource.UnPause();
     }
 
     void NextLine(int line)
     {
         //Stop everything before moving onto the next line
+        //LuaFunctions.dialogueFile = dialogueFile;
+
         if (dialogueSource != null && dialogueSource.isPlaying)
             dialogueSource.Stop();
         dialogueSource.clip = null;
@@ -744,15 +768,21 @@ public class DialogueManager : MonoBehaviour
         spritesObject.SetActive(true);
         if (curLines[line].minigame != null && curLines[line].minigame != "" && !isGameOver)
         {
+            MusicUtils.MusicFadeOut(musicSource, 0.5f, delegate() { musicSource.Pause(); });
             GameIn(lines[line].minigame);
             previousLine = null;
             return;
         }
 
-        dialogueBox.onFinish = delegate () {
+        dialogueBox.t = line;
+        dialogueBox.onFinish = delegate (int t) {
             curLine++;
             dialogueLine++;
+            LuaFunctions.OnLineEnd(line);
         };
+        dialogueBox.onStart = LuaFunctions.OnLineStart;
+        dialogueBox.onChar = LuaFunctions.OnLineInterval;
+
         dialogueBox.typedText = curLines[line].text;
             //sprites.Add(character.Key, characterSprite);
         LoadCharacters(curLines[line].characters, previousLine != null ? previousLine.characters : null);
@@ -885,6 +915,7 @@ public class DialogueManager : MonoBehaviour
                 TweenManager.instance.RemoveTween(character.charName + "alpha");
                 TweenManager.instance.RemoveTween(character.charName + "x");
                 TweenManager.instance.RemoveTween(character.charName + "y");
+                character.isMoving = true;
                 MoveCharacter(character, curPack[charactersInBoth.IndexOf(character)]);
             }
         }
@@ -930,7 +961,7 @@ public class DialogueManager : MonoBehaviour
                 if(character.charName == pack.character)
                 {
                     character.gameObject.SetActive(true);
-                    character.flipX = pack.flipX;
+                    if(!character.isMoving) character.flipX = pack.flipX;
                     character.expression = pack.emotion;
                     //Alignment align = pack.alignment;
                     break;
@@ -1056,7 +1087,11 @@ public class DialogueManager : MonoBehaviour
         }
         ColorUtils.SetAlpha(character.gameObject, 1);
         character.offsetX = pack.offset;
-        TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime * 2, Eases.EaseOutQuart, null, pack.character + "x");
+        TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime * 1.5f, Eases.EaseOutQuart, delegate() { character.flipX = pack.flipX; character.isMoving = false; }, pack.character + "x")
+            .SetOnPercentCompleted(0.25f, delegate() {
+            character.flipX = pack.flipX;
+            character.isMoving = false;
+        });
     }
     void RestartGame()
     {
@@ -1109,6 +1144,7 @@ public class DialogueManager : MonoBehaviour
         {
             fade.SetActive(true);
             ColorUtils.SetAlpha(fade, 0);
+            MusicUtils.MusicFadeOut(musicSource, 0.25f, delegate () { musicSource.Stop(); });
             if (FindObjectOfType<PauseMenu>(true) != null)
                 Destroy(FindObjectOfType<PauseMenu>(true).gameObject);
             LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
@@ -1141,5 +1177,36 @@ public class DialogueManager : MonoBehaviour
             obj.transform.position = position;
         }
     }
+    #endregion
+
+
+    #region Music Lua
+    public Dictionary<string, dynamic> musicGlobals = new Dictionary<string, dynamic>()
+    {
+        { "StopMusic", (Action)StopMusic },
+        { "FadeMusic", (Action<float, float>)FadeMusic }
+    };
+
+    public static void StopMusic()
+    {
+        instance.musicSource.Stop();
+    }
+
+    public static void FadeMusic(float finish, float duration)
+    {
+        MusicUtils.MusicFade(instance.musicSource, finish, duration);
+    }
+
+    public static void PlayMusic(string track)
+    {
+        FindObjectOfType<MonoBehaviour>().StartCoroutine(PlaySong());
+        IEnumerator PlaySong()
+        {
+            yield return new WaitForSeconds(0.1f);
+            MusicUtils.MusicFadeIn(instance.musicSource, 0.5f);
+        }
+    }
+
+    //Will add a function for multiple songs
     #endregion
 }

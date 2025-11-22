@@ -5,6 +5,8 @@ public interface ITween
     void Update();
     void OnCompleteKill();
     void FullKill();
+
+    void KillButEndOnValue();
     bool IsTargetDestroyed();
     void Pause();
     void Resume();

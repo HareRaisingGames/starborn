@@ -34,10 +34,12 @@ public class DialogueBox : MonoBehaviour
     public TMP_Text textField;
 
     public AudioSource click;
+    [HideInInspector]
+    public int t = -1;
 
-    public Action onStart;
-    public Action<int> onChar;
-    public Action onFinish;
+    public Action<int> onStart;
+    public Action<int, int> onChar;
+    public Action<int> onFinish;
 
     bool _interacting = true;
     public bool canInteract => _interacting;
@@ -62,7 +64,7 @@ public class DialogueBox : MonoBehaviour
     {
         field.text = "";
         _interacting = false;
-        onStart?.Invoke();
+        onStart?.Invoke(t);
         onStart = null;
         StartCoroutine(Type(text, field, time));
     }
@@ -75,14 +77,15 @@ public class DialogueBox : MonoBehaviour
         foreach (char letter in letters)
         {
             field.text += letter;
-            onChar?.Invoke(new List<char>(letters).IndexOf(letter));
+            int i = new List<char>(letters).IndexOf(letter);
+            onChar?.Invoke(t,i);
             //i++;
             yield return new WaitForSeconds(time);
         }
 
         this.text = field.text;
         onChar = null;
-        onFinish?.Invoke();
+        onFinish?.Invoke(t);
         onFinish = null;
     }
 }

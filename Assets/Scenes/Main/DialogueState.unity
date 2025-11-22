@@ -680,12 +680,12 @@ MonoBehaviour:
   dialogueBox: {fileID: 1608265956}
   nameObject: {fileID: 2110263619}
   nameTxt: {fileID: 718262134}
-  dialogueSource: {fileID: 201916913}
-  musicSource: {fileID: 1048929044}
   transitionCanvas: {fileID: 95101663}
   transition: {fileID: 344707759}
   fade: {fileID: 293836762}
   loadingIcon: {fileID: 1460767119}
+  musicSource: {fileID: 1048929044}
+  dialogueSource: {fileID: 201916913}
 --- !u!114 &678567192
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1279,7 +1279,7 @@ AudioSource:
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -1517,7 +1517,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: f98ca66f1db50554ba1b412574ad45ab, type: 3}
+  m_audioClip: {fileID: 8300000, guid: aa28721d022f6114db15245a914fd83a, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1699,6 +1699,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textField: {fileID: 351967702}
   click: {fileID: 1207991565}
+  t: -1
   delay: 0.05
 --- !u!1 &1786707015
 GameObject:
