@@ -48,6 +48,8 @@ public class MinigameManager : MonoBehaviour
     public TMP_Text livesText;
     public TMP_Text beatsText;
     public TMP_Text remainingText;
+    public TMP_Text skipText;
+    public GameObject nextButton;
     public GameObject pauseGameOver;
 
     public GameObject cleared;
@@ -126,8 +128,11 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    public static Dictionary<string, float> minigameAccuracies = new Dictionary<string, float>();
+
     public static List<float> totalAccuracies = new List<float>();
     public static void ClearAccuracies() => totalAccuracies.Clear();
+    public static void ClearMinigameAccuracies() => minigameAccuracies.Clear();
     public static void AverageAccuracies(List<float> game) => totalAccuracies.Add(MathUtils.ListAverage(game));
 
     StarbornInputSystem m_inputSystem;
@@ -167,6 +172,8 @@ public class MinigameManager : MonoBehaviour
         if (cleared != null)
             cleared.SetActive(false);
 
+        if (nextButton != null) ColorUtils.SetAlpha(nextButton, 0);
+
         if(Resources.Load<AudioClip>("Audio/applause") != null)
         {
             GameObject applauseObj = new GameObject("Applause");
@@ -188,6 +195,19 @@ public class MinigameManager : MonoBehaviour
             releaseSource.clip = release;
 
         if (remainingText != null) remainingText.text = "";
+
+        if(minigame != null)
+        {
+            InputAction skip = minigame.inputSystem.Dialogue.Skip;
+            if(skipText != null)
+            {
+                skipText.text = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(skip)}\"> to skip";
+                ColorUtils.SetAlpha(skipText.gameObject, 0);
+                TweenManager.AlphaTween(skipText.gameObject, 0, 1, 1f, Eases.EaseInOutQuart, null, "fade_in").SetStartDelay(0.1f);
+                TweenManager.XTween(skipText.gameObject, 300, -10, 1f, Eases.EaseInOutQuart, null, "move_in").SetStartDelay(0.1f);
+            }
+                
+        }
     }
 
     public void LoseALife(float amount = 1)
@@ -284,7 +304,7 @@ public class MinigameManager : MonoBehaviour
             //The requirement for when a minigame is completed
             if(!inTutorialMinigame)
             {
-                if (minigame.hasCompleted != null && minigame.hasCompleted.Invoke() && !finishedGame && !_gameOver)
+                if (minigame.hasCompleted != null && minigame.hasCompleted.Invoke() && !finishedGame && !_gameOver && minigame.eligibleForClear)
                 {
                     finishedGame = true;
                     if (cleared != null)
@@ -309,6 +329,9 @@ public class MinigameManager : MonoBehaviour
 
             }
 
+            InputAction skip = minigame.inputSystem.Dialogue.Skip;
+            if (skipText != null)
+               skipText.text = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(skip)}\"> to skip";
         }
 
         /*if (Gamepad.current != null)
@@ -372,6 +395,11 @@ public class MinigameManager : MonoBehaviour
     {
         if (minigame != null)
         {
+            if (nextButton != null)
+            {
+                TweenManager.instance.RemoveTween("ping-pong");
+                ColorUtils.SetAlpha(nextButton, 0);
+            }
             if (lines.Count <= t)
             {
                 text.text = "";
@@ -381,6 +409,16 @@ public class MinigameManager : MonoBehaviour
                 minigame.hasCompleted = delegate () { return false; };
                 minigame.OnBeatTutorial = null;
                 minigame.PostTutorialAdditionals();
+
+                if(!skipTutorial)
+                {
+                    if(skipText != null)
+                    {
+                        TweenManager.AlphaTween(skipText.gameObject, 1, 0, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
+                        TweenManager.XTween(skipText.gameObject, -10, 300, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
+                    }
+                }
+
                 IEnumerator SetUp()
                 {
                     yield return new WaitForSeconds(1f);
@@ -389,6 +427,7 @@ public class MinigameManager : MonoBehaviour
                 return;
             }
             text.text = lines[t].dialogue;
+
             if (lines[t].section.sections.Count != 0)
             {
                 if (minigame.tutorialSong != null) Conductor.instance.music.clip = minigame.tutorialSong;
@@ -418,6 +457,12 @@ public class MinigameManager : MonoBehaviour
 
                 return;
                 //Debug.Log(events.Count);
+            }
+            if (nextButton != null)
+            {
+                TweenManager.AlphaTween(nextButton, 0, 1, 1f, Eases.EaseInOutSine, null, "ping-pong").SetStartDelay(1.5f).SetPingPong(0);
+                RectTransform buttonPos = nextButton.GetComponent<RectTransform>();
+                //nextButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(text.rectTransform.anchoredPosition.x + text.preferredWidth/2, buttonPos.anchoredPosition.y);
             }
             t++;
         }
@@ -563,6 +608,10 @@ public class MinigameManager : MonoBehaviour
         {
             if (inTutorial && !inTutorialMinigame || finishedGame)
             {
+                if (nextButton != null)
+                {
+                    TweenManager.instance.RemoveTween("ping-pong");
+                }
                 hasPressed = true;
                 pressSource.Play();
             }
@@ -582,6 +631,7 @@ public class MinigameManager : MonoBehaviour
                 if (FindObjectOfType<DialogueManager>(true) != null)
                 {
                     totalAccuracies.Add(totalAccuracy);
+                    minigameAccuracies.Add(SceneManager.GetActiveScene().name, totalAccuracy);
                     Clear();
                     FindObjectOfType<DialogueManager>(true).FromGame();
                 }
@@ -606,6 +656,14 @@ public class MinigameManager : MonoBehaviour
                 Conductor.instance.ManualSetUpBPM(0);
                 inTutorialMinigame = false;
                 Conductor.instance.music.loop = false;
+                previousTimeSamples = 0;
+            }
+            if (skipText != null)
+            {
+                TweenManager.instance.RemoveTween("fade_in");
+                TweenManager.instance.RemoveTween("move_in");
+                TweenManager.AlphaTween(skipText.gameObject, 1, 0, 0.5f, Eases.EaseOutQuart).SetStartDelay(0.1f);
+                TweenManager.XTween(skipText.gameObject, -10, 300, 0.5f, Eases.EaseOutQuart).SetStartDelay(0.1f);
             }
             if (remainingText != null) remainingText.text = "";
             minigame.OnBeatTutorial = null;
@@ -626,5 +684,6 @@ public class MinigameManager : MonoBehaviour
     public static void EndChapter()
     {
         ClearAccuracies();
+        ClearMinigameAccuracies();
     }
 }

@@ -1019,6 +1019,17 @@
             "bindings": [
                 {
                     "name": "",
+                    "id": "4f746a8a-85ee-4160-a501-b7f46dfc4bf8",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "A",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "5b28cc33-9f61-48e6-a4f4-1f0bfa8057f0",
                     "path": "<Keyboard>/space",
                     "interactions": "",
@@ -1054,17 +1065,6 @@
                     "name": "",
                     "id": "080b1519-6287-483c-ad0e-0636e61c9215",
                     "path": "<SwitchProControllerHID>/buttonEast",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "A",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4f746a8a-85ee-4160-a501-b7f46dfc4bf8",
-                    "path": "<Keyboard>/enter",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

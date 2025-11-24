@@ -93,7 +93,6 @@ public class InputCheck : MonoBehaviour
                 Mouse mouse = device as Mouse;
                 Vector2 newPosition = mouse.position.ReadValue();
                 bool isPressed = mouse.IsPressed(0) || mouse.IsPressed(1) || mouse.IsPressed(2);
-
                 if (isPressed && !mousePosition.Equals(newPosition))
                 {
                     controlType = "PC";
@@ -101,6 +100,51 @@ public class InputCheck : MonoBehaviour
                 }
             }
         }
+    }
+
+    public static string GetBindFromAction(InputAction action)
+    {
+        string bindingType = "";
+        foreach(InputBinding binding in action.bindings)
+        {
+            switch(controlType)
+            {
+                case "Xbox":
+                    if(binding.path.Contains("XInput") || binding.path.Contains("Xbox"))
+                    {
+                        bindingType = binding.path.Split("/")[binding.path.Split("/").Length - 1];
+                        return $"{controlType}_{bindingType}";
+                    }
+                    break;
+                case "PlayStation":
+                    if (binding.path.Contains("DualShock") || binding.path.Contains("PS"))
+                    {
+                        bindingType = binding.path.Split("/")[binding.path.Split("/").Length - 1];
+                        return $"{controlType}_{bindingType}";
+                    }
+                    break;
+                case "Switch":
+                    if (binding.path.Contains("Switch"))
+                    {
+                        bindingType = binding.path.Split("/")[binding.path.Split("/").Length - 1];
+                        return $"{controlType}_{bindingType}";
+                    }
+                    break;
+                case "PC":
+                    if (binding.path.Contains("Keyboard") || binding.path.Contains("Mouse"))
+                    {
+                        string actionName = action.ToString().ToLower();
+                        if(actionName.Contains("pad"))
+                        {
+                            return $"{controlType}_dpad";
+                        }
+                        bindingType = binding.path.Split("/")[binding.path.Split("/").Length - 1];
+                        return $"{controlType}_{bindingType}";
+                    }
+                    break;
+            }
+        }
+        return "";
     }
 
     void GetStartUpDevice()
@@ -122,4 +166,18 @@ public class InputCheck : MonoBehaviour
                 break;
         }
     }
+}
+
+public enum ActionType
+{
+    RhythmA,
+    RhythmDpad,
+    RhythmLeft,
+    RhythmRight,
+    RhythmUp,
+    RhythmDown,
+    DialogueEnter,
+    DialoguePause,
+    DialogueSkip,
+    DialougeLog
 }

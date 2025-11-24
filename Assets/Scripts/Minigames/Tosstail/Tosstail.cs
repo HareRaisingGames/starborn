@@ -13,8 +13,18 @@ namespace Starborn.Tosstail
         public Shaker shaker;
         public Niko niko;
 
-        public readonly string rightCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.controller}_A\"> to do a right catch";
-        public readonly string leftCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.controller}_Pad\"> to do a left catch";
+        static InputAction a;
+        static InputAction pad;
+
+        public static string rightCatch;
+        public static string leftCatch;
+        public override void Awake()
+        {
+            base.Awake();
+            a = inputSystem.Rhythm.A;
+            pad = inputSystem.Rhythm.Pad;
+        }
+
         public override void Start()
         {
             base.Start();
@@ -189,7 +199,8 @@ namespace Starborn.Tosstail
             base.Update();
             niko.leftArm.Update();
             niko.rightArm.Update();
-
+            rightCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(a)}\"> to do a right catch";
+            leftCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(pad)}\"> to do a left catch";
         }
     }
 

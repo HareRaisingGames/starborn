@@ -2,20 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
+using Starborn.InputSystem;
 
 public class InputSprite : MonoBehaviour
 {
     private SpriteRenderer render;
     private Image image;
 
-    public RhythmInputs input;
-
+    public ActionType input;
+    public bool whiteTexture;
+    InputAction action;
+    private StarbornInputSystem inputSystem;
     private bool isImage => image != null;
     private bool isRender => render != null;
 
     // Start is called before the first frame update
     void Start()
     {
+        inputSystem = new StarbornInputSystem();
         if (GetComponent<RectTransform>() != null)
             image = GetComponent<Image>();
         else
@@ -26,6 +31,41 @@ public class InputSprite : MonoBehaviour
             GameObject obj = new GameObject("Inputs");
             obj.AddComponent<InputCheck>();
         }
+
+        switch(input)
+        {
+            case ActionType.DialogueEnter:
+                action = inputSystem.Dialogue.A;
+                break;
+            case ActionType.DialoguePause:
+                action = inputSystem.Dialogue.Pause;
+                break;
+            case ActionType.DialogueSkip:
+                action = inputSystem.Dialogue.Skip;
+                break;
+            case ActionType.DialougeLog:
+                action = inputSystem.Dialogue.Log;
+                break;
+            case ActionType.RhythmA:
+                action = inputSystem.Rhythm.A;
+                break;
+            case ActionType.RhythmDpad:
+                action = inputSystem.Rhythm.Pad;
+                break;
+            case ActionType.RhythmLeft:
+                action = inputSystem.Rhythm.Left;
+                break;
+            case ActionType.RhythmDown:
+                action = inputSystem.Rhythm.Down;
+                break;
+            case ActionType.RhythmUp:
+                action = inputSystem.Rhythm.Up;
+                break;
+            case ActionType.RhythmRight:
+                action = inputSystem.Rhythm.Right;
+                break;
+        }
+
         UpdateIcon();
     }
 
@@ -37,9 +77,9 @@ public class InputSprite : MonoBehaviour
 
     public void UpdateIcon()
     {
-        string inputType = $"{InputCheck.controller}_{input.ToString()}";
+        string inputType = InputCheck.GetBindFromAction(action);
 
-        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Icons/game_icons");
+        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Icons/game_icons_assets");
         foreach(Sprite sprite in sprites)
         {
             if(sprite.name == inputType)

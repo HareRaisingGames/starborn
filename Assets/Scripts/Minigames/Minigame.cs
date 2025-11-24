@@ -15,6 +15,8 @@ public abstract class Minigame : MonoBehaviour
 {
     StarbornInputSystem m_inputSystem;
 
+    public StarbornInputSystem inputSystem => m_inputSystem;
+
     [HideInInspector]
     public string minigameName;
     public Conductor conductor;
@@ -229,6 +231,8 @@ public abstract class Minigame : MonoBehaviour
             StartSong();
         }
     }
+    [HideInInspector]
+    public bool eligibleForClear = false;
     public virtual void StartSong()
     {
         if (song != null) Conductor.instance.music.clip = song;
@@ -241,7 +245,11 @@ public abstract class Minigame : MonoBehaviour
         if (selectedCharting.skipCountdown)
             Conductor.instance.PlayMusic();
         else
-            Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusic);
+            Countdown.StartCountdown(Conductor.instance.crochet, delegate()
+            {
+                Conductor.instance.PlayMusic();
+                eligibleForClear = true;
+            });
 
         MinigameManager.instance.hearts.gameObject.SetActive(true);
         foreach (Transform child in MinigameManager.instance.hearts.gameObject.transform)

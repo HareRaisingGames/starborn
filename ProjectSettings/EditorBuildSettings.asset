@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/LoadingScreen.unity
     guid: ce831a98f4df37249a16eda24332b4e9
+  - enabled: 1
+    path: Assets/Scenes/Main/Ranking.unity
+    guid: 063a5703f6d3b304ca0786a72be27343
   m_configObjects: {}

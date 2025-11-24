@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using Rabbyte;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
 using System;
 using System.Linq;
 using TMPro;
@@ -87,6 +88,7 @@ public class DialogueManager : MonoBehaviour
     public GameObject transition;
     public GameObject fade;
     public GameObject loadingIcon;
+    public GameObject nextButton;
     #endregion
 
     #region Audio
@@ -120,63 +122,93 @@ public class DialogueManager : MonoBehaviour
         sceneName = scene.name;
         filename = "dialogue_test";
         //filename = "backgrounds";
-        var path = Path.Combine(Application.streamingAssetsPath, $"Dialogue/{filename}.sbd");
-
-        LuaMethods.AddGlobal(musicGlobals);
-        
-        GameObject prefab = Resources.Load<GameObject>("Prefabs/Pause Menu");
-        if (prefab != null)
+        StartCoroutine(LoadStreamingAsset());
+        IEnumerator LoadStreamingAsset()
         {
-            Instantiate(prefab, Vector3.zero, Quaternion.identity).name = "Pause";
-        }
-        StaticProperties.canPause = false;
-        //fade.SetActive(true);
-        dialogueBox.gameObject.SetActive(false);
-        if(File.Exists(path))
-        {
-            StarbornFileHandler.ExtractDialogue(path);
-            dialogueFile = StarbornFileHandler.ReadSimpleDialogue(filename);
-            UnpackDialogue(dialogueFile);
-            LuaFunctions.dialogueFile = dialogueFile;
+            var path = Path.Combine(Application.streamingAssetsPath, $"Dialogue/{filename}.sbd");
 
-            if (backgrounds.Count != 0)
+            LuaMethods.AddGlobal(musicGlobals);
+
+            GameObject prefab = Resources.Load<GameObject>("Prefabs/Pause Menu");
+            if (prefab != null)
             {
-                string curBG = dialogueFile.background;
-                if (backgrounds.ContainsKey(curBG))
-                    PutObjectInFront(backgrounds[curBG]);
-
-                foreach(Transform bg in backgroundsObject.transform)
-                {
-                    if(backgrounds.ContainsKey(bg.gameObject.name))
-                        bg.gameObject.SetActive(false);
-                }
-
-                backgrounds[curBG].SetActive(true);
+                Instantiate(prefab, Vector3.zero, Quaternion.identity).name = "Pause";
             }
+            StaticProperties.canPause = false;
+            //fade.SetActive(true);
+            dialogueBox.gameObject.SetActive(false);
+            UnityWebRequest www = UnityWebRequest.Get(path);
+            yield return www.SendWebRequest();
 
-            if(sprites.Count != 0)
+            if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
-                foreach(KeyValuePair<string, CharacterSprite> character in sprites)
+                if (www.result == UnityWebRequest.Result.Success)
                 {
-                    character.Value.gameObject.SetActive(false);
+                    Debug.Log("Loaded streaming asset: " + www.downloadHandler.text);
+                    //StarbornFileHandler.ExtractDialogue(www.downloadHandler.);
+                }
+                else
+                {
+                    Debug.LogError("Failed to load streaming asset: " + www.error);
+                    yield break;
                 }
             }
-            //TweenManager.AlphaTween(fade, 1, 1, 0.25f);
-            //TweenManager.AlphaTween(fade, 1, 0, 2).SetStartDelay(0.5f);
-        }
-
-        /*StartCoroutine(LoadMinigame());
-        IEnumerator LoadMinigame()
-        {
-            yield return new WaitForSeconds(1f);
-            TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
+            else
             {
-                SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive).completed += GameOut;
+                if (File.Exists(path))
+                {
+                    StarbornFileHandler.ExtractDialogue(path);
+                }
+                else
+                {
+                    yield break;
+                }
+            }
+                dialogueFile = StarbornFileHandler.ReadSimpleDialogue(filename);
+                UnpackDialogue(dialogueFile);
+                LuaFunctions.dialogueFile = dialogueFile;
 
-            });
+                if (backgrounds.Count != 0)
+                {
+                    string curBG = dialogueFile.background;
+                    if (backgrounds.ContainsKey(curBG))
+                        PutObjectInFront(backgrounds[curBG]);
 
-        }*/
-        //fileText.text = File.Exists(path).ToString();
+                    foreach (Transform bg in backgroundsObject.transform)
+                    {
+                        if (backgrounds.ContainsKey(bg.gameObject.name))
+                            bg.gameObject.SetActive(false);
+                    }
+
+                    backgrounds[curBG].SetActive(true);
+                }
+
+                if (sprites.Count != 0)
+                {
+                    foreach (KeyValuePair<string, CharacterSprite> character in sprites)
+                    {
+                        character.Value.gameObject.SetActive(false);
+                    }
+                }
+
+            if (nextButton != null) nextButton.SetActive(false);
+
+                //TweenManager.AlphaTween(fade, 1, 1, 0.25f);
+                //TweenManager.AlphaTween(fade, 1, 0, 2).SetStartDelay(0.5f);
+
+            /*StartCoroutine(LoadMinigame());
+            IEnumerator LoadMinigame()
+            {
+                yield return new WaitForSeconds(1f);
+                TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
+                {
+                    SceneManager.LoadSceneAsync(0, LoadSceneMode.Additive).completed += GameOut;
+
+                });
+
+            }*/
+            //fileText.text = File.Exists(path).ToString();
+        }
     }
 
     async void UnpackDialogue(SimpleSBDFile dialogue)
@@ -729,7 +761,8 @@ public class DialogueManager : MonoBehaviour
     {
         //Stop everything before moving onto the next line
         //LuaFunctions.dialogueFile = dialogueFile;
-
+        if (nextButton != null) nextButton.SetActive(false);
+        TweenManager.instance.RemoveTween("ping-pong");
         if (dialogueSource != null && dialogueSource.isPlaying)
             dialogueSource.Stop();
         dialogueSource.clip = null;
@@ -779,6 +812,14 @@ public class DialogueManager : MonoBehaviour
             curLine++;
             dialogueLine++;
             LuaFunctions.OnLineEnd(line);
+            if (nextButton != null)
+            {
+                nextButton.SetActive(true);
+                ColorUtils.SetAlpha(nextButton, 0);
+                TweenManager.AlphaTween(nextButton, 0, 1, 0.5f, Eases.EaseInOutQuart, delegate () {
+                    TweenManager.AlphaTween(nextButton, 1, 0.75f, 1f, Eases.EaseInOutQuart, null, "ping-pong").SetPingPong(0);
+                });
+            }
         };
         dialogueBox.onStart = LuaFunctions.OnLineStart;
         dialogueBox.onChar = LuaFunctions.OnLineInterval;
@@ -1140,10 +1181,13 @@ public class DialogueManager : MonoBehaviour
     bool isExiting;
     public void ExitDialogue()
     {
-        if(fade != null && !isExiting)
+        if(!isExiting)
         {
-            fade.SetActive(true);
-            ColorUtils.SetAlpha(fade, 0);
+            if(fade != null)
+            {
+                fade.SetActive(true);
+                ColorUtils.SetAlpha(fade, 0);
+            }
             MusicUtils.MusicFadeOut(musicSource, 0.25f, delegate () { musicSource.Stop(); });
             if (FindObjectOfType<PauseMenu>(true) != null)
                 Destroy(FindObjectOfType<PauseMenu>(true).gameObject);
@@ -1160,8 +1204,22 @@ public class DialogueManager : MonoBehaviour
 
     }
 
-    void RestartDialoguePage()
+    public void FinishDialogue()
     {
+        if (minigames.Count == 0)
+            ExitDialogue();
+        else
+        {
+            if (fade != null)
+            {
+                fade.SetActive(true);
+                ColorUtils.SetAlpha(fade, 0);
+                TweenManager.AlphaTween(fade, 0, 1, 2f, Eases.Linear, delegate ()
+                {
+
+                });
+            }
+        }
 
     }
 
