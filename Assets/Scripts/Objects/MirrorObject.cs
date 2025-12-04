@@ -32,6 +32,8 @@ public class MirrorObject : MonoBehaviour
     }
     public bool lerp = true;
     public float lerpAmount = 25;
+
+    public bool scale = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +41,7 @@ public class MirrorObject : MonoBehaviour
         {
             transform.position = Vector3.Scale(original.transform.position, _vectorDirection) + offset;
             transform.rotation = original.transform.rotation;
+            if(scale) transform.localScale = original.transform.localScale;
         }
     }
 
@@ -51,11 +54,13 @@ public class MirrorObject : MonoBehaviour
             {
                 transform.position = Vector3.Lerp(transform.position, Vector3.Scale(original.transform.position, _vectorDirection) + offset, Time.deltaTime * lerpAmount);
                 transform.rotation = Quaternion.Lerp(transform.rotation, original.transform.rotation, Time.deltaTime * lerpAmount);
+                if (scale) transform.localScale = Vector3.Lerp(transform.localScale, original.transform.localScale, Time.deltaTime * lerpAmount);
             }
             else
             {
                 transform.position = Vector3.Scale(original.transform.position, _vectorDirection) + offset;
                 transform.rotation = original.transform.rotation;
+                if (scale) transform.localScale = original.transform.localScale;
             }
 
         }

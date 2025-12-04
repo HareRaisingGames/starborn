@@ -30,6 +30,8 @@ public class Countdown : MonoBehaviour
 
     static bool stop;
 
+    public TMPro.TMP_Text countdownTxt;
+
     public static Countdown instance
     {
         get
@@ -38,16 +40,31 @@ public class Countdown : MonoBehaviour
             {
                 if(FindObjectOfType<Countdown>() == null)
                 {
-                    GameObject countdown = new GameObject("Countdown");
-                    _instance = countdown.AddComponent<Countdown>();
+                    if (FindObjectOfType<Countdown>() == null)
+                    {
+                        GameObject countdown = null;
+                        GameObject prefab = Resources.Load<GameObject>("Prefabs/Countdown");
+                        if (prefab != null)
+                        {
+                            countdown = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                            countdown.name = "Countdown";
+                            _instance = countdown.GetComponent<Countdown>();
+                        }
+                        else
+                        {
+                            countdown = new GameObject("Countdown");
+                            _instance = countdown.AddComponent<Countdown>();
+                        }
 
-                    _instance.three = SetAudioSource("Three", countdown.transform);
-                    _instance.two = SetAudioSource("Two", countdown.transform);
-                    _instance.one = SetAudioSource("One", countdown.transform);
-                    _instance.lets = SetAudioSource("Lets", countdown.transform);
-                    _instance.go = SetAudioSource("Go", countdown.transform);
+                        _instance.three = SetAudioSource("Three", countdown.transform);
+                        _instance.two = SetAudioSource("Two", countdown.transform);
+                        _instance.one = SetAudioSource("One", countdown.transform);
+                        _instance.lets = SetAudioSource("Lets", countdown.transform);
+                        _instance.go = SetAudioSource("Go", countdown.transform);
 
-                    _instance.AssignAudioClip(_folder);
+                        _instance.AssignAudioClip(_folder);
+
+                    }
 
                 }
                 else
@@ -168,23 +185,34 @@ public class Countdown : MonoBehaviour
         switch (i)
         {
             case 0:
+                AddText("3");
                 instance.three.Play();
                 break;
             case 2:
+                AddText("2");
                 instance.two.Play();
                 break;
             case 4:
+                AddText("1");
                 instance.one.Play();
                 break;
             case 5:
+                AddText("Let's");
                 instance.lets.Play();
                 break;
             case 6:
+                AddText(" Go!", false);
                 instance.go.Play();
                 break;
+            case 7:
+                AddText("");
+                break;
             case 8:
+                AddText("");
                 callback?.Invoke();
                 _activatedCountdown = false;
+                Destroy(_instance.gameObject);
+                _instance = null;
                 return;
         }
         int milliseconds = (int)(time * 1000 / 2);
@@ -226,6 +254,19 @@ public class Countdown : MonoBehaviour
         stop = true;
     }
 
+    static void AddText(string line = "", bool newLine = true)
+    {
+        if(_instance.countdownTxt != null)
+        {
+            if (newLine)
+                _instance.countdownTxt.text = line;
+            else
+                _instance.countdownTxt.text += line;
+
+            _instance.countdownTxt.rectTransform.localScale = Vector3.one * 1.2f;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -235,7 +276,10 @@ public class Countdown : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(countdownTxt != null)
+        {
+            countdownTxt.rectTransform.localScale = Vector3.Lerp(countdownTxt.rectTransform.localScale, Vector3.one, Time.deltaTime * 10);
+        }
     }
 
     private void OnApplicationFocus(bool focus)

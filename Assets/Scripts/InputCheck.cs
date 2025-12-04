@@ -92,7 +92,7 @@ public class InputCheck : MonoBehaviour
             {
                 Mouse mouse = device as Mouse;
                 Vector2 newPosition = mouse.position.ReadValue();
-                bool isPressed = mouse.IsPressed(0) || mouse.IsPressed(1) || mouse.IsPressed(2);
+                bool isPressed = mouse.leftButton.wasPressedThisFrame || mouse.rightButton.wasPressedThisFrame || mouse.middleButton.wasPressedThisFrame;
                 if (isPressed && !mousePosition.Equals(newPosition))
                 {
                     controlType = "PC";
@@ -134,7 +134,7 @@ public class InputCheck : MonoBehaviour
                     if (binding.path.Contains("Keyboard") || binding.path.Contains("Mouse"))
                     {
                         string actionName = action.ToString().ToLower();
-                        if(actionName.Contains("pad"))
+                        if(actionName.Contains("pad")) //Check if the input is the dpad
                         {
                             return $"{controlType}_dpad";
                         }

@@ -291,6 +291,7 @@ MonoBehaviour:
   direction: 2
   lerp: 1
   lerpAmount: 25
+  scale: 0
 --- !u!212 &26939973
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -16561,7 +16562,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.Tosstail
   conductor: {fileID: 1202914535}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 1
   song: {fileID: 8300000, guid: eb0abd3f3ec615f429b5cda92d7f7ac0, type: 3}
   tutorialSong: {fileID: 8300000, guid: f06e1aa4543413c40b518124a48fc0f6, type: 3}
@@ -17572,6 +17573,7 @@ MonoBehaviour:
   camPosition: {x: 0, y: 0, z: -10}
   eventSystem: {fileID: 0}
   setUpSong: 0
+  eligibleForClear: 0
   shaker: {fileID: 1280518595}
   niko: {fileID: 1662958378}
   r: 0

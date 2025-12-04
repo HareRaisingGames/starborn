@@ -201,12 +201,9 @@ public class MinigameManager : MonoBehaviour
             InputAction skip = minigame.inputSystem.Dialogue.Skip;
             if(skipText != null)
             {
-                skipText.text = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(skip)}\"> to skip";
                 ColorUtils.SetAlpha(skipText.gameObject, 0);
-                TweenManager.AlphaTween(skipText.gameObject, 0, 1, 1f, Eases.EaseInOutQuart, null, "fade_in").SetStartDelay(0.1f);
-                TweenManager.XTween(skipText.gameObject, 300, -10, 1f, Eases.EaseInOutQuart, null, "move_in").SetStartDelay(0.1f);
+                skipText.text = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(skip)}\"> to skip";
             }
-                
         }
     }
 
@@ -307,6 +304,7 @@ public class MinigameManager : MonoBehaviour
                 if (minigame.hasCompleted != null && minigame.hasCompleted.Invoke() && !finishedGame && !_gameOver && minigame.eligibleForClear)
                 {
                     finishedGame = true;
+                    Debug.Log($"{Mathf.Round(totalAccuracy * Mathf.Pow(10, 4)) / 100f}%");
                     if (cleared != null)
                         cleared.SetActive(true);
                     StaticProperties.canPause = false;
@@ -331,7 +329,10 @@ public class MinigameManager : MonoBehaviour
 
             InputAction skip = minigame.inputSystem.Dialogue.Skip;
             if (skipText != null)
-               skipText.text = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(skip)}\"> to skip";
+            {
+                skipText.text = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(skip)}\"> to skip";
+            }
+               
         }
 
         /*if (Gamepad.current != null)
@@ -382,7 +383,15 @@ public class MinigameManager : MonoBehaviour
                 lines = minigame.tutorial.lines;
                 _consequences = false;
                 inTutorial = true;
-                if(text != null)
+
+                if(skipText != null)
+                {
+                    ColorUtils.SetAlpha(skipText.gameObject, 0);
+                    TweenManager.AlphaTween(skipText.gameObject, 0, 1, 1f, Eases.EaseInOutQuart, null, "fade_in").SetStartDelay(0.1f);
+                    TweenManager.XTween(skipText.gameObject, 300, -10, 1f, Eases.EaseInOutQuart, null, "move_in").SetStartDelay(0.1f);
+                }
+
+                if (text != null)
                 {
                     NextLine();
                 }

@@ -23,6 +23,8 @@ public class RankingState : MonoBehaviour
     private StarbornInputSystem m_inputSystem;
     bool canInteract;
 
+    string finalList;
+
     private void Awake()
     {
         m_inputSystem = new StarbornInputSystem();
@@ -30,6 +32,10 @@ public class RankingState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        foreach(KeyValuePair<string, float> accurate in MinigameManager.minigameAccuracies)
+        {
+            finalList += $"{accurate.Key}\t\t{Mathf.Round(accurate.Value*Mathf.Pow(10,4))/Mathf.Pow(10,2)}%";
+        }
         if(fade != null)
         {
             fade.SetActive(true);

@@ -12,6 +12,7 @@ public class MirrorText : MonoBehaviour
 
     public bool lerp = false;
     public float lerpAmount = 25;
+    public bool scale = false;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +21,7 @@ public class MirrorText : MonoBehaviour
         {
             transform.position = original.transform.position + offset;
             transform.rotation = original.transform.rotation;
+            if (scale) transform.localScale = original.transform.localScale;
         }
     }
 
@@ -32,6 +34,7 @@ public class MirrorText : MonoBehaviour
             {
                 transform.position = Vector3.Lerp(transform.position, original.transform.position + offset, Time.deltaTime * lerpAmount);
                 transform.rotation = Quaternion.Lerp(transform.rotation, original.transform.rotation, Time.deltaTime * lerpAmount);
+                if (scale) transform.localScale = Vector3.Lerp(transform.localScale, original.transform.localScale, Time.deltaTime * lerpAmount);
                 if (baseText != null)
                     baseText.text = original.text;
             }
@@ -39,6 +42,7 @@ public class MirrorText : MonoBehaviour
             {
                 transform.position = original.transform.position  + offset;
                 transform.rotation = original.transform.rotation;
+                if (scale) transform.localScale = original.transform.localScale;
                 if (baseText != null)
                     baseText.text = original.text;
             }
