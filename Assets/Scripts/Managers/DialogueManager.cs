@@ -221,16 +221,25 @@ public class DialogueManager : MonoBehaviour
                 obj.AddComponent<Image>();
                 obj.transform.parent = backgroundsObject.transform;
                 obj.transform.localScale = Vector3.one;
-                obj.GetComponent<RectTransform>().anchorMin = Vector2.zero;
+                /*obj.GetComponent<RectTransform>().anchorMin = Vector2.zero;
                 obj.GetComponent<RectTransform>().anchorMax = Vector2.one;
                 obj.GetComponent<RectTransform>().offsetMin = Vector2.zero;
-                obj.GetComponent<RectTransform>().offsetMax = Vector2.zero;
+                obj.GetComponent<RectTransform>().offsetMax = Vector2.zero;*/
+
+                obj.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f,0.5f);
+                obj.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
+                obj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+
+                //obj.GetComponent<RectTransform>().offsetMin = new Vector2(140.00f, -192.50f);
+                //obj.GetComponent<RectTransform>().offsetMax = new Vector2(380.00f, 152.50f);
 
                 Texture2D tex = new Texture2D(2, 2);
                 tex.LoadImage(background.Value);
                 Sprite sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
                 sprite.name = background.Key;
                 obj.GetComponent<Image>().sprite = sprite;
+
+                DialogueUtils.SetImageFixedPosition(obj.GetComponent<Image>());
 
                 backgrounds.Add(background.Key, obj);
             }
