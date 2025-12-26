@@ -13,6 +13,11 @@ namespace Starborn.Boomerang
         public bool turnOffDefenses;
         AudioSource ducking;
 
+        bool attacking;
+        [Header("Boomerang")]
+        public Vector3 attackCamPos = new Vector3(0,0,-10);
+        public float attackZoom = 2.5f;
+
         // Start is called before the first frame update
         public override void Start()
         {
@@ -34,10 +39,36 @@ namespace Starborn.Boomerang
             }
         }
 
+        public override void StartSong()
+        {
+            hasCompleted = delegate ()
+            {
+                return Conductor.instance.isFinished;
+            };
+            base.StartSong();
+        }
+
         // Update is called once per frame
         public override void Update()
         {
             base.Update();
+
+            if(attacking)
+            {
+                foreach(Camera camera in FindObjectsOfType<Camera>())
+                {
+                    camera.transform.position = Vector3.Lerp(camera.transform.position, attackCamPos, Time.deltaTime * 4f);
+                    camera.orthographicSize = Mathf.Clamp(Mathf.Lerp(camera.orthographicSize, attackZoom - 0.1f, Time.deltaTime * 5f), attackZoom, Mathf.Infinity);
+                }
+            }
+            else
+            {
+                foreach (Camera camera in FindObjectsOfType<Camera>())
+                {
+                    camera.transform.position = Vector3.Lerp(camera.transform.position, camPosition, Time.deltaTime * 4f);
+                    camera.orthographicSize = Mathf.Clamp(Mathf.Lerp(camera.orthographicSize, zoom + 0.1f, Time.deltaTime * 5f), 0, zoom);
+                }
+            }
         }
 
         public override void onDown(InputAction.CallbackContext context)
@@ -46,10 +77,24 @@ namespace Starborn.Boomerang
             Duck();
         }
 
+        public override void onA(InputAction.CallbackContext context)
+        {
+            base.onA(context);
+            attacking = true;
+            StopCoroutine("ResetAttack");
+            StartCoroutine("ResetAttack");
+        }
+
         void Duck()
         {
             if (ducking != null)
                 ducking.Play();
+        }
+
+        public IEnumerator ResetAttack()
+        {
+            yield return new WaitForSeconds(1f);
+            attacking = false;
         }
 
         public void AutoDuck()
@@ -111,7 +156,7 @@ public class Rang : RhythmEvent
         {
             GameObject gameObject = new GameObject("Whoosh");
             boomerangWhoosh = gameObject.AddComponent<AudioSource>();
-            boomerangWhoosh.clip = Resources.Load<AudioClip>("Audio/Boomerang/boomerang_whoosh");
+            boomerangWhoosh.clip = Resources.Load<AudioClip>("Audio/Boomerang/whoosh_fast");
         }
         else
             boomerangWhoosh = GameObject.Find("Whoosh").GetComponent<AudioSource>();

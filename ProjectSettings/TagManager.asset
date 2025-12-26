@@ -10,10 +10,10 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - NoPP
   - Water
   - UI
-  - 
+  - Bloom
   - 
   - 
   - 
