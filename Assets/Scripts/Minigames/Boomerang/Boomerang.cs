@@ -24,6 +24,14 @@ namespace Starborn.Boomerang
                 ducking.clip = Resources.Load<AudioClip>("Audio/Boomerang/bugz_duck");
             }
             base.Start();
+
+            
+            StartCoroutine(SongSetUp());
+            IEnumerator SongSetUp()
+            {
+                yield return new WaitForSeconds(2.1f);
+                SetUpSong();
+            }
         }
 
         // Update is called once per frame
@@ -35,8 +43,18 @@ namespace Starborn.Boomerang
         public override void onDown(InputAction.CallbackContext context)
         {
             base.onDown(context);
+            Duck();
+        }
+
+        void Duck()
+        {
             if (ducking != null)
                 ducking.Play();
+        }
+
+        public void AutoDuck()
+        {
+            if (autoPlay) Duck();
         }
     }
     public class GreenBoomerang : Rang
@@ -46,9 +64,9 @@ namespace Starborn.Boomerang
             actions = new List<CallForAction>()
             {
                 new CallForAction(null, 1f),
-                new CallForAction(()=>{ boomerangWhoosh.Play(); }, 2f, RhythmInputs.Down, 0.5f, 0.5f),
-                new CallForAction(()=>{ boomerangWhoosh.Play(); }, 3f),
-                new CallForAction(()=>{ boomerangWhoosh.Play(); }, 4f, RhythmInputs.Down, 0.5f, 0.5f)
+                new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 2f, RhythmInputs.Down),
+                new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 0.5f; }, 3f),
+                new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck();}, 4f, RhythmInputs.Down)
             };
         }
     }
@@ -61,8 +79,8 @@ namespace Starborn.Boomerang
             {
                 new CallForAction(null, 1f),
                 new CallForAction(null, 2f),
-                new CallForAction(()=>{ boomerangWhoosh.Play(); }, 3f, RhythmInputs.Down, 0.5f, 0.5f),
-                new CallForAction(()=>{ boomerangWhoosh.Play(); }, 4f, RhythmInputs.Down, 0.5f, 0.5f)
+                new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 3f, RhythmInputs.Down),
+                new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 4f, RhythmInputs.Down)
             };
         }
     }
@@ -71,11 +89,11 @@ namespace Starborn.Boomerang
     {
         public RandomBoomerang()
         {
-            float random = Random.Range(0, 1);
-            Rang boomerang = random <= 0.5f ? new RedBoomerang() : new GreenBoomerang();
-            Debug.Log(random <= 0.5f ? "Red" : "Green");
+            //System.Random will return different values always instead of UnityEngine.Random
+            System.Random random = new System.Random();
+            float randomFloat = (float)random.NextDouble();
+            Rang boomerang = randomFloat <= 0.5f ? new RedBoomerang() : new GreenBoomerang();
             actions = boomerang.actions;
-
         }
     }
 }

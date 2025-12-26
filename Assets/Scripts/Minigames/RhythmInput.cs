@@ -71,6 +71,7 @@ namespace Starborn.InputSystem
         }
 
         private InputAction InputAction;
+        public InputAction input => InputAction;
 
         private int id;
 
@@ -100,7 +101,7 @@ namespace Starborn.InputSystem
         public void onInputHit(InputAction.CallbackContext context)
         {
             float accurary = 0;
-            if(checkForAccuracy && mustHit && !hasHit && !autoplay)
+            if (checkForAccuracy && mustHit && !hasHit && !autoplay)
             {
                 //TimeToAccuracy(curHit);
                 bool early = false;
@@ -148,7 +149,7 @@ namespace Starborn.InputSystem
 
         }
 
-            void Generate()
+        void Generate()
         {
             //Debug.Log(m_inputSystem.Rhythm.A);
             //m_inputSystem = new StarbornInputSystem();
@@ -170,13 +171,13 @@ namespace Starborn.InputSystem
                     InputAction = m_inputSystem.Rhythm.Left;
                     break;
                 case "Down":
-                    InputAction = m_inputSystem.Rhythm.Right;
+                    InputAction = m_inputSystem.Rhythm.Down;
                     break;
                 case "Up":
                     InputAction = m_inputSystem.Rhythm.Up;
                     break;
                 case "Right":
-                    InputAction = m_inputSystem.Rhythm.Down;
+                    InputAction = m_inputSystem.Rhythm.Right;
                     break;
                 case "Pad":
                     InputAction = m_inputSystem.Rhythm.Pad;
@@ -190,7 +191,6 @@ namespace Starborn.InputSystem
             }
 
             mustHit = _action != RhythmInputs.None;
-            //Debug.Log(InputAction);
             if (mustHit && !autoplay)
             {
                 InputAction.performed += onInputHit;
@@ -277,6 +277,7 @@ namespace Starborn.InputSystem
             if(_canPlay)
             {
                 onMiss?.Invoke();
+                //Debug.Log("Oh no!");
                 //MinigameManager.instance.LoseALife();
             }
 

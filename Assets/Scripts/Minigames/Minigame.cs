@@ -250,7 +250,9 @@ public abstract class Minigame : MonoBehaviour
                 Conductor.instance.PlayMusic();
                 eligibleForClear = true;
             });
-
+        if(!isTutorial && MinigameManager.instance.backdrop != null)
+            MinigameManager.instance.backdrop.SetActive(false);
+        //MinigameManager.instance.hearts.gameObject.SetActive(true);
         MinigameManager.instance.hearts.gameObject.SetActive(true);
         foreach (Transform child in MinigameManager.instance.hearts.gameObject.transform)
         {
@@ -270,6 +272,9 @@ public abstract class Minigame : MonoBehaviour
             }
         }
 
+        //Debug.Log(MinigameManager.instance.inputs.Count);
+            
+        //Debug.Log(MinigameManager.instance.inputs.Count);
 
         //StartCoroutine(PlayMusic());
         //IEnumerator PlayMusic()
