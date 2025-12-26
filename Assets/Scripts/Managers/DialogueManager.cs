@@ -7,6 +7,7 @@ using Rabbyte;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
+using UnityEngine.Rendering.Universal;
 using System;
 using System.Linq;
 using TMPro;
@@ -89,6 +90,10 @@ public class DialogueManager : MonoBehaviour
     public GameObject fade;
     public GameObject loadingIcon;
     public GameObject nextButton;
+
+    UniversalAdditionalCameraData baseCameraData;
+    UniversalAdditionalCameraData defaultBaseCameraData;
+    LayerMask defaultMask;
     #endregion
 
     #region Audio
@@ -104,6 +109,10 @@ public class DialogueManager : MonoBehaviour
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.A.performed += onA;
         m_inputSystem.Dialogue.Pause.performed += OnPause;
+
+        baseCameraData = Camera.main.GetUniversalAdditionalCameraData();
+        defaultBaseCameraData = baseCameraData;
+        defaultMask = Camera.main.cullingMask;
     }
 
     private void OnEnable()
@@ -464,6 +473,9 @@ public class DialogueManager : MonoBehaviour
         {
             TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
             {
+                baseCameraData.cameraStack.Clear();
+                SetMainCameraRenderer(defaultBaseCameraData);
+                Camera.main.cullingMask = defaultMask;
                 HideEverythingInScene(SceneManager.GetActiveScene().name);
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
                 gameObject.SetActive(true);
@@ -542,6 +554,8 @@ public class DialogueManager : MonoBehaviour
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(game));
         List<GameObject> importantComponents = new List<GameObject>();
 
+        UniversalAdditionalCameraData cameraData = null;
+
         Scene targetScene = SceneManager.GetActiveScene();
         if(targetScene.isLoaded)
         {
@@ -557,6 +571,8 @@ public class DialogueManager : MonoBehaviour
                 if (otherSceneCamera != null && otherSceneCamera.tag == "MainCamera")
                 {
                     importantComponents.Add(otherSceneCamera.gameObject);
+                    cameraData = otherSceneCamera.GetUniversalAdditionalCameraData();
+                    Camera.main.cullingMask = otherSceneCamera.cullingMask;
                 }
 
                 if (otherHandler != null)
@@ -569,6 +585,14 @@ public class DialogueManager : MonoBehaviour
         Camera.main.orthographicSize = minigame.zoom;
         Camera.main.backgroundColor = minigame.bgColor;
         Camera.main.transform.position = minigame.camPosition;
+
+        if(cameraData != null)
+        {
+            baseCameraData.cameraStack.AddRange(cameraData.cameraStack);
+            SetMainCameraRenderer(cameraData);
+        }
+            
+        //Debug.Log(baseCameraData.cameraStack.Count);
 
         foreach (GameObject obj in importantComponents)
             obj.SetActive(false);
@@ -1243,6 +1267,14 @@ public class DialogueManager : MonoBehaviour
             obj.transform.parent = parent;
             obj.transform.position = position;
         }
+    }
+
+    public void SetMainCameraRenderer(UniversalAdditionalCameraData data)
+    {
+        baseCameraData.renderPostProcessing = data.renderPostProcessing;
+        baseCameraData.renderShadows = data.renderShadows;
+        baseCameraData.antialiasing = data.antialiasing;
+        baseCameraData.dithering = data.dithering;
     }
     #endregion
 
