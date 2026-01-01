@@ -223,6 +223,10 @@ namespace Starborn.Tosstail
     {
         public LongToss()
         {
+            parameters = new List<Parameter>()
+            {
+                new Parameter("toggle", true, "Bounce")
+            };
             CallForAction toss = new CallForAction(() => { }, 1);
             toss.AddAction(() => {
                 float beat = startPoint + Conductor.instance.crochet * (toss.beat + 1);
@@ -274,8 +278,41 @@ namespace Starborn.Tosstail
             };
         }
     }
-}
 
+    /*public class ToggleBouncing : RhythmEvent
+    {
+        public Tosstail game;
+        public bool toggle;
+        public override void SetUp()
+        {
+            base.SetUp();
+            game = Object.FindObjectOfType<Tosstail>();
+        }
+
+        public ToggleBouncing()
+        {
+            parameters = new List<Parameter>()
+            {
+                new Parameter("toggle", toggle, "Bounce")
+            };
+
+            actions = new List<CallForAction>()
+            {
+                new CallForAction(() => {
+                    if(toggle)
+                        game.niko.StartBouncing();
+                    else
+                        game.niko.StopBouncing();
+
+                    //game.r = Conductor.instance.curStep % 4;
+
+
+                }, 1)
+            };
+        }
+    }
+    */
+}
 public class Toss : RhythmEvent
 {
     public Tosstail game;

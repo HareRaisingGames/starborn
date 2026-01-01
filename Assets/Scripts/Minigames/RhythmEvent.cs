@@ -27,7 +27,8 @@ namespace Starborn.InputSystem
 
         //Where to start the event
         [HideInInspector] public float startPoint;
-        public List<Attribute> attributes;
+        public List<Parameter> parameters = new List<Parameter>();
+        /*public List<Attribute> attributes;
         public void AddAttribute(string name, Func<dynamic> property, Type type, dynamic value = null)
         {
             foreach (Attribute attribute in attributes)
@@ -37,7 +38,7 @@ namespace Starborn.InputSystem
             }
 
             attributes.Add(new Attribute(name, property, type, value));
-        }
+        }*/
 
         public string minigame;
 
@@ -174,6 +175,21 @@ namespace Starborn.InputSystem
 
             if (this.value == null)
                 this.value = property.Invoke();
+        }
+    }
+
+    [System.Serializable]
+    public class Parameter
+    {
+        public string propertyName;
+        public object parameter;
+        public string caption;
+
+        public Parameter(string propertyName, object parameter, string caption)
+        {
+            this.propertyName = propertyName;
+            this.parameter = parameter;
+            this.caption = caption;
         }
     }
 }

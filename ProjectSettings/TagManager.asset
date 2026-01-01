@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Tutorial
   - Base
+  - Background
   layers:
   - Default
   - TransparentFX

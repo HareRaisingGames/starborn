@@ -407,6 +407,16 @@ public class GamePopupAttribute : PropertyAttribute
 
 }
 
+public class ParamAttribute : PropertyAttribute
+{
+    //public string eventName;
+
+    /*public ParameterAttribute(string name)
+    {
+        eventName = name;
+    }*/
+}
+
 #if UNITY_EDITOR
 [CustomPropertyDrawer(typeof(GamePopupAttribute))]
 public class MinigameDrawer : PropertyDrawer
@@ -445,4 +455,59 @@ public class MinigameDrawer : PropertyDrawer
             EditorGUI.PropertyField(position, property, label);
     }
 }
+
+/*[CustomPropertyDrawer(typeof(ParamAttribute))]
+public class ParameterArea : PropertyDrawer
+{
+    public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+    {
+        List<Parameter> parameters = null;
+        //ParameterAttribute paramAttribute = (ParameterAttribute)attribute;
+        if (property.serializedObject.targetObject.GetType() == typeof(Minigame) || property.serializedObject.targetObject.GetType().IsSubclassOf(typeof(Minigame)))
+        {
+            System.Type t = property.serializedObject.targetObject.GetType();
+            List<Charting> chartings = t.GetField("chartings").GetValue(property.serializedObject.targetObject) as List<Charting>;
+            foreach (Charting charting in chartings)
+            {
+                List<Section> sections = charting.GetType().GetField("sections").GetValue(charting) as List<Section>;
+                foreach (Section section in sections)
+                {
+                    List<Inputs> inputs = section.GetType().GetField("inputList").GetValue(section) as List<Inputs>;
+                    foreach (Inputs input in inputs)
+                    {
+                        System.Type classType = ReflectionUtils.FindClassAcrossAllNamespaces(input.Event);
+                        if (classType != null)
+                        {
+                            FieldInfo parameterProperty = classType.GetField("parameters");
+                            object instance = System.Activator.CreateInstance(classType);
+                            parameters = (List<Parameter>)parameterProperty.GetValue(instance);
+                        }
+                    }
+                }
+            }
+
+            //Debug.Log(parameters.Count);
+
+            if (parameters != null && parameters.Count != 0)
+            {
+                foreach(Parameter parameter in parameters)
+                {
+                    //if(parameter.parameter.GetType() == typeof(bool))
+                    //{
+                        //EditorGUI.Toggle(position, parameter.caption, (bool)parameter.parameter);
+                        //property.
+                    //}
+                }
+                //int selectedIndex = Mathf.Max(events.IndexOf(property.stringValue), 0);
+                //selectedIndex = EditorGUI.Popup(position, property.name, selectedIndex, events.ToArray());
+                //property.stringValue = events[selectedIndex];
+            }
+            else
+                EditorGUI.PropertyField(position, property, label);
+
+        }
+        else
+            EditorGUI.PropertyField(position, property, label);
+    }
+}*/
 #endif

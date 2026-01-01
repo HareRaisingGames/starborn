@@ -76,7 +76,7 @@ public class UniBpmAnalyzer
         {
             strBuilder.Append("bpm : " + bpmMatchDatas[i].bpm + ", match : " + Mathf.FloorToInt(bpmMatchDatas[i].match * 10000f) + "\n");
         }
-        Debug.Log(strBuilder.ToString());
+        //Debug.Log(strBuilder.ToString());
 
         return bpm;
     }

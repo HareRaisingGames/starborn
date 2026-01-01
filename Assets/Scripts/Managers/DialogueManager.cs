@@ -136,8 +136,6 @@ public class DialogueManager : MonoBehaviour
         {
             var path = Path.Combine(Application.streamingAssetsPath, $"Dialogue/{filename}.sbd");
 
-            LuaMethods.AddGlobal(musicGlobals);
-
             GameObject prefab = Resources.Load<GameObject>("Prefabs/Pause Menu");
             if (prefab != null)
             {
@@ -175,6 +173,11 @@ public class DialogueManager : MonoBehaviour
             }
                 dialogueFile = StarbornFileHandler.ReadSimpleDialogue(filename);
                 UnpackDialogue(dialogueFile);
+
+                LuaMethods.AddGlobal(musicGlobals);
+                backgroundGlobals.Add("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
+                LuaMethods.AddGlobal(backgroundGlobals);
+
                 LuaFunctions.dialogueFile = dialogueFile;
 
                 if (backgrounds.Count != 0)
@@ -247,6 +250,8 @@ public class DialogueManager : MonoBehaviour
                 Sprite sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
                 sprite.name = background.Key;
                 obj.GetComponent<Image>().sprite = sprite;
+                obj.tag = "Background";
+                obj.layer = LayerMask.NameToLayer("UI");
 
                 DialogueUtils.SetImageFixedPosition(obj.GetComponent<Image>());
 
@@ -588,6 +593,7 @@ public class DialogueManager : MonoBehaviour
 
         if(cameraData != null)
         {
+            Debug.Log(cameraData.cameraStack);
             baseCameraData.cameraStack.AddRange(cameraData.cameraStack);
             SetMainCameraRenderer(cameraData);
         }
@@ -849,8 +855,8 @@ public class DialogueManager : MonoBehaviour
             {
                 nextButton.SetActive(true);
                 ColorUtils.SetAlpha(nextButton, 0);
-                TweenManager.AlphaTween(nextButton, 0, 1, 0.5f, Eases.EaseInOutQuart, delegate () {
-                    TweenManager.AlphaTween(nextButton, 1, 0.75f, 1f, Eases.EaseInOutQuart, null, "ping-pong").SetPingPong(0);
+                TweenManager.AlphaTween(nextButton, 0, 1, 0.5f, Eases.EaseInOutCubic, delegate () {
+                    TweenManager.AlphaTween(nextButton, 1, 0.75f, 0.5f, Eases.Linear, null, "ping-pong").SetPingPong(0);
                 });
             }
         };
@@ -1286,6 +1292,11 @@ public class DialogueManager : MonoBehaviour
         { "FadeMusic", (Action<float, float>)FadeMusic }
     };
 
+    public Dictionary<string, dynamic> backgroundGlobals = new Dictionary<string, dynamic>()
+    {
+        
+    };
+
     public static void StopMusic()
     {
         instance.musicSource.Stop();
@@ -1304,6 +1315,16 @@ public class DialogueManager : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
             MusicUtils.MusicFadeIn(instance.musicSource, 0.5f);
         }
+    }
+
+    static Image GetImageFromBGName(string name)
+    {
+        foreach(GameObject obj in GameObject.FindGameObjectsWithTag("Background"))
+        {
+            if (obj.GetComponent<Image>() != null && obj.name == name)
+                return obj.GetComponent<Image>();
+        }
+        return null;
     }
 
     //Will add a function for multiple songs

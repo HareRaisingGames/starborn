@@ -8,21 +8,17 @@ public class AudioAdjuster : MonoBehaviour
 {
     AudioSource test;
     public Slider slider;
-    public Charting charting = new Charting();
-
-    //public RhythmInput rhythm = new RhythmInput(RhythmInputs.Down);
     // Start is called before the first frame update
 
     private void Awake()
     {
-        StarbornInputSystem inputSystem = new StarbornInputSystem();
-        //charting.Generate();
+
     }
 
     void Start()
     {
-        test = GetComponent<AudioSource>();
-        test.volume = 0;
+        //test = GetComponent<AudioSource>();
+        //test.volume = 0;
 
         //AssetsManager.nun();
         //Debug.Log(rhythm.action);

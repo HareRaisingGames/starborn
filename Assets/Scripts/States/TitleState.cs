@@ -7,7 +7,9 @@ public class TitleState : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        //Display.Active();
+        /*if (Display.displays.Length > 1)
+            Display.displays[1].Activate();*/
     }
 
     // Update is called once per frame

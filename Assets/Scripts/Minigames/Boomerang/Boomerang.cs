@@ -13,10 +13,15 @@ namespace Starborn.Boomerang
         public bool turnOffDefenses;
         AudioSource ducking;
 
+        AudioSource greenPrep;
+
         bool attacking;
         [Header("Boomerang")]
         public Vector3 attackCamPos = new Vector3(0,0,-10);
         public float attackZoom = 2.5f;
+
+        [HideInInspector]
+        public PartyMarty marty;
 
         // Start is called before the first frame update
         public override void Start()
@@ -30,7 +35,8 @@ namespace Starborn.Boomerang
             }
             base.Start();
 
-            
+            marty = FindObjectOfType<PartyMarty>();
+
             StartCoroutine(SongSetUp());
             IEnumerator SongSetUp()
             {
@@ -101,14 +107,37 @@ namespace Starborn.Boomerang
         {
             if (autoPlay) Duck();
         }
+
+        public override void AdditionalSongSetup()
+        {
+            base.AdditionalSongSetup();
+            if (Conductor.instance != null && marty != null)
+            {
+                marty.SetSpeed(Conductor.instance.songBpm);
+            }
+        }
     }
     public class GreenBoomerang : Rang
     {
-        public GreenBoomerang()
+        public AudioSource greenSetup;
+        public override void SetUp()
+        {
+            base.SetUp();
+            if (GameObject.Find("Green") == null)
+            {
+                GameObject gameObject = new GameObject("Green");
+                greenSetup = gameObject.AddComponent<AudioSource>();
+                greenSetup.clip = Resources.Load<AudioClip>("Audio/Boomerang/green_prep");
+            }
+            else
+                greenSetup = GameObject.Find("Green").GetComponent<AudioSource>();
+        }
+            public GreenBoomerang()
         {
             actions = new List<CallForAction>()
             {
-                new CallForAction(null, 1f),
+                new CallForAction(()=>{ greenSetup.Play(); if(game.marty != null) game.marty.Prepare(); }, 1f),
+                new CallForAction(()=>{ if(game.marty != null) game.marty.Throw(); }, 2f - (game.marty != null ? game.marty.totalFramesThrow : 0)/24),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 2f, RhythmInputs.Down),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 0.5f; }, 3f),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck();}, 4f, RhythmInputs.Down)
@@ -122,8 +151,9 @@ namespace Starborn.Boomerang
         {
             actions = new List<CallForAction>()
             {
-                new CallForAction(null, 1f),
-                new CallForAction(null, 2f),
+                new CallForAction(()=>{ if(game.marty != null) game.marty.Prepare(); }, 1f),
+                new CallForAction(()=>{ if(game.marty != null) game.marty.Prepare(); }, 2f),
+                new CallForAction(()=>{ if(game.marty != null) game.marty.Throw(); }, 3f - (game.marty != null ? game.marty.totalFramesThrow : 0)/24),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 3f, RhythmInputs.Down),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 4f, RhythmInputs.Down)
             };
