@@ -16607,7 +16607,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.Tosstail
   conductor: {fileID: 1202914535}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 1
   song: {fileID: 8300000, guid: eb0abd3f3ec615f429b5cda92d7f7ac0, type: 3}
   tutorialSong: {fileID: 8300000, guid: f06e1aa4543413c40b518124a48fc0f6, type: 3}
@@ -19330,9 +19330,9 @@ MonoBehaviour:
   - name: Happy
     texture: {fileID: -1734050964, guid: 51aea69f8204a9c40b4621a92ba665d4, type: 3}
   - name: Sad
-    texture: {fileID: -1442150652, guid: 51aea69f8204a9c40b4621a92ba665d4, type: 3}
-  - name: Nervous
     texture: {fileID: -2007680312, guid: 51aea69f8204a9c40b4621a92ba665d4, type: 3}
+  - name: Nervous
+    texture: {fileID: -1442150652, guid: 51aea69f8204a9c40b4621a92ba665d4, type: 3}
   defaultExpression:
     name: 
     texture: {fileID: 0}
@@ -19347,19 +19347,6 @@ MonoBehaviour:
       texture: {fileID: 970893578, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
       offset: {x: -4.78, y: -3.22, z: 0}
     animator: {fileID: 1835226730}
-    armData:
-    - name: 0
-      texture: {fileID: -142663705, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
-      offset: {x: -4.4, y: -3.025, z: 0}
-    - name: 0
-      texture: {fileID: 970893578, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
-      offset: {x: -4.78, y: -3.22, z: 0}
-    - name: 2
-      texture: {fileID: -719195878, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
-      offset: {x: -5.13, y: -1.5, z: 0}
-    - name: 2
-      texture: {fileID: -1631642707, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
-      offset: {x: -4.1, y: -0.94, z: 0}
   rightArm:
     sprite: {fileID: 126188329}
     hand: {fileID: 1407678029}
@@ -19371,19 +19358,6 @@ MonoBehaviour:
       texture: {fileID: 970893578, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
       offset: {x: 4.78, y: -3.22, z: 0}
     animator: {fileID: 126188330}
-    armData:
-    - name: 0
-      texture: {fileID: -142663705, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
-      offset: {x: 4.4, y: -3.025, z: 0}
-    - name: 0
-      texture: {fileID: 970893578, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
-      offset: {x: 4.78, y: -3.22, z: 0}
-    - name: 2
-      texture: {fileID: -719195878, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
-      offset: {x: 5.13, y: -1.55, z: 0}
-    - name: 2
-      texture: {fileID: -1631642707, guid: eb124d0fb2cfb0545ad24fea813ab1b6, type: 3}
-      offset: {x: 4.1, y: -0.94, z: 0}
   curArm:
     sprite: {fileID: 0}
     hand: {fileID: 0}
@@ -19395,7 +19369,6 @@ MonoBehaviour:
       texture: {fileID: 0}
       offset: {x: 0, y: 0, z: 0}
     animator: {fileID: 0}
-    armData: []
   catchName: Happy
   y: 0
   yOffset: -0.25
