@@ -42,17 +42,17 @@ namespace Starborn.Tosstail
             }
 
             public ArmData[] data = new ArmData[2];
-            Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
-            Dictionary<string, Vector3> positions = new Dictionary<string, Vector3>();
+            //Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
+            //Dictionary<string, Vector3> positions = new Dictionary<string, Vector3>();
             Dictionary<Sprite, Vector3> spriteToPositions = new Dictionary<Sprite, Vector3>();
 
             public Animator animator;
-            public List<ArmData> armData = new List<ArmData>();
+            //public List<ArmData> armData = new List<ArmData>();
             //Speed = BPM/120
 
             public void SetUpDictionary(bool isOpen = false)
             {
-                foreach (ArmData d in data)
+                /*foreach (ArmData d in data)
                 {
                     if (!sprites.ContainsKey(d.name.ToString().ToLower()))
                         sprites.Add(d.name.ToString().ToLower(), d.texture);
@@ -64,7 +64,7 @@ namespace Starborn.Tosstail
                 {
                     if(!spriteToPositions.ContainsKey(data.texture))
                         spriteToPositions.Add(data.texture, data.offset);
-                }
+                }*/
 
                 _isOpen = isOpen;
 

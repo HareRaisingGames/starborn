@@ -107,6 +107,19 @@ TextureImporter:
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
     buildTarget: Android
     maxTextureSize: 2048
     resizeAlgorithm: 0
@@ -121,260 +134,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: Niko_Catch
-      rect:
-        serializedVersion: 2
-        x: 20
-        y: 1556
-        width: 385
-        height: 460
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 96d81df38713ea749892b161982a4b79
-      internalID: 2102097481
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Idle
-      rect:
-        serializedVersion: 2
-        x: 425
-        y: 1568
-        width: 385
-        height: 460
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 105c0924e16fcb8419105ab838f25474
-      internalID: -440499283
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Miss
-      rect:
-        serializedVersion: 2
-        x: 830
-        y: 1568
-        width: 385
-        height: 460
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6e08ed3e03341564892e21bb2f4f8925
-      internalID: 1638738932
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Sad
-      rect:
-        serializedVersion: 2
-        x: 1235
-        y: 1568
-        width: 385
-        height: 460
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 218035ba6db813946a291d14954d93cf
-      internalID: 433792763
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: niko_reference_4
-      rect:
-        serializedVersion: 2
-        x: 1640
-        y: 1829
-        width: 233
-        height: 199
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9135e9614205fe24fbf41f51dce5cc3c
-      internalID: -142663705
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Open_Hand
-      rect:
-        serializedVersion: 2
-        x: 19
-        y: 1263
-        width: 313
-        height: 286
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6be21699a9294224ebe18b028e13d819
-      internalID: 970893578
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Toss_Up_1
-      rect:
-        serializedVersion: 2
-        x: 351
-        y: 1161
-        width: 373
-        height: 388
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 168e66bfe22b917418184c9d439e1730
-      internalID: -719195878
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Toss_Up
-      rect:
-        serializedVersion: 2
-        x: 744
-        y: 1043
-        width: 178
-        height: 506
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 07e479149140f5b4faa340e7fd488c43
-      internalID: -1631642707
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Close
-      rect:
-        serializedVersion: 2
-        x: 942
-        y: 1333
-        width: 200
-        height: 215
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6140987e02e9e5b489bcf023c87f40a4
-      internalID: -1843004886
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Close_1
-      rect:
-        serializedVersion: 2
-        x: 1162
-        y: 1311
-        width: 250
-        height: 237
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 9fdfa95d0543f7e4daad4c03b65ec2cb
-      internalID: 467470919
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Niko_Torso
-      rect:
-        serializedVersion: 2
-        x: 20
-        y: 371
-        width: 737
-        height: 652
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: d7128c5e03db4f64683c73d3491bed39
-      internalID: 2010513315
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 5e97eb03825dee720800000000000000
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      Niko_Catch: 2102097481
-      Niko_Close: -1843004886
-      Niko_Close_1: 467470919
-      Niko_Idle: -440499283
-      Niko_Miss: 1638738932
-      Niko_Open_Hand: 970893578
-      Niko_Sad: 433792763
-      Niko_Torso: 2010513315
-      Niko_Toss_Up: -1631642707
-      Niko_Toss_Up_1: -719195878
-      niko_reference_4: -142663705
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
