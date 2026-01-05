@@ -141,6 +141,8 @@ public class MinigameManager : MonoBehaviour
     {
         minigame = FindObjectOfType<Minigame>();
         conductor = FindObjectOfType<Conductor>();
+        if (conductor != null)
+            Conductor.instance = conductor;
         Conductor.instance.SetUpBPM();
 
         //text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();

@@ -22,7 +22,11 @@ namespace Starborn.Boomerang
 
         [HideInInspector]
         public PartyMarty marty;
+        public Color green = Color.green;
+        public Color startGreen = Color.green * 0.9f;
 
+        public Color red = Color.red;
+        public Color startRed = Color.red * 0.9f;
         // Start is called before the first frame update
         public override void Start()
         {
@@ -136,7 +140,7 @@ namespace Starborn.Boomerang
         {
             actions = new List<CallForAction>()
             {
-                new CallForAction(()=>{ greenSetup.Play(); if(game.marty != null) game.marty.Prepare(); }, 1f),
+                new CallForAction(()=>{ greenSetup.Play(); if(game.marty != null) game.marty.Prepare(game.green, game.startGreen); }, 1f),
                 new CallForAction(()=>{ if(game.marty != null) game.marty.Throw(); }, 2f - (game.marty != null ? game.marty.totalFramesThrow : 0)/24),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 2f, RhythmInputs.Down),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 0.5f; }, 3f),
@@ -151,8 +155,8 @@ namespace Starborn.Boomerang
         {
             actions = new List<CallForAction>()
             {
-                new CallForAction(()=>{ if(game.marty != null) game.marty.Prepare(); }, 1f),
-                new CallForAction(()=>{ if(game.marty != null) game.marty.Prepare(); }, 2f),
+                new CallForAction(()=>{ if(game.marty != null) game.marty.Prepare(game.red, game.startRed); }, 1f),
+                new CallForAction(()=>{ if(game.marty != null) game.marty.Prepare(game.red, game.startRed); }, 2f),
                 new CallForAction(()=>{ if(game.marty != null) game.marty.Throw(); }, 3f - (game.marty != null ? game.marty.totalFramesThrow : 0)/24),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 3f, RhythmInputs.Down),
                 new CallForAction(()=>{ boomerangWhoosh.Play(); boomerangWhoosh.volume = 1f; game.AutoDuck(); }, 4f, RhythmInputs.Down)

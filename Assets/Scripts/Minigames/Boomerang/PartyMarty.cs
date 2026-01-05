@@ -9,6 +9,11 @@ public class PartyMarty : MonoBehaviour
     public AnimationClip throwRang;
     Animator animator;
 
+    public Material material;
+
+    Color curColor = Color.white;
+    Color selectedColor = Color.white;
+
     public int totalFramesIdle
     {
         get
@@ -48,11 +53,22 @@ public class PartyMarty : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        material = GetComponent<SpriteRenderer>().materials[0];
+        selectedColor = curColor;
+        if (material != null)
+        {
+            material.SetColor("_Color", curColor);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(material != null)
+        {
+            curColor = Color.LerpUnclamped(curColor, selectedColor, Time.deltaTime * 5f);
+            material.SetColor("_Color", curColor);
+        }
         
     }
 
@@ -62,8 +78,12 @@ public class PartyMarty : MonoBehaviour
             animator.Play(idle.name);
     }
 
-    public void Prepare()
+    public void Prepare(Color color, Color startColor)
     {
+        if(material != null)
+            material.SetColor("_Color", startColor);
+        curColor = startColor;
+        selectedColor = color;
         if (animator != null && prepare != null)
             animator.Play(prepare.name, -1, 0f);
     }
