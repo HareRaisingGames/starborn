@@ -194,7 +194,7 @@ namespace Starborn.Tosstail
             float start = _right ? startPosition : endPosition;
             float end = _right ? endPosition : startPosition;
 
-            xTween = TweenManager.XTween(gameObject, start, end, duration, Eases.Out, () =>
+            xTween = TweenManager.XTween(gameObject, start, end, duration, Eases.Linear, () =>
             {
                 transform.position = new Vector3(_right ? endPosition : startPosition, startY, transform.position.z);
                 _right = !_right;
