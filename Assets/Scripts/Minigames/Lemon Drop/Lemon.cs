@@ -94,6 +94,9 @@ public class Lemon : MonoBehaviour
 
                 slice2.AddForce(transform.up * 10);
                 //back.AddForce(transform.up * 10);
+
+                //if (GetComponent<Outline>() != null)
+                    //GetComponent<Outline>().enabled = false;
                 break;
         }
     }

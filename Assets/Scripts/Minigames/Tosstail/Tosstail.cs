@@ -79,6 +79,8 @@ namespace Starborn.Tosstail
             base.AdditionalSongSetup();
             if(Conductor.instance != null && niko != null)
             {
+                niko.canBlink = false;
+                if (niko.headAnimator != null) niko.headAnimator.enabled = false;
                 niko.leftArm.SetSpeed(Conductor.instance.songBpm);
                 niko.rightArm.SetSpeed(Conductor.instance.songBpm);
             }
@@ -129,6 +131,7 @@ namespace Starborn.Tosstail
             base.TutorialReset();
             shaker.doubleCatches = 0;
             niko.SetExpression(niko.defaultExpression.name);
+            niko.StartBlink();
         }
 
         public void Toss(float time, float beat = 0, float reset = 1, bool tall = false)

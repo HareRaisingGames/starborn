@@ -10,6 +10,15 @@ namespace Starborn.Tosstail
         [Header("Body")]
         public GameObject body;
         public SpriteRenderer head;
+        public Animator headAnimator;
+        bool _canBlink = true;
+        public bool canBlink
+        {
+            set
+            {
+                _canBlink = value;
+            }
+        }
 
         public Dictionary<string, Sprite> expressionDictionary = new Dictionary<string, Sprite>();
         public List<Expression> expressions = new List<Expression>();
@@ -190,6 +199,8 @@ namespace Starborn.Tosstail
 
             if (expressions.Count != 0)
                 defaultExpression = expressions[0];
+
+            StartBlink();
         }
 
         // Update is called once per frame
@@ -200,6 +211,62 @@ namespace Starborn.Tosstail
                 body.transform.position =
                     Vector3.LerpUnclamped(body.transform.position, new Vector3(body.transform.position.x, y, body.transform.position.z), Time.deltaTime * 25);
             }
+
+            if(leftArm != null)
+            {
+                AnimatorClipInfo[] clipInfo = leftArm.animator.GetCurrentAnimatorClipInfo(0);
+                if (clipInfo.Length > 0)
+                {
+                    // The name of the first clip in the list
+                    string currentAnimationName = clipInfo[0].clip.name;
+                    leftArm.hand.gameObject.SetActive(currentAnimationName == "Idle");
+                }
+            }
+
+            /*if (rightArm != null)
+            {
+                AnimatorClipInfo[] clipInfo = rightArm.animator.GetCurrentAnimatorClipInfo(0);
+                if (clipInfo.Length > 0)
+                {
+                    // The name of the first clip in the list
+                    string currentAnimationName = clipInfo[0].clip.name;
+                    rightArm.hand.gameObject.SetActive(currentAnimationName == "Idle");
+                }
+            }*/
+
+            if (headAnimator != null && headAnimator.enabled)
+            {
+                if (headAnimator.GetCurrentAnimatorStateInfo(0).IsName("Blink"))
+                {
+                    if(headAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.99f)
+                    {
+                        if(!_canBlink)
+                        {
+                            StopCoroutine("Blink");
+                            headAnimator.enabled = false;
+                        }
+                    }
+                }
+                    
+            }
+
+            //Code for when the blinking animation is playing
+
+        }
+
+        public void StartBlink()
+        {
+            _canBlink = true;
+            headAnimator.enabled = true;
+            StartCoroutine("Blink");
+        }
+
+        IEnumerator Blink()
+        {
+            float randomWait = Random.Range(2, 5);
+            yield return new WaitForSeconds(randomWait);
+            headAnimator.Play("Blink");
+            StartCoroutine("Blink");
         }
 
         public void SetExpression(string expression)

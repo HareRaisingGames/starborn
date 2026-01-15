@@ -437,7 +437,7 @@ public class MinigameManager : MonoBehaviour
                 }
                 return;
             }
-            text.text = lines[t].dialogue;
+            text.text = FilterDialogue(lines[t].dialogue);
 
             if (lines[t].section.sections.Count != 0)
             {
@@ -480,6 +480,21 @@ public class MinigameManager : MonoBehaviour
     }
 
     int requiredAmount = 0;
+
+    string FilterDialogue(string line)
+    {
+        return line.Replace("{a}",$"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.A)}\">")
+            .Replace("{pad}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Pad)}\">")
+            .Replace("{down}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Down)}\">")
+            .Replace("{up}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Up)}\">")
+            .Replace("{left}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Left)}\">")
+            .Replace("{right}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Right)}\">")
+            .Replace("{p}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Pad)}\">")
+            .Replace("{d}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Down)}\">")
+            .Replace("{u}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Up)}\">")
+            .Replace("{l}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Left)}\">")
+            .Replace("{r}", $"<sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(minigame.inputSystem.Rhythm.Right)}\">");
+    }
 
     private void OnCompleteTutorialSection(int b)
     {
@@ -682,8 +697,14 @@ public class MinigameManager : MonoBehaviour
             Clear();
             NextLine();
         }
+        else
+        {
+            //ScreenCapture.CaptureScreenshot($"{Application.dataPath}/tosstail_{index}.png");
+            //index++;
+        }
 
     }
+    //int index = 0;
 
     public static void Clear()
     {

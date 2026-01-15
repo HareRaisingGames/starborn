@@ -1482,8 +1482,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 0%
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 7c3e5e553d8adfc43a8c8a0ceb887467, type: 2}
-  m_sharedMaterial: {fileID: 4751767103207720189, guid: 7c3e5e553d8adfc43a8c8a0ceb887467, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: d8511afc12cb4234280602da949d8852, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 8ba84628d2e827a45afaa927ebd07ef2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1580,6 +1580,7 @@ MonoBehaviour:
   offset: {x: -4, y: 0, z: 0}
   lerp: 0
   lerpAmount: 0
+  scale: 0
 --- !u!1 &7410014491563798644
 GameObject:
   m_ObjectHideFlags: 0

@@ -348,6 +348,11 @@ public abstract class Minigame : MonoBehaviour
 
     }
 
+    public virtual void OnCountdown()
+    {
+
+    }
+
     //If you're in a tutorial and you need to do a reset of something
     public virtual void TutorialReset()
     {

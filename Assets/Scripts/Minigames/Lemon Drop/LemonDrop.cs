@@ -9,8 +9,6 @@ namespace Starborn.LemonDrop
 {
     public class LemonDrop : Minigame
     {
-        LemonToss lemonEvent;
-        RhythmInput input;
         public GameObject lemonPrefab;
         Lemon lemon;
         // Start is called before the first frame update
@@ -33,7 +31,7 @@ namespace Starborn.LemonDrop
             {
                 yield return new WaitForSeconds(1);
                 //Debug.Log("Go!");
-                StartSong();
+                SetUpSong();
             }
         }
         int i = 0;

@@ -150,7 +150,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: b123b0fc9a090e54694780db20b344b6
+      spriteID: a4e304df8f93280418ad50ffa36e4528
       internalID: 2018717002
       vertices: []
       indices: 
@@ -171,7 +171,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 35c919171b4d06147b18c67c85d89094
+      spriteID: e908badfb0b65464e94d02385d7af17f
       internalID: -1974374531
       vertices: []
       indices: 
@@ -192,7 +192,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1a088251e3b1aa14a9bbcd49eb488434
+      spriteID: e147f548864b8594a838e8518dc32de5
       internalID: 1039618999
       vertices: []
       indices: 
@@ -213,7 +213,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e3267bd4f76dba04d9240afc51868637
+      spriteID: 066363414171e3949828fe36f4533793
       internalID: -177793107
       vertices: []
       indices: 
@@ -234,7 +234,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cca2c6e0d508e8049837605d76236e10
+      spriteID: 2c1d8c5a98e563c49b708db36f86758f
       internalID: 488675411
       vertices: []
       indices: 
@@ -255,7 +255,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9e68492b65a17dd4fba59c23dbb6da13
+      spriteID: 6daaf4b56cd61594caa5a79614ad3170
       internalID: -2103100539
       vertices: []
       indices: 
@@ -276,7 +276,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 59e9c752e3ddb084390d6ccbcde87469
+      spriteID: 8a0b8eb84a1e1524fbba283ef1497c83
       internalID: -1734050964
       vertices: []
       indices: 
@@ -297,7 +297,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fcb32b1fc25d1d4478a1fdb1cd836841
+      spriteID: 194a67f98cd33ca4db7aca4e6db5700e
       internalID: -2007680312
       vertices: []
       indices: 
@@ -318,7 +318,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f0ef7c71ebd6e16468b1d1837d74831e
+      spriteID: 93963eca697a0094aabaa474fe6b5481
       internalID: -1442150652
       vertices: []
       indices: 
@@ -339,8 +339,92 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0ce0cce3c51474e478566f6618f824e1
+      spriteID: 2000b74df2fa741458210c8605614d5c
       internalID: -2043576210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: niko_head_blink_1
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 589
+        width: 389
+        height: 435
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2202555b61e4f3243bf03d58fc2c2198
+      internalID: 947162252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: niko_head_blink_2
+      rect:
+        serializedVersion: 2
+        x: 1561
+        y: 589
+        width: 389
+        height: 435
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 459f2fb7f00c09346bf5c02880734a45
+      internalID: 1951073581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: niko_head_blink_3
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 83
+        width: 389
+        height: 435
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ce8dc60ce1d4502488c60f354d78a76c
+      internalID: 1312718494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: niko_arm_toss_mirrored
+      rect:
+        serializedVersion: 2
+        x: 1139
+        y: 83
+        width: 420
+        height: 473
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54d7e037d1b5b47498c89484e0f50fa3
+      internalID: 1094398511
       vertices: []
       indices: 
       edges: []
@@ -360,7 +444,11 @@ TextureImporter:
       niko_arm_open: -1974374531
       niko_arm_toss: -177793107
       niko_arm_toss_2: 1039618999
+      niko_arm_toss_mirrored: 1094398511
       niko_hand: 488675411
+      niko_head_blink_1: 947162252
+      niko_head_blink_2: 1951073581
+      niko_head_blink_3: 1312718494
       niko_head_drop: -2007680312
       niko_head_happy: -1734050964
       niko_head_idle: -2103100539
