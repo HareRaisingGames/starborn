@@ -197,6 +197,12 @@ namespace Starborn.Tosstail
             }
         }
 
+        /*public override void onDown(InputAction.CallbackContext context)
+        {
+            base.onDown(context);
+            Debug.Log(MiscUtils.Random("Hi!", 1, 2.4, 5.55f, false, "Ok...", 'a', 8.5f, 10, true, 6.66));
+        }*/
+
         public override void Update()
         {
             base.Update();

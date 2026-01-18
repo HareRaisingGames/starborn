@@ -265,7 +265,7 @@ namespace Starborn.Tosstail
         {
             float randomWait = Random.Range(2, 5);
             yield return new WaitForSeconds(randomWait);
-            headAnimator.Play("Blink");
+            headAnimator.Play(MiscUtils.Random("Blink", "DoubleBlink"));
             StartCoroutine("Blink");
         }
 
