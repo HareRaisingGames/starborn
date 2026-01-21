@@ -6,6 +6,7 @@ using Starborn.InputSystem;
 using TMPro;
 using UnityEngine.UI;
 using Starborn;
+using UnityEngine.InputSystem;
 
 public class PauseMenu : OptionMenu
 {
@@ -18,6 +19,8 @@ public class PauseMenu : OptionMenu
     }
 
     public Action exitCallback;
+
+    public AudioClip resume;
 
     #region GameObjects
     public GameObject blackBG;
@@ -184,6 +187,26 @@ public class PauseMenu : OptionMenu
             text.fontMaterials[0].SetFloat(ShaderUtilities.ID_GlowPower, 0);
         }
     }
+
+    protected override void Hover(int id)
+    {
+        if (id == 0)
+            selectSource.clip = resume;
+        else
+            selectSource.clip = select;
+        base.Hover(id);
+    }
+
+    public override void OnSelect(InputAction.CallbackContext context)
+    {
+        if (curOption == 0)
+            selectSource.clip = resume;
+        else
+            selectSource.clip = select;
+
+        base.OnSelect(context);
+    }
+
     public void Resume()
     {
         Close();

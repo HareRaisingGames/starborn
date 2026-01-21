@@ -11207,7 +11207,7 @@ GameObject:
   - component: {fileID: 512869216}
   - component: {fileID: 512869215}
   m_Layer: 0
-  m_Name: Light 2D
+  m_Name: Halftones
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

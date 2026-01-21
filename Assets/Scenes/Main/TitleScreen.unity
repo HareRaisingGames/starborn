@@ -495,8 +495,9 @@ MonoBehaviour:
   onBackEvent:
     m_PersistentCalls:
       m_Calls: []
-  select: {fileID: 8300000, guid: 2affd3036e210d34c97567d41d489a86, type: 3}
-  navigate: {fileID: 8300000, guid: 9a1fb34681f5a974facd9eae689f9dbd, type: 3}
+  select: {fileID: 8300000, guid: 641d78c416ac9234995ce72a9286bbbd, type: 3}
+  up: {fileID: 8300000, guid: 19862cd5e26345e4e857c8ca41e7d7fa, type: 3}
+  down: {fileID: 8300000, guid: fb4f6b4a50b239f4f83c85a30fc10f58, type: 3}
 --- !u!1 &871276956
 GameObject:
   m_ObjectHideFlags: 0

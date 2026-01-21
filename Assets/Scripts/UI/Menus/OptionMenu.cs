@@ -50,10 +50,12 @@ public class OptionMenu : MonoBehaviour
 
     [Header("AudioClips")]
     public AudioClip select;
-    public AudioClip navigate;
+    public AudioClip up;
+    public AudioClip down;
 
     protected AudioSource selectSource;
     protected AudioSource navigateSource;
+    protected AudioSource navigateSource2;
 
     // Start is called before the first frame update
     public virtual void Start()
@@ -70,8 +72,18 @@ public class OptionMenu : MonoBehaviour
         obj = new GameObject("Navigate");
         navigateSource = obj.AddComponent<AudioSource>();
         navigateSource.playOnAwake = false;
-        if (navigate != null) navigateSource.clip = navigate;
+        if (up != null) navigateSource.clip = up;
         obj.transform.parent = transform;
+
+        if(down != null)
+        {
+            obj.name = "Up";
+            obj = new GameObject("Down");
+            navigateSource2 = obj.AddComponent<AudioSource>();
+            navigateSource2.playOnAwake = false;
+            navigateSource2.clip = down;
+            obj.transform.parent = transform;
+        }
 
         foreach(Option option in options)
         {
@@ -118,7 +130,11 @@ public class OptionMenu : MonoBehaviour
                 foreach (Option option in options)
                 {
                     if (option.HoverOver(result.gameObject.GetComponent<RectTransform>()))
+                    {
+                        Hover(options.IndexOf(option));
                         curItem = option;
+                    }
+                        
                 }
             }
 
@@ -210,6 +226,11 @@ public class OptionMenu : MonoBehaviour
             hasSelected = false;
     }
 
+    protected virtual void Hover(int id)
+    {
+
+    }
+
     public virtual void OnBack(InputAction.CallbackContext context)
     {
         if (hasSelected)
@@ -234,7 +255,16 @@ public class OptionMenu : MonoBehaviour
         if (hasSelected)
             return;
 
-        if (change != 0) navigateSource.Play();
+        if (change != 0)
+        {
+            if(navigateSource2 != null)
+                if(change > 0)
+                    navigateSource.Play();
+                else
+                    navigateSource2.Play();
+            else
+                navigateSource.Play();
+        }
 
         var opt = _curOption - change;
         //_curOption -= change;
