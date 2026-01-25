@@ -184,6 +184,9 @@ namespace Starborn.Tosstail
         public float y = 0;
         public float yOffset = -1;
         bool bounce = true;
+
+        [HideInInspector]
+        public bool handSetter;
         void Awake()
         {
             instance = this;
@@ -212,27 +215,31 @@ namespace Starborn.Tosstail
                     Vector3.LerpUnclamped(body.transform.position, new Vector3(body.transform.position.x, y, body.transform.position.z), Time.deltaTime * 25);
             }
 
-            if(leftArm != null)
+            if(handSetter)
             {
-                AnimatorClipInfo[] clipInfo = leftArm.animator.GetCurrentAnimatorClipInfo(0);
-                if (clipInfo.Length > 0)
+                if (leftArm != null)
                 {
-                    // The name of the first clip in the list
-                    string currentAnimationName = clipInfo[0].clip.name;
-                    leftArm.hand.gameObject.SetActive(currentAnimationName == "Idle");
+                    AnimatorClipInfo[] clipInfo = leftArm.animator.GetCurrentAnimatorClipInfo(0);
+                    if (clipInfo.Length > 0)
+                    {
+                        // The name of the first clip in the list
+                        string currentAnimationName = clipInfo[0].clip.name;
+                        leftArm.hand.gameObject.SetActive(currentAnimationName == "Idle");
+                    }
+                }
+
+                if (rightArm != null)
+                {
+                    AnimatorClipInfo[] clipInfo = rightArm.animator.GetCurrentAnimatorClipInfo(0);
+                    if (clipInfo.Length > 0)
+                    {
+                        // The name of the first clip in the list
+                        string currentAnimationName = clipInfo[0].clip.name;
+                        rightArm.hand.gameObject.SetActive(currentAnimationName == "Idle");
+                    }
                 }
             }
 
-            /*if (rightArm != null)
-            {
-                AnimatorClipInfo[] clipInfo = rightArm.animator.GetCurrentAnimatorClipInfo(0);
-                if (clipInfo.Length > 0)
-                {
-                    // The name of the first clip in the list
-                    string currentAnimationName = clipInfo[0].clip.name;
-                    rightArm.hand.gameObject.SetActive(currentAnimationName == "Idle");
-                }
-            }*/
 
             if (headAnimator != null && headAnimator.enabled)
             {

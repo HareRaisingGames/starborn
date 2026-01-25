@@ -22,7 +22,14 @@ public abstract class Minigame : MonoBehaviour
     public Conductor conductor;
     public bool autoPlay;
     public bool isTutorial;
-    protected bool startGame;
+    protected bool _startGame;
+    public bool startGame
+    {
+        set
+        {
+            _startGame = value;
+        }
+    }
     protected bool completed;
 
     public AudioClip song;
@@ -271,6 +278,8 @@ public abstract class Minigame : MonoBehaviour
                 TweenManager.AlphaTween(child.gameObject, 0, 1, 1f, Eases.EaseInOutCubic).SetStartDelay(0.25f);
             }
         }
+
+        _startGame = true;
 
         //Debug.Log(MinigameManager.instance.inputs.Count);
             

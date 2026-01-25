@@ -510,6 +510,7 @@ public class MinigameManager : MonoBehaviour
 
             if(minigame.hasCompleted != null && minigame.hasCompleted.Invoke())
             {
+                minigame.startGame = false;
                 Conductor.instance.music.Stop();
                 minigame.hasCompleted = null;
                 t++;

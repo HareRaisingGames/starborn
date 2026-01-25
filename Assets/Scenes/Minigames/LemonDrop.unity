@@ -392,25 +392,25 @@ MonoBehaviour:
   conductor: {fileID: 1449119417}
   autoPlay: 1
   isTutorial: 1
-  song: {fileID: 0}
+  song: {fileID: 8300000, guid: ace72309614a8114a93c8478ef3e7d85, type: 3}
   tutorialSong: {fileID: 0}
   paused: 0
   eventsList:
   - LemonToss
   chartings:
-  - skipCountdown: 0
+  - skipCountdown: 1
     sections:
     - inputList:
       - events:
         - LemonToss
         Event: LemonToss
         displayParameters: []
-        mark: 0.5
+        mark: 5
       startLength: 0
-      length: 4
+      length: 8
       loops: 1
     setBPM: 1
-    bpm: 107
+    bpm: 121
   checkChartings: []
   tutorial:
     lines:
@@ -940,6 +940,10 @@ PrefabInstance:
     - target: {fileID: 4702676145902914995, guid: 45f603872cb79ee4b995118d344cc2b0, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7265779390603280779, guid: 45f603872cb79ee4b995118d344cc2b0, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7627668131594789941, guid: 45f603872cb79ee4b995118d344cc2b0, type: 3}
       propertyPath: m_LocalPosition.x

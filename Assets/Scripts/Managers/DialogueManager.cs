@@ -178,6 +178,8 @@ public class DialogueManager : MonoBehaviour
                 backgroundGlobals.Add("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
                 LuaMethods.AddGlobal(backgroundGlobals);
 
+                LuaMethods.AddGlobal(dialogueGlobals);
+
                 LuaFunctions.dialogueFile = dialogueFile;
 
                 if (backgrounds.Count != 0)
@@ -1284,17 +1286,24 @@ public class DialogueManager : MonoBehaviour
     }
     #endregion
 
+    #region Dialogue Lua
+    public Dictionary<string, dynamic> dialogueGlobals = new Dictionary<string, dynamic>()
+    {
+        { "SetDelayTime", (Action<float>)SetPauseTime }
+    };
+
+    public static void SetPauseTime(float time)
+    {
+        if (instance.dialogueBox != null)
+            instance.dialogueBox.time = time;
+    }
+    #endregion
 
     #region Music Lua
     public Dictionary<string, dynamic> musicGlobals = new Dictionary<string, dynamic>()
     {
         { "StopMusic", (Action)StopMusic },
         { "FadeMusic", (Action<float, float>)FadeMusic }
-    };
-
-    public Dictionary<string, dynamic> backgroundGlobals = new Dictionary<string, dynamic>()
-    {
-        
     };
 
     public static void StopMusic()
@@ -1317,16 +1326,22 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
+    //Will add a function for multiple songs
+    #endregion
+    #region Background Lua
+    public Dictionary<string, dynamic> backgroundGlobals = new Dictionary<string, dynamic>()
+    {
+
+    };
+
     static Image GetImageFromBGName(string name)
     {
-        foreach(GameObject obj in GameObject.FindGameObjectsWithTag("Background"))
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Background"))
         {
             if (obj.GetComponent<Image>() != null && obj.name == name)
                 return obj.GetComponent<Image>();
         }
         return null;
     }
-
-    //Will add a function for multiple songs
     #endregion
 }

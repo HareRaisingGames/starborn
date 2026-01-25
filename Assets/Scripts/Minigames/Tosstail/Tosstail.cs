@@ -60,6 +60,7 @@ namespace Starborn.Tosstail
             niko.leftArm.isFree = shaker.direction;
             niko.rightArm.isFree = !shaker.direction;
 
+            niko.handSetter = _startGame;
             //niko.leftArm.isOpen = niko.leftArm.isFree = shaker.direction;
             //niko.rightArm.isOpen = niko.rightArm.isFree = !shaker.direction;
 
@@ -211,6 +212,8 @@ namespace Starborn.Tosstail
             niko.rightArm.Update();
             rightCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(a)}\"> to do a right catch";
             leftCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(pad)}\"> to do a left catch";
+
+            niko.handSetter = _startGame;
         }
     }
 

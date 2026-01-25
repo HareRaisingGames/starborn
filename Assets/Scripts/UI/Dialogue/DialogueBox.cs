@@ -43,6 +43,14 @@ public class DialogueBox : MonoBehaviour
 
     bool _interacting = true;
     public bool canInteract => _interacting;
+    float _time;
+    public float time
+    {
+        set
+        {
+            _time = value;
+        }
+    }
 
     [HideInInspector]
     public float delay = 0.05f;
@@ -74,13 +82,15 @@ public class DialogueBox : MonoBehaviour
         yield return new WaitForSeconds(0.075f);
 
         char[] letters = text.ToCharArray();
+        int i = 0;
         foreach (char letter in letters)
         {
+            _time = time;
             field.text += letter;
-            int i = new List<char>(letters).IndexOf(letter);
+            //int i = new List<char>(letters).IndexOf(letter);
             onChar?.Invoke(t,i);
-            //i++;
-            yield return new WaitForSeconds(time);
+            i++;
+            yield return new WaitForSeconds(_time);
         }
 
         this.text = field.text;
