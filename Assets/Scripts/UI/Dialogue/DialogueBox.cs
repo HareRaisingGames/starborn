@@ -87,7 +87,6 @@ public class DialogueBox : MonoBehaviour
         {
             _time = time;
             field.text += letter;
-            //int i = new List<char>(letters).IndexOf(letter);
             onChar?.Invoke(t,i);
             i++;
             yield return new WaitForSeconds(_time);

@@ -79,6 +79,7 @@ public class DialogueManager : MonoBehaviour
     #endregion
 
     #region UI Properties
+    public GameObject objectHolder;
     public GameObject backgroundsObject;
     public GameObject spritesObject;
     public GameObject foregroundsObject;
@@ -88,6 +89,7 @@ public class DialogueManager : MonoBehaviour
     public GameObject transitionCanvas;
     public GameObject transition;
     public GameObject fade;
+    public GameObject flash;
     public GameObject loadingIcon;
     public GameObject nextButton;
 
@@ -113,6 +115,8 @@ public class DialogueManager : MonoBehaviour
         baseCameraData = Camera.main.GetUniversalAdditionalCameraData();
         defaultBaseCameraData = baseCameraData;
         defaultMask = Camera.main.cullingMask;
+
+        LuaMethods.SetInstance(this);
     }
 
     private void OnEnable()
@@ -129,8 +133,12 @@ public class DialogueManager : MonoBehaviour
     {
         scene = SceneManager.GetSceneByName("DialogueState");
         sceneName = scene.name;
+        if(flash != null)
+            flash.SetActive(false);
+
         filename = "dialogue_test";
         //filename = "backgrounds";
+
         StartCoroutine(LoadStreamingAsset());
         IEnumerator LoadStreamingAsset()
         {
@@ -175,9 +183,11 @@ public class DialogueManager : MonoBehaviour
                 UnpackDialogue(dialogueFile);
 
                 LuaMethods.AddGlobal(musicGlobals);
-                backgroundGlobals.Add("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
+                //backgroundGlobals.Add("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
+                LuaMethods.AddGlobal("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
                 LuaMethods.AddGlobal(backgroundGlobals);
-
+                LuaMethods.AddGlobal("lastChar", dialogueFile.GetLines()[curLine].text[dialogueFile.GetLines()[curLine].text.Length - 1]);
+                LuaMethods.AddGlobal("lastCharPos", dialogueFile.GetLines()[curLine].text.Length - 1);
                 LuaMethods.AddGlobal(dialogueGlobals);
 
                 LuaFunctions.dialogueFile = dialogueFile;
@@ -1289,13 +1299,37 @@ public class DialogueManager : MonoBehaviour
     #region Dialogue Lua
     public Dictionary<string, dynamic> dialogueGlobals = new Dictionary<string, dynamic>()
     {
-        { "SetDelayTime", (Action<float>)SetPauseTime }
+        { "SetDelayTime", (Action<float>)SetPauseTime },
+        { "Flash", (Action<float, string>)Flash},
+        { "ScreenShake", (Action<float, float>)Shake }
     };
 
     public static void SetPauseTime(float time)
     {
         if (instance.dialogueBox != null)
             instance.dialogueBox.time = time;
+    }
+
+    static void Flash(float duration = 1f, string color = "white")
+    {
+        if (duration <= 0) return;
+
+        if(instance.flash != null)
+        {
+            instance.flash.SetActive(true);
+            ColorUtils.SetAlpha(instance.flash, 1);
+            ColorUtils.SetColorByString(instance.flash, color);
+            TweenManager.AlphaTween(instance.flash, 1, 0, duration, Eases.Linear, delegate ()
+            {
+                instance.flash.SetActive(false);
+            });
+        }
+    }
+
+    static void Shake(float duration, float magnitude)
+    {
+        if(instance.objectHolder != null)
+            LuaMethods.ShakeScreen(duration, magnitude, instance.objectHolder);
     }
     #endregion
 
@@ -1328,6 +1362,7 @@ public class DialogueManager : MonoBehaviour
 
     //Will add a function for multiple songs
     #endregion
+
     #region Background Lua
     public Dictionary<string, dynamic> backgroundGlobals = new Dictionary<string, dynamic>()
     {
