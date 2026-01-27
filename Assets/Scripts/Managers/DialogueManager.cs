@@ -139,6 +139,9 @@ public class DialogueManager : MonoBehaviour
         filename = "dialogue_test";
         //filename = "backgrounds";
 
+        //LuaMethods.GetProperty("backgroundsObject.transform.anchoredPosition.x");
+        //LuaMethods.SetProperty("nameTxt.text", "Hello!");
+
         StartCoroutine(LoadStreamingAsset());
         IEnumerator LoadStreamingAsset()
         {
