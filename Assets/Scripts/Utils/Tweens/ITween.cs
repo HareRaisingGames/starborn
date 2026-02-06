@@ -11,6 +11,10 @@ public interface ITween
     void Pause();
     void Resume();
 
+    void Loop(int loops);
+
+    void PingPong(int loops);
+
     object Target { get; }
     bool isComplete { get; }
     bool WasKilled { get; }

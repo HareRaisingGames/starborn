@@ -70,7 +70,7 @@ public class DialogueManager : MonoBehaviour
     /// </summary>
     /// 
     List<string> minigames = new List<string>();
-    public Dictionary<string, Dictionary<GameObject, bool>> sceneVisibilities 
+    public Dictionary<string, Dictionary<GameObject, bool>> sceneVisibilities
         = new Dictionary<string, Dictionary<GameObject, bool>>();
     int minigameCount = 0;
     bool loadedMinigames = false;
@@ -133,14 +133,10 @@ public class DialogueManager : MonoBehaviour
     {
         scene = SceneManager.GetSceneByName("DialogueState");
         sceneName = scene.name;
-        if(flash != null)
+        if (flash != null)
             flash.SetActive(false);
 
         filename = "dialogue_test";
-        //filename = "backgrounds";
-
-        //LuaMethods.GetProperty("backgroundsObject.transform.anchoredPosition.x");
-        //LuaMethods.SetProperty("nameTxt.text", "Hello!");
 
         StartCoroutine(LoadStreamingAsset());
         IEnumerator LoadStreamingAsset()
@@ -182,46 +178,47 @@ public class DialogueManager : MonoBehaviour
                     yield break;
                 }
             }
-                dialogueFile = StarbornFileHandler.ReadSimpleDialogue(filename);
-                UnpackDialogue(dialogueFile);
+            dialogueFile = StarbornFileHandler.ReadSimpleDialogue(filename);
+            UnpackDialogue(dialogueFile);
 
-                LuaMethods.AddGlobal(musicGlobals);
-                //backgroundGlobals.Add("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
-                LuaMethods.AddGlobal("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
-                LuaMethods.AddGlobal(backgroundGlobals);
-                LuaMethods.AddGlobal("lastChar", dialogueFile.GetLines()[curLine].text[dialogueFile.GetLines()[curLine].text.Length - 1]);
-                LuaMethods.AddGlobal("lastCharPos", dialogueFile.GetLines()[curLine].text.Length - 1);
-                LuaMethods.AddGlobal(dialogueGlobals);
+            LuaMethods.AddGlobal(musicGlobals);
+            //backgroundGlobals.Add("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
+            LuaMethods.AddGlobal("curBG", GetImageFromBGName(dialogueFile.GetLines()[curLine].background));
+            LuaMethods.AddGlobal(backgroundGlobals);
+            LuaMethods.AddGlobal("lastChar", dialogueFile.GetLines()[curLine].text[dialogueFile.GetLines()[curLine].text.Length - 1]);
+            LuaMethods.AddGlobal("lastCharPos", dialogueFile.GetLines()[curLine].text.Length - 1);
+            LuaMethods.AddGlobal(dialogueGlobals);
+            LuaMethods.AddGlobal(tweenGlobals);
 
-                LuaFunctions.dialogueFile = dialogueFile;
+            LuaFunctions.dialogueFile = dialogueFile;
 
-                if (backgrounds.Count != 0)
+            if (backgrounds.Count != 0)
+            {
+                string curBG = dialogueFile.background;
+                if (backgrounds.ContainsKey(curBG))
+                    PutObjectInFront(backgrounds[curBG]);
+
+                foreach (Transform bg in backgroundsObject.transform)
                 {
-                    string curBG = dialogueFile.background;
-                    if (backgrounds.ContainsKey(curBG))
-                        PutObjectInFront(backgrounds[curBG]);
-
-                    foreach (Transform bg in backgroundsObject.transform)
-                    {
-                        if (backgrounds.ContainsKey(bg.gameObject.name))
-                            bg.gameObject.SetActive(false);
-                    }
-
-                    backgrounds[curBG].SetActive(true);
+                    if (backgrounds.ContainsKey(bg.gameObject.name))
+                        bg.gameObject.SetActive(false);
                 }
 
-                if (sprites.Count != 0)
+                backgrounds[curBG].SetActive(true);
+            }
+
+            if (sprites.Count != 0)
+            {
+                foreach (KeyValuePair<string, CharacterSprite> character in sprites)
                 {
-                    foreach (KeyValuePair<string, CharacterSprite> character in sprites)
-                    {
-                        character.Value.gameObject.SetActive(false);
-                    }
+                    character.Value.gameObject.SetActive(false);
                 }
+            }
 
             if (nextButton != null) nextButton.SetActive(false);
 
-                //TweenManager.AlphaTween(fade, 1, 1, 0.25f);
-                //TweenManager.AlphaTween(fade, 1, 0, 2).SetStartDelay(0.5f);
+            //TweenManager.AlphaTween(fade, 1, 1, 0.25f);
+            //TweenManager.AlphaTween(fade, 1, 0, 2).SetStartDelay(0.5f);
 
             /*StartCoroutine(LoadMinigame());
             IEnumerator LoadMinigame()
@@ -253,7 +250,7 @@ public class DialogueManager : MonoBehaviour
                 obj.GetComponent<RectTransform>().offsetMin = Vector2.zero;
                 obj.GetComponent<RectTransform>().offsetMax = Vector2.zero;*/
 
-                obj.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f,0.5f);
+                obj.GetComponent<RectTransform>().anchorMin = new Vector2(0.5f, 0.5f);
                 obj.GetComponent<RectTransform>().anchorMax = new Vector2(0.5f, 0.5f);
                 obj.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
 
@@ -274,7 +271,7 @@ public class DialogueManager : MonoBehaviour
             }
 
         //Get Characters
-        if(dialogue.GetCharacters().Count != 0)
+        if (dialogue.GetCharacters().Count != 0)
             foreach (KeyValuePair<string, List<Emotion>> character in dialogue.GetCharacters())
             {
                 SBCFile characterFile = new SBCFile(character.Key, true);
@@ -330,8 +327,8 @@ public class DialogueManager : MonoBehaviour
             firstLineHasName = lines[0].name != null && lines[0].name != "";
             startWithName = lines[0].name;
         }
-            
-        
+
+
         //Get Dialogue
         foreach (BetaDialogueSequence line in lines)
         {
@@ -343,7 +340,7 @@ public class DialogueManager : MonoBehaviour
                 dialogueAudios.Add(lines.IndexOf(line), clip);
             }
 
-            if(line.minigame != null || line.minigame != "")
+            if (line.minigame != null || line.minigame != "")
             {
                 minigames.Add(line.minigame);
             }
@@ -375,7 +372,8 @@ public class DialogueManager : MonoBehaviour
     async void LoadScene(string path, string name)
     {
         var scene = SceneManager.LoadSceneAsync(path, LoadSceneMode.Additive);
-        scene.completed += delegate (AsyncOperation op) {
+        scene.completed += delegate (AsyncOperation op)
+        {
             HideEverythingInScene(name);
         };
         scene.allowSceneActivation = false;
@@ -394,7 +392,7 @@ public class DialogueManager : MonoBehaviour
     void HideEverythingInScene(string name)
     {
         Scene scene = SceneManager.GetSceneByName($"Scenes/Minigames/{name}");
-        if(scene != null && scene.isLoaded && !sceneVisibilities.ContainsKey(name))
+        if (scene != null && scene.isLoaded && !sceneVisibilities.ContainsKey(name))
         {
             Dictionary<GameObject, bool> rootVisibilities = new Dictionary<GameObject, bool>();
             GameObject[] rootObjects = scene.GetRootGameObjects();
@@ -408,7 +406,7 @@ public class DialogueManager : MonoBehaviour
         }
         List<GameObject> keys = sceneVisibilities[name].Keys.ToList();
 
-        for(int i = keys.Count - 1; i >= 0; i--)
+        for (int i = keys.Count - 1; i >= 0; i--)
         {
             if (keys[i] == null)
             {
@@ -420,7 +418,7 @@ public class DialogueManager : MonoBehaviour
         }
 
         minigameCount++;
-        if(minigameCount >= minigames.Count && !loadedMinigames)
+        if (minigameCount >= minigames.Count && !loadedMinigames)
         {
             loadedMinigames = true;
             Debug.Log("Loaded!");
@@ -432,18 +430,19 @@ public class DialogueManager : MonoBehaviour
     {
         if (loadingIcon != null) TweenManager.AlphaTween(loadingIcon, 1, 0, 0.5f, Eases.EaseInOutQuad);
         Time.timeScale = 1;
-        if(LoadingManager.instance != null)
+        if (LoadingManager.instance != null)
             LoadingManager.FadeOut(delegate ()
             {
-                if(!isGameOver)
+                if (!isGameOver)
                     StaticProperties.canPause = true;
                 dialogueBox.gameObject.SetActive(true);
                 BoxTransition(true, StartDialogue);
             });
         else
-            TweenManager.AlphaTween(fade, 1, 0, 2, Eases.Linear, delegate () {
+            TweenManager.AlphaTween(fade, 1, 0, 2, Eases.Linear, delegate ()
+            {
 
-                if(!isGameOver)
+                if (!isGameOver)
                     StaticProperties.canPause = true;
                 dialogueBox.gameObject.SetActive(true);
                 BoxTransition(true, StartDialogue);
@@ -456,7 +455,7 @@ public class DialogueManager : MonoBehaviour
         gameObject.SetActive(true);
         backgroundsObject.SetActive(true);
         GameObject baseBG = null;
-        foreach(Transform child in backgroundsObject.transform)
+        foreach (Transform child in backgroundsObject.transform)
         {
             if (child.tag == "Base") baseBG = child.gameObject;
             else child.gameObject.SetActive(false);
@@ -479,13 +478,13 @@ public class DialogueManager : MonoBehaviour
         if (transitionCanvas != null)
             transitionCanvas.SetActive(true);
         transition.SetActive(true);
-        if(minigameNext)
+        if (minigameNext)
         {
             curLine = jumpToLine;
             string nextMinigame = lines[jumpToLine].minigame;
             GameIn(nextMinigame);
         }
-        else if(minigameIsFinal)
+        else if (minigameIsFinal)
         {
             ExitDialogue();
         }
@@ -506,7 +505,8 @@ public class DialogueManager : MonoBehaviour
                     startWithName = lines[jumpToLine].name;
                 }
                 PutObjectInFront(backgrounds[lines[jumpToLine].background]);
-                TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate () {
+                TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate ()
+                {
                     BoxTransition(true, BackToDialogue);
                 }).SetStartDelay(0.1f);
                 //GameOut(minigame);
@@ -539,7 +539,7 @@ public class DialogueManager : MonoBehaviour
 
     void GameOut(string name, bool trans = true)
     {
-        if(SceneManager.GetActiveScene().name != sceneName)
+        if (SceneManager.GetActiveScene().name != sceneName)
         {
             //Debug.Log("Don't match");
             HideEverythingInScene(SceneManager.GetActiveScene().name);
@@ -549,12 +549,13 @@ public class DialogueManager : MonoBehaviour
         {
             firstLineHasName = gameOverLines[0].name != null && gameOverLines[0].name != "";
         }
-            
+
 
         string game = $"Scenes/Minigames/{name}";
 
-        if(trans)
-            TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate() {
+        if (trans)
+            TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate ()
+            {
                 if (transitionCanvas != null)
                     transitionCanvas.SetActive(false);
                 StaticProperties.canPause = true;
@@ -566,7 +567,7 @@ public class DialogueManager : MonoBehaviour
         {
             StaticProperties.canPause = true;
         }
-            
+
         if (SceneManager.GetSceneByName(game) == null)
             return;
 
@@ -577,7 +578,7 @@ public class DialogueManager : MonoBehaviour
         UniversalAdditionalCameraData cameraData = null;
 
         Scene targetScene = SceneManager.GetActiveScene();
-        if(targetScene.isLoaded)
+        if (targetScene.isLoaded)
         {
             GameObject[] rootObjects = targetScene.GetRootGameObjects();
             foreach (GameObject obj in rootObjects)
@@ -606,13 +607,13 @@ public class DialogueManager : MonoBehaviour
         Camera.main.backgroundColor = minigame.bgColor;
         Camera.main.transform.position = minigame.camPosition;
 
-        if(cameraData != null)
+        if (cameraData != null)
         {
             Debug.Log(cameraData.cameraStack);
             baseCameraData.cameraStack.AddRange(cameraData.cameraStack);
             SetMainCameraRenderer(cameraData);
         }
-            
+
         //Debug.Log(baseCameraData.cameraStack.Count);
 
         foreach (GameObject obj in importantComponents)
@@ -632,9 +633,9 @@ public class DialogueManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
-    
+
     void BoxTransition(bool on = false, Action callback = null)
     {
         dialogueBox.text = "";
@@ -647,7 +648,8 @@ public class DialogueManager : MonoBehaviour
             if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<SpriteRenderer>())
             {
                 ColorUtils.SetAlpha(child.gameObject, on ? 0 : 1);
-                TweenManager.AlphaTween(child.gameObject, on ? 0 : 1, on ? 1 : 0, 0.25f, Eases.EaseInOutCubic, delegate () {
+                TweenManager.AlphaTween(child.gameObject, on ? 0 : 1, on ? 1 : 0, 0.25f, Eases.EaseInOutCubic, delegate ()
+                {
                     callback?.Invoke();
                 });
             }
@@ -668,13 +670,13 @@ public class DialogueManager : MonoBehaviour
                 if (child.gameObject.GetComponent<Image>()
                     || child.gameObject.GetComponent<SpriteRenderer>()
                     || child.gameObject.GetComponent<TMP_Text>())
-                    {
+                {
                     //Color color = child.GetComponent<Image>().color;
                     //child.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 1);
                     TweenManager.AlphaTween(child.gameObject, on ? 0 : 1, on ? 1 : 0, 0.25f, Eases.EaseInOutCubic, delegate ()
                     {
                     });
-                    }
+                }
             }
         }
         else
@@ -726,12 +728,12 @@ public class DialogueManager : MonoBehaviour
 
     public void onA(InputAction.CallbackContext context)
     {
-        if(paused)
+        if (paused)
         {
 
         }
         else
-        if(interact)
+        if (interact)
         {
             if (dialogueBox != null)
             {
@@ -739,7 +741,7 @@ public class DialogueManager : MonoBehaviour
                 {
                     NextLine(curLine);
                     if (dialogueBox.click != null) dialogueBox.click.Play();
-                }   
+                }
                 else
                 {
                     TweenManager.instance.RemoveAllActiveTweens();
@@ -754,23 +756,25 @@ public class DialogueManager : MonoBehaviour
 
     public void OnPause(InputAction.CallbackContext context)
     {
-        if(StaticProperties.canPause && !PauseMenu.pauseTrans)
+        if (StaticProperties.canPause && !PauseMenu.pauseTrans)
         {
-            if(paused)
+            if (paused)
             {
-                if(PauseMenu.inMainMenu)
+                if (PauseMenu.inMainMenu)
                     PauseMenu.Close(CloseCallback, true);
             }
             else
             {
-                PauseMenu.Open(OpenCallback, CloseCallback, delegate() {
+                PauseMenu.Open(OpenCallback, CloseCallback, delegate ()
+                {
                     StaticProperties.canPause = true;
                 }, delegate ()
                 {
                     paused = false;
                     StaticProperties.canPause = false;
                 },
-                delegate() {
+                delegate ()
+                {
                     LoadingManager.LoadScene(SceneManager.GetActiveScene().name);
                     Destroy(PauseMenu.instance.gameObject);
                     Conductor.startSong = false;
@@ -823,21 +827,22 @@ public class DialogueManager : MonoBehaviour
 
         minigameNext = false;
 
-        if(line >= curLines.Count)
+        if (line >= curLines.Count)
         {
             interact = false;
             //close the box or call a game over if it's under a game over
-            if(!isGameOver)
+            if (!isGameOver)
             {
                 foreach (Transform child in dialogueBox.transform)
                 {
-                    if (child.gameObject.GetComponent<Image>() 
+                    if (child.gameObject.GetComponent<Image>()
                         || child.gameObject.GetComponent<SpriteRenderer>()
                         || child.gameObject.GetComponent<TMP_Text>())
                     {
                         //Color color = child.GetComponent<Image>().color;
                         //child.GetComponent<Image>().color = new Color(color.r, color.g, color.b, 1);
-                        TweenManager.AlphaTween(child.gameObject, 1, 0, 0.25f, Eases.EaseInOutCubic, delegate () {
+                        TweenManager.AlphaTween(child.gameObject, 1, 0, 0.25f, Eases.EaseInOutCubic, delegate ()
+                        {
                             ExitDialogue();
                         }).SetStartDelay(0.125f);
                     }
@@ -855,14 +860,15 @@ public class DialogueManager : MonoBehaviour
         spritesObject.SetActive(true);
         if (curLines[line].minigame != null && curLines[line].minigame != "" && !isGameOver)
         {
-            MusicUtils.MusicFadeOut(musicSource, 0.5f, delegate() { musicSource.Pause(); });
+            MusicUtils.MusicFadeOut(musicSource, 0.5f, delegate () { musicSource.Pause(); });
             GameIn(lines[line].minigame);
             previousLine = null;
             return;
         }
 
         dialogueBox.t = line;
-        dialogueBox.onFinish = delegate (int t) {
+        dialogueBox.onFinish = delegate (int t)
+        {
             curLine++;
             dialogueLine++;
             LuaFunctions.OnLineEnd(line);
@@ -870,7 +876,8 @@ public class DialogueManager : MonoBehaviour
             {
                 nextButton.SetActive(true);
                 ColorUtils.SetAlpha(nextButton, 0);
-                TweenManager.AlphaTween(nextButton, 0, 1, 0.5f, Eases.EaseInOutCubic, delegate () {
+                TweenManager.AlphaTween(nextButton, 0, 1, 0.5f, Eases.EaseInOutCubic, delegate ()
+                {
                     TweenManager.AlphaTween(nextButton, 1, 0.75f, 0.5f, Eases.Linear, null, "ping-pong").SetPingPong(0);
                 });
             }
@@ -879,12 +886,12 @@ public class DialogueManager : MonoBehaviour
         dialogueBox.onChar = LuaFunctions.OnLineInterval;
 
         dialogueBox.typedText = curLines[line].text;
-            //sprites.Add(character.Key, characterSprite);
+        //sprites.Add(character.Key, characterSprite);
         LoadCharacters(curLines[line].characters, previousLine != null ? previousLine.characters : null);
 
         if (previousLine != null)
         {
-            if(previousLine.name == null || previousLine.name == "")
+            if (previousLine.name == null || previousLine.name == "")
             {
                 if (curLines[line].name != null && curLines[line].name != "")
                 {
@@ -914,15 +921,16 @@ public class DialogueManager : MonoBehaviour
 
         if (!isGameOver)
         {
-            if(previousLine != null)
+            if (previousLine != null)
             {
-                if(previousLine.background != curLines[line].background)
+                if (previousLine.background != curLines[line].background)
                 {
                     GameObject bg = backgrounds[curLines[line].background];
                     PutObjectInFront(bg);
                     bg.SetActive(true);
-                    TweenManager.AlphaTween(bg, 0, 1, 0.5f, Eases.Linear, delegate() { 
-                        foreach(KeyValuePair<string, GameObject> background in backgrounds)
+                    TweenManager.AlphaTween(bg, 0, 1, 0.5f, Eases.Linear, delegate ()
+                    {
+                        foreach (KeyValuePair<string, GameObject> background in backgrounds)
                         {
                             if (background.Value != bg)
                                 background.Value.SetActive(false);
@@ -949,7 +957,7 @@ public class DialogueManager : MonoBehaviour
     {
         //Grab characters from list
         curSprites.Clear();
-        foreach(CharacterPack pack in curPack)
+        foreach (CharacterPack pack in curPack)
         {
             if (sprites.ContainsKey(pack.character))
                 curSprites.Add(sprites[pack.character]);
@@ -986,7 +994,7 @@ public class DialogueManager : MonoBehaviour
         //Check if character is contained in curPack but not prevPack or is the start of the dialogue, TransIn
         //Check if character is contained in prevPack but not curPack or is end of dialogue, TransOut
 
-        foreach(KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
+        foreach (KeyValuePair<string, ITween> tween in TweenManager.instance.activeTweens)
         {
             tween.Value.FullKill();
         }
@@ -1051,12 +1059,12 @@ public class DialogueManager : MonoBehaviour
         //Set up sprites for each character
         foreach (CharacterSprite character in curSprites)
         {
-            foreach(CharacterPack pack in curPack)
+            foreach (CharacterPack pack in curPack)
             {
-                if(character.charName == pack.character)
+                if (character.charName == pack.character)
                 {
                     character.gameObject.SetActive(true);
-                    if(!character.isMoving) character.flipX = pack.flipX;
+                    if (!character.isMoving) character.flipX = pack.flipX;
                     character.expression = pack.emotion;
                     //Alignment align = pack.alignment;
                     break;
@@ -1095,7 +1103,7 @@ public class DialogueManager : MonoBehaviour
 
         if (transIn) //Transition in
         {
-            if(fade.Contains(pack.transition))
+            if (fade.Contains(pack.transition))
             {
                 ColorUtils.SetAlpha(character.gameObject, 0);
                 TweenManager.AlphaTween(character.gameObject, 0, 1, transTime, Eases.EaseInOutCubic, null, pack.character + "alpha").SetIgnoreTimeScale();
@@ -1103,19 +1111,19 @@ public class DialogueManager : MonoBehaviour
 
             character.offsetX = pack.offset;
 
-            if(left.Contains(pack.transition))
+            if (left.Contains(pack.transition))
             {
                 float x = -400 - character.rectTransform.sizeDelta.x / 2;
                 character.position = new Vector2(x, 0);
                 TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime, Eases.EaseInOutCubic, null, pack.character + "x");
             }
-            else if(right.Contains(pack.transition))
+            else if (right.Contains(pack.transition))
             {
                 float x = 400 + character.rectTransform.sizeDelta.x / 2;
                 character.position = new Vector2(x, 0);
                 TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime, Eases.EaseInOutCubic, null, pack.character + "x");
             }
-            else if(vertical.Contains(pack.transition))
+            else if (vertical.Contains(pack.transition))
             {
                 float y = -450 - character.rectTransform.sizeDelta.y / 2;
                 character.position = new Vector2(xPos, y);
@@ -1146,7 +1154,7 @@ public class DialogueManager : MonoBehaviour
                 float x = 400 + character.rectTransform.sizeDelta.x / 2;
                 character.position = new Vector2(xPos, 0);
 
-                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, x, transTime, Eases.EaseInOutCubic, delegate() { character.gameObject.SetActive(false); }, pack.character + "x");
+                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, x, transTime, Eases.EaseInOutCubic, delegate () { character.gameObject.SetActive(false); }, pack.character + "x");
             }
             else if (vertical.Contains(pack.transition))
             {
@@ -1182,18 +1190,19 @@ public class DialogueManager : MonoBehaviour
         }
         ColorUtils.SetAlpha(character.gameObject, 1);
         character.offsetX = pack.offset;
-        TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime * 1.5f, Eases.EaseOutQuart, delegate() { character.flipX = pack.flipX; character.isMoving = false; }, pack.character + "x")
-            .SetOnPercentCompleted(0.25f, delegate() {
-            character.flipX = pack.flipX;
-            character.isMoving = false;
-        });
+        TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime * 1.5f, Eases.EaseOutQuart, delegate () { character.flipX = pack.flipX; character.isMoving = false; }, pack.character + "x")
+            .SetOnPercentCompleted(0.25f, delegate ()
+            {
+                character.flipX = pack.flipX;
+                character.isMoving = false;
+            });
     }
     void RestartGame()
     {
         //curMinigame
         MinigameManager.Clear();
         if (transitionCanvas != null) transitionCanvas.SetActive(true);
-        if(fade != null)
+        if (fade != null)
         {
             fade.SetActive(true);
             ColorUtils.SetAlpha(fade, 0);
@@ -1205,7 +1214,8 @@ public class DialogueManager : MonoBehaviour
 
     public void TryAgain(Action between = null)
     {
-        TweenManager.AlphaTween(fade, 0, 1, 0.5f, Eases.Linear, delegate () {
+        TweenManager.AlphaTween(fade, 0, 1, 0.5f, Eases.Linear, delegate ()
+        {
             Scene latestMinigame = SceneManager.GetSceneByName(curMinigame);
 
             //Perhaps in the near future, I'll figure out how to reset the minigames from their respected scene instead of just reloading the scenes entirely
@@ -1220,7 +1230,8 @@ public class DialogueManager : MonoBehaviour
                 SceneManager.LoadSceneAsync(curMinigame, LoadSceneMode.Additive).completed += delegate (AsyncOperation async)
                 {
                     between?.Invoke();
-                    TweenManager.AlphaTween(fade, 1, 0, 1f, Eases.Linear, delegate() {
+                    TweenManager.AlphaTween(fade, 1, 0, 1f, Eases.Linear, delegate ()
+                    {
                         if (transitionCanvas != null) transitionCanvas.SetActive(false);
                     }).SetStartDelay(0.25f).SetIgnoreTimeScale();
                     Debug.Log(sceneVisibilities.ContainsKey(minigame));
@@ -1235,9 +1246,9 @@ public class DialogueManager : MonoBehaviour
     bool isExiting;
     public void ExitDialogue()
     {
-        if(!isExiting)
+        if (!isExiting)
         {
-            if(fade != null)
+            if (fade != null)
             {
                 fade.SetActive(true);
                 ColorUtils.SetAlpha(fade, 0);
@@ -1280,7 +1291,7 @@ public class DialogueManager : MonoBehaviour
     #region Utils
     public void PutObjectInFront(GameObject obj)
     {
-        if(obj.transform.parent != null)
+        if (obj.transform.parent != null)
         {
             Transform parent = obj.transform.parent;
             Vector3 position = obj.transform.position;
@@ -1303,8 +1314,8 @@ public class DialogueManager : MonoBehaviour
     public Dictionary<string, dynamic> dialogueGlobals = new Dictionary<string, dynamic>()
     {
         { "SetDelayTime", (Action<float>)SetPauseTime },
-        { "Flash", (Action<float, string>)Flash},
-        { "ScreenShake", (Action<float, float>)Shake }
+        { "Flash", (Action<float, string>)Flash },
+        { "Shake", (Action<float, float>)Shake }
     };
 
     public static void SetPauseTime(float time)
@@ -1317,7 +1328,7 @@ public class DialogueManager : MonoBehaviour
     {
         if (duration <= 0) return;
 
-        if(instance.flash != null)
+        if (instance.flash != null)
         {
             instance.flash.SetActive(true);
             ColorUtils.SetAlpha(instance.flash, 1);
@@ -1331,7 +1342,7 @@ public class DialogueManager : MonoBehaviour
 
     static void Shake(float duration, float magnitude)
     {
-        if(instance.objectHolder != null)
+        if (instance.objectHolder != null)
             LuaMethods.ShakeScreen(duration, magnitude, instance.objectHolder);
     }
     #endregion
@@ -1340,20 +1351,29 @@ public class DialogueManager : MonoBehaviour
     public Dictionary<string, dynamic> musicGlobals = new Dictionary<string, dynamic>()
     {
         { "StopMusic", (Action)StopMusic },
+        { "PauseMusic", (Action)PauseMusic },
         { "FadeMusic", (Action<float, float>)FadeMusic }
     };
 
-    public static void StopMusic()
+    static void PauseMusic()
+    {
+        if (instance.musicSource.isPlaying)
+            instance.musicSource.Pause();
+        else
+            instance.musicSource.UnPause();
+    }
+
+    static void StopMusic()
     {
         instance.musicSource.Stop();
     }
 
-    public static void FadeMusic(float finish, float duration)
+    static void FadeMusic(float finish, float duration)
     {
         MusicUtils.MusicFade(instance.musicSource, finish, duration);
     }
 
-    public static void PlayMusic(string track)
+    static void PlayMusic(string track)
     {
         FindObjectOfType<MonoBehaviour>().StartCoroutine(PlaySong());
         IEnumerator PlaySong()
@@ -1369,7 +1389,8 @@ public class DialogueManager : MonoBehaviour
     #region Background Lua
     public Dictionary<string, dynamic> backgroundGlobals = new Dictionary<string, dynamic>()
     {
-
+        { "GetBackgroundByName", (Func<string, Image>)GetImageFromBGName},
+        { "SetBackgroundAlpha", (Action<string, float>)SetBGAlpha }
     };
 
     static Image GetImageFromBGName(string name)
@@ -1381,5 +1402,192 @@ public class DialogueManager : MonoBehaviour
         }
         return null;
     }
+
+    static void SetBGAlpha(string name, float value)
+    {
+        value = Mathf.Clamp01(value);
+        ColorUtils.SetAlpha(GetImageFromBGName(name).gameObject, value);
+    }
+    #endregion
+
+    #region Tweens Lua
+    public Dictionary<string, dynamic> tweenGlobals = new Dictionary<string, dynamic>()
+    {
+        { "DoXTween", (Action<string, string, float, float, string>)DoXTween },
+        { "DoYTween", (Action<string, string, float, float, string>)DoYTween },
+        { "DoAngleTween", (Action<string, string, float, float, string>)DoAngleTween },
+        { "DoScaleTween", (Action<string, string, float, float, string>)DoScaleTween },
+        { "DoScale2Tween", (Action<string, string, float, float, float, string>)DoScaleTween },
+        { "DoScale3Tween", (Action<string, string, float, float, float, float, string>)DoScaleTween },
+        { "DoAlphaTween", (Action<string, string, float, float, string>)DoAlphaTween },
+        { "DoColorTween", (Action<string, string, string, float, string>)DoColorTween },
+
+        //Utils
+        { "SetTweenLoop", (Action<string, int>)SetLoop },
+        { "SetTweenPingPong", (Action<string, int>)SetPingPong },
+        { "StopTween", (Action<string>)StopTween},
+        { "PauseTween", (Action<string>)PauseTween}
+    };
+
+    private static GameObject GetObject(string name)
+    {
+        Image image = GetImageFromBGName(name);
+        if (image != null)
+            return image.gameObject;
+
+        if (LuaMethods.GetProperty(name) != null)
+            return LuaMethods.GetProperty(name).gameObject;
+
+
+        return GameObject.Find(name);
+    }
+
+    static void DoXTween(string obj, string id, float value, float duration, string ease = "linear")
+    {
+        GameObject gameObj = GetObject(obj);
+
+        if (gameObj == null)
+            return;
+
+        dynamic tranformation;
+        bool is2D = false;
+        if (gameObj.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObj.GetComponent<RectTransform>();
+            is2D = true;
+        }
+        else
+            tranformation = gameObj.GetComponent<Transform>();
+
+        TweenManager.XTween(gameObj,
+        is2D ? tranformation.anchoredPosition.x : tranformation.position.x,
+        value, duration, Tween<float>.GetEaseFromString(ease), null, id, true);
+
+
+    }
+    static void DoYTween(string obj, string id, float value, float duration, string ease = "linear")
+    {
+        GameObject gameObj = GetObject(obj);
+
+        if (gameObj == null)
+            return;
+
+        dynamic tranformation;
+        bool is2D = false;
+        if (gameObj.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObj.GetComponent<RectTransform>();
+            is2D = true;
+        }
+        else
+            tranformation = gameObj.GetComponent<Transform>();
+
+        TweenManager.YTween(gameObj,
+        is2D ? tranformation.anchoredPosition.y : tranformation.position.y,
+        value, duration, Tween<float>.GetEaseFromString(ease), null, id, true);
+
+
+    }
+
+    static void DoAngleTween(string obj, string id, float value, float duration, string ease = "linear")
+    {
+        GameObject gameObj = GetObject(obj);
+
+        if (gameObj == null)
+            return;
+
+        TweenManager.AngleTween(gameObj, gameObj.transform.eulerAngles.z, value, duration, Tween<float>.GetEaseFromString(ease), null, id, true);
+    }
+    static void DoAlphaTween(string obj, string id, float value, float duration, string ease = "linear")
+    {
+        GameObject gameObj = GetObject(obj);
+
+        dynamic spriteRenderer = null;
+        if (gameObj.GetComponent<Image>() != null)
+            spriteRenderer = gameObj.GetComponent<Image>();
+        else if (gameObj.GetComponent<TMP_Text>() != null)
+            spriteRenderer = gameObj.GetComponent<TMP_Text>();
+        else if (gameObj.GetComponent<SpriteRenderer>() != null)
+            spriteRenderer = gameObj.GetComponent<SpriteRenderer>();
+
+        if (spriteRenderer == null) return;
+
+        TweenManager.AlphaTween(gameObj, spriteRenderer.color.a, value, duration, Tween<float>.GetEaseFromString(ease), null, id, true);
+    }
+
+    static void DoColorTween(string obj, string id, string value, float duration, string ease = "linear")
+    {
+        GameObject gameObj = GetObject(obj);
+
+        dynamic spriteRenderer = null;
+        if (gameObj.GetComponent<Image>() != null)
+            spriteRenderer = gameObj.GetComponent<Image>();
+        else if (gameObj.GetComponent<TMP_Text>() != null)
+            spriteRenderer = gameObj.GetComponent<TMP_Text>();
+        else if (gameObj.GetComponent<SpriteRenderer>() != null)
+            spriteRenderer = gameObj.GetComponent<SpriteRenderer>();
+
+        if (spriteRenderer == null) return;
+
+        TweenManager.ColorTween(gameObj, spriteRenderer.color, LuaMethods.GetColorByString(value), duration, Tween<Color>.GetEaseFromString(ease), null, id, true);
+    }
+
+    static void DoScaleTween(string obj, string id, float value, float duration, string ease = "linear")
+    {
+        GameObject gameObj = GetObject(obj);
+
+        if (gameObj == null)
+            return;
+
+        Vector3 scale = Vector3.one * value;
+        TweenManager.ScaleTween(gameObj, gameObj.transform.localScale, scale, duration, Tween<float>.GetEaseFromString(ease), null, id, true);
+    }
+
+    static void DoScaleTween(string obj, string id, float x, float y, float duration, string ease = "linear")
+    {
+        GameObject gameObj = GetObject(obj);
+
+        if (gameObj == null)
+            return;
+
+        Vector3 scale = new Vector3(x, y, 1);
+        TweenManager.ScaleTween(gameObj, gameObj.transform.localScale, scale, duration, Tween<float>.GetEaseFromString(ease), null, id, true);
+    }
+
+    static void DoScaleTween(string obj, string id, float x, float y, float z, float duration, string ease = "linear")
+    {
+        GameObject gameObj = GetObject(obj);
+
+        if (gameObj == null)
+            return;
+
+        Vector3 scale = new Vector3(x, y, z);
+        TweenManager.ScaleTween(gameObj, gameObj.transform.localScale, scale, duration, Tween<float>.GetEaseFromString(ease), null, id, true);
+    }
+
+    #region Tween Utils
+    private static void SetLoop(string id, int loop = 1)
+    {
+        if (TweenManager.instance.luaTweens.ContainsKey(id))
+            TweenManager.instance.luaTweens[id].Loop(loop);
+    }
+
+    private static void SetPingPong(string id, int loop = 1)
+    {
+        if (TweenManager.instance.luaTweens.ContainsKey(id))
+            TweenManager.instance.luaTweens[id].PingPong(loop);
+    }
+
+    private static void StopTween(string id)
+    {
+        TweenManager.instance.RemoveLuaTween(id);
+    }
+
+    private static void PauseTween(string id)
+    {
+        TweenManager.instance.PauseLuaTween(id);
+    }
+    #endregion
+
     #endregion
 }

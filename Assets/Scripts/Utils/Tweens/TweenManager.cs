@@ -36,16 +36,28 @@ public class TweenManager : MonoBehaviour
     private Dictionary<string, ITween> _activeTweens = new Dictionary<string, ITween>();
     public Dictionary<string, ITween> activeTweens => _activeTweens;
 
+    private Dictionary<string, ITween> _luaTweens = new Dictionary<string, ITween>();
+    public Dictionary<string, ITween> luaTweens => _luaTweens;
+
     /// <summary>
     /// Adds a new tween
     /// </summary>
     /// <typeparam name="T">Type of tween</typeparam>
     /// <param name="tween">The tween itself</param>
-    public void AddTween<T>(Tween<T> tween)
+    public void AddTween<T>(Tween<T> tween, bool lua = false)
     {
         //Debug.Log(_activeTweens.Count);
-        if (_activeTweens.ContainsKey(tween.Identifier)) _activeTweens[tween.Identifier].OnCompleteKill();
-        _activeTweens[tween.Identifier] = tween;
+        if (lua)
+        {
+            if (_luaTweens.ContainsKey(tween.Identifier)) _luaTweens[tween.Identifier].OnCompleteKill();
+            _luaTweens[tween.Identifier] = tween;
+        }
+        else
+        {
+            if (_activeTweens.ContainsKey(tween.Identifier)) _activeTweens[tween.Identifier].OnCompleteKill();
+            _activeTweens[tween.Identifier] = tween;
+        }
+            
     }
 
     public void RemoveTween(string identifier)
@@ -64,6 +76,26 @@ public class TweenManager : MonoBehaviour
         {
             _activeTweens[keyList[i]].KillButEndOnValue();
             _activeTweens.Remove(keyList[i]);
+        }
+    }
+
+    public void RemoveLuaTween(string identifier)
+    {
+        if (_luaTweens.ContainsKey(identifier))
+        {
+            _luaTweens[identifier].OnCompleteKill();
+            _luaTweens.Remove(identifier);
+        }
+    }
+
+    public void PauseLuaTween(string identifier)
+    {
+        if (_luaTweens.ContainsKey(identifier))
+        {
+            if (_luaTweens[identifier].isPaused)
+                _luaTweens[identifier].Resume();
+            else
+                _luaTweens[identifier].Pause();
         }
     }
 
@@ -87,9 +119,28 @@ public class TweenManager : MonoBehaviour
             else if (tween.WasKilled)
                 RemoveTween(pair.Key);
         }
+
+        foreach (var pair in _luaTweens.ToList())
+        {
+            ITween tween = pair.Value;
+            tween.Update();
+
+            if (tween.isComplete && !tween.WasKilled)
+            {
+                if (tween.onComplete != null)
+                {
+                    tween.onComplete.Invoke();
+                    tween.onComplete = null;
+                }
+
+                RemoveTween(pair.Key);
+            }
+            else if (tween.WasKilled)
+                RemoveTween(pair.Key);
+        }
     }
 
-    public static Tween<float> XTween(GameObject gameObject, float startX, float endX, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
+    public static Tween<float> XTween(GameObject gameObject, float startX, float endX, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic tranformation = null;
         bool is2D = false;
@@ -118,13 +169,13 @@ public class TweenManager : MonoBehaviour
                 position.x = value;
                 tranformation.position = position;
             }
-        }, type, onComplete);
+        }, type, onComplete, lua);
 
         return tween;
 
     }
 
-    public static Tween<float> YTween(GameObject gameObject, float startY, float endY, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
+    public static Tween<float> YTween(GameObject gameObject, float startY, float endY, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic tranformation = null;
         bool is2D = false;
@@ -153,13 +204,39 @@ public class TweenManager : MonoBehaviour
                 position.y = value;
                 tranformation.position = position;
             }
-        }, type, onComplete);
+        }, type, onComplete, lua);
 
         return tween;
 
     }
 
-    public static Tween<float> AlphaTween(GameObject gameObject, float startAlpha, float endAlpha, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
+    public static Tween<Color> ColorTween(GameObject gameObject, Color startColor, Color endColor, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
+    {
+        dynamic spriteRenderer = null;
+        if (gameObject.GetComponent<Image>() != null)
+            spriteRenderer = gameObject.GetComponent<Image>();
+        else if (gameObject.GetComponent<TMPro.TMP_Text>() != null)
+            spriteRenderer = gameObject.GetComponent<TMPro.TMP_Text>();
+        else
+            spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+
+        float value = UnityEngine.Random.value;
+        string identifier = id != "" ? id : $"{gameObject.GetInstanceID()}_Color_{value}";
+
+        Tween<Color> tween = new Tween<Color>(gameObject, identifier, startColor, endColor, duration, value =>
+        {
+            Color color = spriteRenderer.color;
+            color = new Color(value.r, value.g, value.b);
+            //color.a = value;
+            spriteRenderer.color = color;
+
+        }, type, onComplete, lua);
+
+        return tween;
+
+    }
+
+    public static Tween<float> AlphaTween(GameObject gameObject, float startAlpha, float endAlpha, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic spriteRenderer = null;
         if (gameObject.GetComponent<Image>() != null)
@@ -178,13 +255,13 @@ public class TweenManager : MonoBehaviour
             color.a = value;
             spriteRenderer.color = color;
 
-        }, type, onComplete);
+        }, type, onComplete, lua);
 
         return tween;
 
     }
 
-    public static Tween<float> PitchTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
+    public static Tween<float> PitchTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic tranformation = null;
         if (gameObject.GetComponent<RectTransform>() != null)
@@ -203,14 +280,14 @@ public class TweenManager : MonoBehaviour
             rotation.x = value;
             tranformation.rotation = Quaternion.Euler(rotation);
 
-        }, type, onComplete);
+        }, type, onComplete, lua);
 
         return tween;
 
 
     }
 
-    public static Tween<float> YawTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
+    public static Tween<float> YawTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic tranformation = null;
         if (gameObject.GetComponent<RectTransform>() != null)
@@ -229,14 +306,14 @@ public class TweenManager : MonoBehaviour
             rotation.y = value;
             tranformation.rotation = Quaternion.Euler(rotation);
 
-        }, type, onComplete);
+        }, type, onComplete, lua);
 
         return tween;
 
 
     }
 
-    public static Tween<float> RollTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
+    public static Tween<float> RollTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic tranformation = null;
         if (gameObject.GetComponent<RectTransform>() != null)
@@ -255,14 +332,44 @@ public class TweenManager : MonoBehaviour
             rotation.z = value;
             tranformation.rotation = Quaternion.Euler(rotation);
 
-        }, type, onComplete);
+        }, type, onComplete, lua);
 
         return tween;
 
 
     }
 
-    public static Tween<float> NumTween(Func<float> getFloat, Action<float> setFloat, float end, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "")
+    public static Tween<float> AngleTween(GameObject gameObject, float startAngle, float endAngle, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
+    {
+        float value = UnityEngine.Random.value;
+        string identifier = id != "" ? id : $"{gameObject.GetInstanceID()}_Angle_{value}";
+
+        Tween<float> tween = new Tween<float>(gameObject, identifier, startAngle, endAngle, duration, value =>
+        {
+            Vector3 rotation = gameObject.transform.rotation.eulerAngles;
+            rotation.z = value;
+            gameObject.transform.rotation = Quaternion.Euler(rotation);
+
+        }, type, onComplete, lua);
+
+        return tween;
+    }
+
+    public static Tween<Vector3> ScaleTween(GameObject gameObject, Vector3 startScale, Vector3 endScale, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
+    {
+        float value = UnityEngine.Random.value;
+        string identifier = id != "" ? id : $"{gameObject.GetInstanceID()}_Angle_{value}";
+
+        Tween<Vector3> tween = new Tween<Vector3>(gameObject, identifier, startScale, endScale, duration, value =>
+        {
+            gameObject.transform.localScale = value;
+
+        }, type, onComplete, lua);
+
+        return null;
+    }
+
+    public static Tween<float> NumTween(Func<float> getFloat, Action<float> setFloat, float end, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         float value = UnityEngine.Random.value;
         string identifier = id != "" ? id : $"{getFloat.Target.GetHashCode()}_Float_{value}";
@@ -273,7 +380,7 @@ public class TweenManager : MonoBehaviour
         Tween<float> tween = new Tween<float>(target, identifier, start, end, duration, value => 
         {
             setFloat(value);
-        }, type, onComplete);
+        }, type, onComplete, lua);
 
         return tween;
     }

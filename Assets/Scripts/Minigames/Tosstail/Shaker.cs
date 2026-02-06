@@ -161,13 +161,13 @@ namespace Starborn.Tosstail
                 });
 
                 /*
-                angleTween = TweenManager.RollTween(gameObject, 0, _right ? 360 : -360, duration, Eases.Linear, () =>
+                angleTween = TweenManager.AngleTween(gameObject, 0, _right ? 360 : -360, duration, Eases.Linear, () =>
                 {
                     gameObject.transform.rotation = Quaternion.identity;
                 });
                 */
 
-                angleTween = TweenManager.RollTween(gameObject, 0, _right ? 360 : -360, duration, Eases.Linear, () =>
+                angleTween = TweenManager.AngleTween(gameObject, 0, _right ? 360 : -360, duration, Eases.Linear, () =>
                 {
                     gameObject.transform.rotation = Quaternion.identity;
                 }).SetLoop(2);
@@ -226,7 +226,7 @@ namespace Starborn.Tosstail
                 }).SetIgnoreTimeScale();
             }).SetIgnoreTimeScale();
 
-            angleTween = TweenManager.RollTween(gameObject, 0, _right ? 360 : -360, duration, Eases.Linear, () =>
+            angleTween = TweenManager.AngleTween(gameObject, 0, _right ? 360 : -360, duration, Eases.Linear, () =>
             {
                 gameObject.transform.rotation = Quaternion.identity;
             }).SetIgnoreTimeScale();
@@ -315,7 +315,7 @@ namespace Starborn.Tosstail
             {
                 TweenManager.YTween(gameObject, startY + 1, startY - yDistance, reset * 0.5f, Eases.EaseInSine);
             });
-            TweenManager.RollTween(gameObject, 0, _right ? -270 : 270, reset * 0.75f, Eases.Linear);
+            TweenManager.AngleTween(gameObject, 0, _right ? -270 : 270, reset * 0.75f, Eases.Linear);
 
             //MinigameManager.instance.LoseALife();
         }
@@ -367,7 +367,7 @@ namespace Starborn.Tosstail
                 transform.position = new Vector3(_right ? startPosition : endPosition, this.startY);
             }).SetStartDelay(delay);
 
-            TweenManager.RollTween(gameObject, _right ? 270 : -270, _right ? 360 : -360, duration * 0.75f, Eases.Linear, () =>
+            TweenManager.AngleTween(gameObject, _right ? 270 : -270, _right ? 360 : -360, duration * 0.75f, Eases.Linear, () =>
             {
                 gameObject.transform.rotation = Quaternion.identity;
                 //MinigameManager.instance.canPlay = true;

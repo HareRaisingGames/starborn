@@ -46,7 +46,7 @@ public class Tween<T>: ITween
     public T endValue => _endValue;
 
 
-    public Tween(object target, string identifier, T startValue, T endValue, float duration, Action<T> onTweenUpdate, Eases type = default(Eases), Action onComplete = default(Action))
+    public Tween(object target, string identifier, T startValue, T endValue, float duration, Action<T> onTweenUpdate, Eases type = default(Eases), Action onComplete = default(Action), bool isLua = false)
     {
         Target = target;
         Identifier = identifier;
@@ -57,10 +57,10 @@ public class Tween<T>: ITween
         _easeType = type;
         this.onComplete = null ?? onComplete;
 
-        TweenManager.instance.AddTween(this);
+        TweenManager.instance.AddTween(this, isLua);
     }
 
-    public Tween(object target, string identifier, T startValue, T endValue, float duration, Action<T> onTweenUpdate, Action onComplete = default(Action))
+    public Tween(object target, string identifier, T startValue, T endValue, float duration, Action<T> onTweenUpdate, Action onComplete = default(Action), bool isLua = false)
     {
         Target = target;
         Identifier = identifier;
@@ -70,7 +70,7 @@ public class Tween<T>: ITween
         _onTweenUpdate = onTweenUpdate;
         this.onComplete = null ?? onComplete;
 
-        TweenManager.instance.AddTween(this);
+        TweenManager.instance.AddTween(this, isLua);
     }
 
     public object Target { get; private set; }
@@ -192,10 +192,19 @@ public class Tween<T>: ITween
         throw new NotImplementedException($"Interpolation for type {typeof(T)} has not yet been implemented");
     }
 
+    public void Loop(int loops = 1)
+    {
+        SetLoop(loops);
+    }
+
     public Tween<T> SetLoop(int loopCounted = 1)
     {
         _loopCount = loopCounted;
         return this;
+    }
+    public void PingPong(int loops = 1)
+    {
+        SetPingPong(loops);
     }
 
     public Tween<T> SetPingPong(int loopCounted = 1)
@@ -419,6 +428,58 @@ public class Tween<T>: ITween
         }
 
         return t;
+    }
+
+    static readonly Dictionary<string, Eases> easeType = new Dictionary<string, Eases>()
+    {
+        { "linear", Eases.Linear },
+        { "quadin", Eases.EaseInQuad },
+        { "quadout", Eases.EaseOutQuad },
+        { "quadinout", Eases.EaseInOutQuad },
+        { "quadoutin", Eases.EaseOutInQuad },
+        { "cubicin", Eases.EaseInCubic },
+        { "cubicout", Eases.EaseOutCubic },
+        { "cubicinout", Eases.EaseInOutCubic },
+        { "cubicoutin", Eases.EaseOutInCubic },
+        { "quartin", Eases.EaseInQuart },
+        { "quartout", Eases.EaseOutQuart },
+        { "quartinout", Eases.EaseInOutQuart },
+        { "quartoutin", Eases.EaseOutInQuart },
+        { "quintin", Eases.EaseInQuint },
+        { "quintout", Eases.EaseOutQuint },
+        { "quintinout", Eases.EaseInOutQuint },
+        { "quintoutin", Eases.EaseOutInQuint },
+        { "sinein", Eases.EaseInSine },
+        { "sineout", Eases.EaseOutSine },
+        { "sineinout", Eases.EaseInOutSine },
+        { "sineoutin", Eases.EaseOutInSine },
+        { "expoin", Eases.EaseInExpo },
+        { "expoout", Eases.EaseOutExpo },
+        { "expoinout", Eases.EaseInOutExpo },
+        { "expooutin", Eases.EaseOutInExpo },
+        { "circin", Eases.EaseInCirc },
+        { "circout", Eases.EaseOutCirc },
+        { "circinout", Eases.EaseInOutCirc },
+        { "circoutin", Eases.EaseOutInCirc },
+        { "bouncein", Eases.EaseInBounce },
+        { "bounceout", Eases.EaseOutBounce },
+        { "bounceinout", Eases.EaseInOutBounce },
+        { "bounceoutin", Eases.EaseOutInBounce },
+        { "backin", Eases.EaseInBack },
+        { "backout", Eases.EaseOutBack },
+        { "backinout", Eases.EaseInOutBack },
+        { "backoutin", Eases.EaseOutInBack },
+        { "elasticin", Eases.EaseInElastic },
+        { "elasticout", Eases.EaseOutElastic },
+        { "elasticinout", Eases.EaseInOutElastic },
+        { "elasticoutin", Eases.EaseOutInElastic }
+    };
+
+    public static Eases GetEaseFromString(string name)
+    {
+        if (easeType.ContainsKey(name.ToLower()))
+            return easeType[name.ToLower()];
+        return 0;
     }
 
     #endregion
