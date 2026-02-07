@@ -66,12 +66,14 @@ public class OptionMenu : MonoBehaviour
         GameObject obj = new GameObject("Select");
         selectSource = obj.AddComponent<AudioSource>();
         selectSource.playOnAwake = false;
-        if(select != null) selectSource.clip = select;
+        MixerSettings.SetAudioGroup(selectSource, "SFX");
+        if (select != null) selectSource.clip = select;
         obj.transform.parent = transform;
 
         obj = new GameObject("Navigate");
         navigateSource = obj.AddComponent<AudioSource>();
         navigateSource.playOnAwake = false;
+        MixerSettings.SetAudioGroup(navigateSource, "SFX");
         if (up != null) navigateSource.clip = up;
         obj.transform.parent = transform;
 
@@ -82,6 +84,7 @@ public class OptionMenu : MonoBehaviour
             navigateSource2 = obj.AddComponent<AudioSource>();
             navigateSource2.playOnAwake = false;
             navigateSource2.clip = down;
+            MixerSettings.SetAudioGroup(navigateSource2, "SFX");
             obj.transform.parent = transform;
         }
 

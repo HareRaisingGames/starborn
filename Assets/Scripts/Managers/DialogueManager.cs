@@ -138,6 +138,9 @@ public class DialogueManager : MonoBehaviour
 
         filename = "dialogue_test";
 
+        MixerSettings.SetAudioGroup(musicSource, "Music");
+        MixerSettings.SetAudioGroup(dialogueSource, "Dialogue");
+
         StartCoroutine(LoadStreamingAsset());
         IEnumerator LoadStreamingAsset()
         {

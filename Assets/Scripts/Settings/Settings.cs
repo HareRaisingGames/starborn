@@ -16,11 +16,19 @@ public static class Settings
     }
     static void Initialize()
     {
+        if(settingsList.Count == 0)
+        {
+            foreach (KeyValuePair<string, Setting> setting in defaultList)
+            {
+                settingsList.Add(setting.Key, setting.Value);
+            }
+        }
+
         if (!File.Exists(settingsPath))
         {
             using (StreamWriter writer = File.CreateText(settingsPath))
             {
-                foreach (KeyValuePair<string, Setting> setting in settingsList)
+                foreach (KeyValuePair<string, Setting> setting in defaultList)
                 {
                     writer.WriteLine($"{setting.Key}::{setting.Value}");
                 }
@@ -35,19 +43,33 @@ public static class Settings
     static Dictionary<string, Setting> defaultList = new Dictionary<string, Setting>()
     {
         { "muteVoices", new Setting(false) },
-        { "language", new Setting("english") }
+        { "language", new Setting("english") },
+        { "fullScreen", new Setting(true, Screen.fullScreen) }
     };
 
-    static Dictionary<string, Setting> settingsList = new Dictionary<string, Setting>()
+    static Dictionary<string, Setting> settingsList = new Dictionary<string, Setting>();
+
+    public static void Load()
     {
-        
-    };
+
+    }
 
     public static dynamic GetSettings(string name)
     {
         if (settingsList.ContainsKey(name))
             return settingsList[name].value;
         return null;
+    }
+
+    public static void SetSettings(string name, dynamic value)
+    {
+        if (settingsList.ContainsKey(name))
+        {
+            Setting setting = settingsList[name];
+            setting.value = value;
+            settingsList[name] = setting;
+        }
+            
     }
 
     static void Parse()
@@ -78,7 +100,7 @@ public struct Setting
 {
     Type type;
     dynamic _value;
-    //Func<dynamic> func;
+    Action<dynamic> func;
     public dynamic value
     {
         get
@@ -95,6 +117,7 @@ public struct Setting
     {
         this.type = type;
         _value = value;
+        func = null;
     }
 
     //For string values
@@ -102,6 +125,7 @@ public struct Setting
     {
         type = typeof(string);
         _value = value;
+        func = null;
     }
 
     //For int values
@@ -109,6 +133,7 @@ public struct Setting
     {
         type = typeof(int);
         _value = value;
+        func = null;
     }
 
     //For float values
@@ -116,6 +141,7 @@ public struct Setting
     {
         type = typeof(float);
         _value = value;
+        func = null;
     }
 
     //For double values
@@ -123,6 +149,7 @@ public struct Setting
     {
         type = typeof(double);
         _value = value;
+        func = null;
     }
 
     //For bool values
@@ -130,6 +157,7 @@ public struct Setting
     {
         type = typeof(bool);
         _value = value;
+        func = null;
     }
 
     //For char values
@@ -137,12 +165,85 @@ public struct Setting
     {
         type = typeof(char);
         _value = value;
+        func = null;
+    }
+
+    public Setting(Type type, dynamic value, dynamic outer)
+    {
+        this.type = type;
+        _value = value;
+        func = delegate(dynamic v) {
+            outer = v;
+        };
+    }
+
+    public Setting(string value, string affecter)
+    {
+        type = typeof(string);
+        _value = value;
+        func = delegate (dynamic v) {
+            affecter = v;
+        };
+    }
+
+    //For int values
+    public Setting(int value, int affecter)
+    {
+        type = typeof(int);
+        _value = value;
+        func = delegate (dynamic v) {
+            affecter = v;
+        };
+    }
+
+    //For float values
+    public Setting(float value, float affecter)
+    {
+        type = typeof(float);
+        _value = value;
+        func = delegate (dynamic v) {
+            affecter = v;
+        };
+    }
+
+    //For double values
+    public Setting(double value, double affecter)
+    {
+        type = typeof(double);
+        _value = value;
+        func = delegate (dynamic v) {
+            affecter = v;
+        };
+    }
+
+    //For bool values
+    public Setting(bool value, bool affecter)
+    {
+        type = typeof(bool);
+        _value = value;
+        func = delegate (dynamic v) {
+            affecter = v;
+        };
+    }
+
+    //For char values
+    public Setting(char value, char affecter)
+    {
+        type = typeof(char);
+        _value = value;
+        func = delegate (dynamic v) {
+            affecter = v;
+        };
     }
 
     void SetValue(dynamic value)
     {
         if (value.GetType == type)
+        {
             _value = value;
+            func?.Invoke(_value);
+        }
+            
     }
 }
 #endif

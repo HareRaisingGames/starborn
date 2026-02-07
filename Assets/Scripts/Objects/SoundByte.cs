@@ -6,6 +6,18 @@ using UnityEngine;
 public class SoundByte : MonoBehaviour
 {
     [HideInInspector] public float timeSamples;
+    public string type
+    {
+        set
+        {
+            MixerSettings.SetAudioGroup(GetComponent<AudioSource>(), value);
+        }
+    }
+
+    private void Awake()
+    {
+        type = "SFX";
+    }
 
     // Update is called once per frame
     void Update()

@@ -74,6 +74,7 @@ namespace Starborn
         {
             AudioConfiguration config = AudioSettings.GetConfiguration();
             dspSizeSeconds = config.dspBufferSize / (double)config.sampleRate;
+            MixerSettings.SetAudioGroup(music, "Song");
         }
 
         public void SetUpBPM()
