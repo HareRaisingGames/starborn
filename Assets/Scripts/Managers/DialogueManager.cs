@@ -349,6 +349,8 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
+        LuaFunctions.OnLoad();
+
         minigames = minigames.Distinct().ToList();
 
         for (int i = minigames.Count - 1; i >= 0; i--)
@@ -370,6 +372,7 @@ public class DialogueManager : MonoBehaviour
 
         if (minigames.Count == 0)
             SceneFadeOut();
+
     }
 
     async void LoadScene(string path, string name)
@@ -544,7 +547,6 @@ public class DialogueManager : MonoBehaviour
     {
         if (SceneManager.GetActiveScene().name != sceneName)
         {
-            //Debug.Log("Don't match");
             HideEverythingInScene(SceneManager.GetActiveScene().name);
         }
 

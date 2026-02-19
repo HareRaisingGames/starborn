@@ -117,10 +117,10 @@ namespace Starborn.Tosstail
             }
         }
 
-        public override void TutorialOnComplete(int amount)
+        public override void TutorialOnComplete(int amount, string tag = "")
         {
             hasCompleted = null;
-            base.TutorialOnComplete(amount);
+            base.TutorialOnComplete(amount, tag);
             hasCompleted = delegate ()
             {
                 return shaker.doubleCatches >= amount;

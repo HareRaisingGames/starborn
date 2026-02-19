@@ -393,16 +393,18 @@ MonoBehaviour:
   autoPlay: 1
   isTutorial: 1
   song: {fileID: 8300000, guid: ace72309614a8114a93c8478ef3e7d85, type: 3}
-  tutorialSong: {fileID: 0}
+  tutorialSong: {fileID: 8300000, guid: db5518580593b8940bb497ae01867e10, type: 3}
   paused: 0
   eventsList:
   - LemonToss
+  - LemonTossTutorial
   chartings:
   - skipCountdown: 1
     sections:
     - inputList:
       - events:
         - LemonToss
+        - LemonTossTutorial
         Event: LemonToss
         displayParameters: []
         mark: 5
@@ -410,7 +412,7 @@ MonoBehaviour:
       length: 8
       loops: 1
     setBPM: 1
-    bpm: 121
+    bpm: 120.5
   checkChartings: []
   tutorial:
     lines:
@@ -456,15 +458,37 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
-    skipTutorial:
-    - dialogue: Then you know what to do
+    - dialogue: 
+      section:
+        skipCountdown: 1
+        sections:
+        - inputList:
+          - events: []
+            Event: LemonTossTutorial
+            displayParameters: []
+            mark: 0
+          startLength: 0
+          length: 8
+          loops: 1
+        setBPM: 1
+        bpm: 120.5
+      amount: 2
+    - dialogue: Alright! It's time for the real deal!
       section:
         skipCountdown: 0
         sections: []
         setBPM: 0
         bpm: 0
       amount: 0
-    - dialogue: Remeber, you need to perfectly do this technique 2 times
+    skipTutorial:
+    - dialogue: You know what to do?
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+    - dialogue: Then here comes to ultimate test
       section:
         skipCountdown: 0
         sections: []
@@ -481,6 +505,10 @@ MonoBehaviour:
   setUpSong: 0
   eligibleForClear: 0
   lemonPrefab: {fileID: 7886987621521735152, guid: 45f603872cb79ee4b995118d344cc2b0, type: 3}
+  cutCount: 0
+  afterCut: 0
+  successTotal: 0
+  canCheck: 0
 --- !u!1 &923250132
 GameObject:
   m_ObjectHideFlags: 0
@@ -951,7 +979,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7627668131594789941, guid: 45f603872cb79ee4b995118d344cc2b0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -10
       objectReference: {fileID: 0}
     - target: {fileID: 7627668131594789941, guid: 45f603872cb79ee4b995118d344cc2b0, type: 3}
       propertyPath: m_LocalPosition.z

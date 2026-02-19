@@ -58,6 +58,9 @@ namespace Starborn.Tosstail
             else
                 sfx = GameObject.Find("Toss").GetComponent<AudioSource>();
 
+            MixerSettings.SetAudioGroup(sfx, "SongSFX");
+            MixerSettings.SetAudioGroup(catchSfx, "SongSFX");
+
             inRuntime = true;
         }
 

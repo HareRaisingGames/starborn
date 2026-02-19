@@ -109,6 +109,8 @@ AudioMixerController:
     name: SFXVolume
   - guid: 20cd1c3fc105af84db6b06b44e4aa29b
     name: SongVolume
+  - guid: 7db17822a64ceff41a6deb5d5588f70f
+    name: SongSFXVolume
   m_AudioMixerGroupViews:
   - guids:
     - bcd9bb0751b266d489d448b3950c07c3
@@ -116,6 +118,7 @@ AudioMixerController:
     - 61008b60878e00a43a9cd5fa67c341ad
     - 24e37dd65a00eda46a1a41ea3bab5b82
     - f1a0b72f4035ff24da1c757d9c5df01d
+    - 339060e6dcd8326408d100931357b076
     name: View
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
@@ -133,6 +136,7 @@ AudioMixerGroupController:
   - {fileID: 103435426107013244}
   - {fileID: -6287208569433839526}
   - {fileID: -5208996481495233562}
+  - {fileID: 2453274045540538911}
   m_Volume: ac64ace9c120ea749a3ac0dff7d36658
   m_Pitch: 7ec829e83eebe9a48baeedafa5b6db19
   m_Send: 00000000000000000000000000000000
@@ -182,6 +186,39 @@ AudioMixerGroupController:
   m_Send: 00000000000000000000000000000000
   m_Effects:
   - {fileID: 2602730589885542545}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!244 &491515246743625113
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 43c315d9c5bacc34dac59bfb72823760
+  m_EffectName: Attenuation
+  m_MixLevel: ce56802cf33a1984bb76210e83653e32
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!243 &2453274045540538911
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: SongSFX
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 339060e6dcd8326408d100931357b076
+  m_Children: []
+  m_Volume: 7db17822a64ceff41a6deb5d5588f70f
+  m_Pitch: 05c8b499da9061c42921edb550d8c263
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 491515246743625113}
   m_UserColorIndex: 0
   m_Mute: 0
   m_Solo: 0

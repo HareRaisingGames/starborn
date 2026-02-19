@@ -14,54 +14,60 @@ namespace Starborn.LemonDrop
         {
             //lemon = Object.FindObjectOfType<Lemon>();
             actions = new List<CallForAction>() {
-            /*new CallForAction(()=>{sfx.Play(); 
-                if(lemon == null)
-                {
-                    lemon = Object.Instantiate(game.lemonPrefab, new Vector3(0, -20, 0), Quaternion.Euler(0, 90, 0)).GetComponent<Lemon>();
-                }
-                lemon.transform.position = new Vector3(lemon.transform.position.x, -10, lemon.transform.position.z);
+            new CallForAction(()=>{//sfx.Play(); 
 
-            }, 1f),*/
+                lemon.Reassemble();
+                //lemon.transform.position = new Vector3(lemon.transform.position.x, -10, lemon.transform.position.z);
+
+            }, 0f),
             new CallForAction(()=>{
-                
+                //tick.Play();
+                sfx.Play();
                 lemon.transform.position = new Vector3(lemon.transform.position.x, -10, lemon.transform.position.z);
-                TweenManager.YTween(lemon.gameObject, -10f, 1f, Conductor.instance.crochet, Eases.EaseOutQuad);
+                TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
                 }, 
                 1f),
             new CallForAction(()=>{
                 //sfx.Play();
-                //TweenManager.YTween(lemon.gameObject, -3f, 1f, Conductor.instance.crochet * 1.5f, Eases.EaseOutQuad);
+                TweenManager.YTween(lemon.gameObject, -4.5f, 1f, Conductor.instance.crochet * 0.5f, Eases.EaseOutSine);
                 }, 
                 1.5f),
-            new CallForAction(()=>{sfx.Play();  
-                //TweenManager.YTween(lemon.gameObject, 0f, 1f, Conductor.instance.crochet, Eases.EaseOutQuad);
-            }, 2f, RhythmInputs.A, 0.5f, 0.5f, () => { 
+            new CallForAction(()=>{//sfx.Play();
+                //tick.Play();
+                TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
+            }, 2f, RhythmInputs.A, 1f, 1f, () => { 
                 lemon.Cut(1); 
             }),
             new CallForAction(()=>{
-                sfx.Play();  
+                //sfx.Play();  
             }, 2.5f, RhythmInputs.A, 0.5f, 0.5f, () => { 
                 lemon.Cut(2); 
             }),
             new CallForAction(()=>{
-                sfx.Play();
-                TweenManager.YTween(lemon.gameObject, 1f, -5f, Conductor.instance.crochet * 0.5f, Eases.EaseInQuad); 
-            }, 3, RhythmInputs.A, 0.5f, 0.5f, () => { 
+                //sfx.Play();
+                //tick.Play();
+                TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
+                    
+                }); 
+            }, 3f, RhythmInputs.A, 1f, 1f, () => { 
                 lemon.Cut(3); 
             }),
-            new CallForAction(()=>{
-                TweenManager.YTween(lemon.gameObject, -5f, -20f, Conductor.instance.crochet * 0.5f, Eases.EaseInQuad); lemon = null; 
-            }, 3.5f)
+            new CallForAction(() =>
+            {
+                game.afterCut = true;
+
+            }, 4f),
             };
         }
 
-        AudioSource sfx;
+        protected AudioSource sfx;
+        protected AudioSource tick;
         public override void SetUp()
         {
             base.SetUp();
+            game = Object.FindObjectOfType<LemonDrop>();
             if (Object.FindObjectOfType<Lemon>() == null)
             {
-                game = Object.FindObjectOfType<LemonDrop>();
                 lemon = Object.Instantiate(game.lemonPrefab, new Vector3(0, -20, 0), Quaternion.Euler(0, 90, 0)).GetComponent<Lemon>();
             }
             else
@@ -69,14 +75,91 @@ namespace Starborn.LemonDrop
             
             //To start off the tween so it doesn't glitch when starting
             TweenManager.XTween(lemon.gameObject, lemon.transform.position.x, lemon.transform.position.x, 0.01f, Eases.Linear);
+            if (GameObject.Find("Hai") == null)
+            {
+                GameObject gameObject = new GameObject("Hai");
+                sfx = gameObject.AddComponent<AudioSource>();
+                sfx.clip = Resources.Load<AudioClip>("Audio/LemonDrop/hai");
+            }
+            else
+                sfx = GameObject.Find("Hai").GetComponent<AudioSource>();
+
             if (GameObject.Find("Metronome") == null)
             {
                 GameObject gameObject = new GameObject("Metronome");
-                sfx = gameObject.AddComponent<AudioSource>();
-                sfx.clip = Resources.Load<AudioClip>("Audio/blip");
+                tick = gameObject.AddComponent<AudioSource>();
+                tick.clip = Resources.Load<AudioClip>("Audio/blip");
             }
             else
-                sfx = GameObject.Find("Metronome").GetComponent<AudioSource>();
+                tick = GameObject.Find("Metronome").GetComponent<AudioSource>();
+        }
+    }
+
+    public class LemonTossTutorial : LemonToss
+    {
+        public LemonTossTutorial()
+        {
+            actions = new List<CallForAction>()
+            {
+                new CallForAction(()=>{
+                    tick.Play();
+                    game.afterCut = false;
+                    game.cutCount = 0;
+                    game.canCheck = false;
+                },
+                1f),
+                new CallForAction(()=>{
+                    tick.Play();
+                },
+                2f),
+                new CallForAction(()=>{
+                    tick.Play();
+                },
+                3f),
+                new CallForAction(()=>{
+                    tick.Play();
+                },
+                4f),
+                new CallForAction(()=>{
+                    tick.Play();
+                    lemon.Reassemble();
+                },
+                5f),
+            new CallForAction(()=>{
+                    tick.Play();
+                sfx.Play();
+                TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
+                },
+                6f),
+            new CallForAction(()=>{
+                //sfx.Play();
+                TweenManager.YTween(lemon.gameObject, -4.5f, 1f, Conductor.instance.crochet * 0.5f, Eases.EaseOutSine);
+                },
+                6.5f),
+            new CallForAction(()=>{//sfx.Play();
+                    tick.Play();
+                TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
+            }, 7f, RhythmInputs.A, 1f, 1f, () => {
+                lemon.Cut(1);
+            }),
+            new CallForAction(()=>{
+                    tick.Play();
+            }, 7.5f, RhythmInputs.A, 0.5f, 0.5f, () => {
+                lemon.Cut(2);
+            }),
+            new CallForAction(()=>{
+                    tick.Play();
+                TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
+                    
+                });
+            }, 8f, RhythmInputs.A, 1f, 1f, () => {
+                lemon.Cut(3);
+            }),
+            new CallForAction(() =>
+            {
+                game.afterCut = true;
+            }, 8.5f),
+            };
         }
     }
 }

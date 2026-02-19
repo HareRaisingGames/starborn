@@ -11,14 +11,20 @@ namespace Starborn.LemonDrop
     {
         public GameObject lemonPrefab;
         Lemon lemon;
+        [HideInInspector]
+        public int cutCount;
+        [HideInInspector]
+        public bool afterCut;
+        [HideInInspector]
+        public int successTotal;
+        [HideInInspector]
+        public bool canCheck;
+
         // Start is called before the first frame update
         public override void Start()
         {
             lemon = FindObjectOfType<Lemon>();
-            hasCompleted = delegate ()
-            {
-                return Conductor.instance.songPosition >= Conductor.instance.music.clip.length;
-            };
+            amountJudger = () => successTotal;
             //lemonEvent.AddToChart(Conductor.instance.crochet * 13, Conductor.instance.crochet);
             //input = new RhythmInput(RhythmInputs.A).SetDestination(Conductor.instance.crochet * 12).SetRange(Conductor.instance.crochet, Conductor.instance.crochet);
             //input.Enable();
@@ -38,8 +44,46 @@ namespace Starborn.LemonDrop
         public override void onA(InputAction.CallbackContext context)
         {
             base.onA(context);
-            //i++;
-            //lemon.Cut(i);
+        }
+
+        public override void StartSong()
+        {
+            hasCompleted = delegate ()
+            {
+                return cutCount >= 3 && afterCut;
+            };
+            base.StartSong();
+        }
+
+        public override void TutorialAdditionals()
+        {
+            base.TutorialAdditionals();
+            if(!canCheck)
+            {
+                if(cutCount >= 3 && afterCut)
+                {
+                    successTotal++;
+                    canCheck = true;
+                }
+            }
+        }
+
+        public override void TutorialOnComplete(int amount, string tag = "")
+        {
+            hasCompleted = null;
+            base.TutorialOnComplete(amount, tag);
+            hasCompleted = delegate ()
+            {
+                return successTotal >= amount;
+            };
+        }
+
+        public override void TutorialReset()
+        {
+            base.TutorialReset();
+            successTotal = 0;
+            cutCount = 0;
+            afterCut = false;
         }
     }
 }

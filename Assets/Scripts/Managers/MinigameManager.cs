@@ -181,18 +181,21 @@ public class MinigameManager : MonoBehaviour
             GameObject applauseObj = new GameObject("Applause");
             applause = applauseObj.AddComponent<AudioSource>();
             applause.playOnAwake = false;
+            MixerSettings.SetAudioGroup(applause, "SFX");
             applause.clip = Resources.Load<AudioClip>("Audio/applause");
         }
 
         GameObject pressObj = new GameObject("Press");
         pressSource = pressObj.AddComponent<AudioSource>();
         pressSource.playOnAwake = false;
+        MixerSettings.SetAudioGroup(pressSource, "SFX");
         if (press != null)
             pressSource.clip = press;
 
         GameObject releaseObj = new GameObject("Release");
         releaseSource = releaseObj.AddComponent<AudioSource>();
         releaseSource.playOnAwake = false;
+        MixerSettings.SetAudioGroup(releaseSource, "SFX");
         if (release != null)
             releaseSource.clip = release;
 

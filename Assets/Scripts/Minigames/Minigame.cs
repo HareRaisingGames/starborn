@@ -250,7 +250,10 @@ public abstract class Minigame : MonoBehaviour
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
         AdditionalSongSetup();
         if (selectedCharting.skipCountdown)
+        {
             Conductor.instance.PlayMusic();
+            eligibleForClear = true;
+        }
         else
             Countdown.StartCountdown(Conductor.instance.crochet, delegate()
             {
@@ -300,6 +303,8 @@ public abstract class Minigame : MonoBehaviour
 
     int _curStep = 0;
     int prevStep = 0;
+
+    public int curStep => _curStep;
 
     // Update is called once per frame
     public virtual void Update()
@@ -368,7 +373,7 @@ public abstract class Minigame : MonoBehaviour
 
     }
 
-    public virtual void TutorialOnComplete(int amount)
+    public virtual void TutorialOnComplete(int amount, string tag = "")
     {
 
     }

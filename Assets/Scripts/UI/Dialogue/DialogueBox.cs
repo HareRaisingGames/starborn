@@ -58,7 +58,7 @@ public class DialogueBox : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        MixerSettings.SetAudioGroup(click, "SFX");
     }
 
     // Update is called once per frame

@@ -5,6 +5,7 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using System.Threading;
+using UnityEngine.UI;
 
 
 public class Countdown : MonoBehaviour
@@ -71,12 +72,12 @@ public class Countdown : MonoBehaviour
                 {
                     _instance = FindObjectOfType<Countdown>();
                     GameObject countdown = _instance.gameObject;
-                    for (int i = countdown.transform.childCount - 1; i >= 0; i--)
-                    {
-                        GameObject child = countdown.transform.GetChild(i).gameObject;
+                    //for (int i = countdown.transform.childCount - 1; i >= 0; i--)
+                    //{
+                        //GameObject child = countdown.transform.GetChild(i).gameObject;
 
-                        Destroy(child);
-                    }
+                        //Destroy(child);
+                    //}
 
                     _instance.three = SetAudioSource("Three", countdown.transform);
                     _instance.two = SetAudioSource("Two", countdown.transform);
@@ -124,7 +125,7 @@ public class Countdown : MonoBehaviour
         }
     }
 
-    public async static void StartCountdown(float time, Action callback = null)
+    public async static void StartCountdown(float time, Action callback = null, bool matchCamera = false)
     {
         instance.Start();
 
@@ -287,12 +288,14 @@ public class Countdown : MonoBehaviour
         if(focus)
         {
             //Debug.Log("Resume");
-            pauseTokenSource.Resume();
+            if(pauseTokenSource != null)
+                pauseTokenSource.Resume();
         }
         else
         {
             //Debug.Log("Pause");
-            pauseTokenSource.Pause();
+            if (pauseTokenSource != null)
+                pauseTokenSource.Pause();
         }
     }
 

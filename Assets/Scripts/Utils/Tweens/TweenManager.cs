@@ -210,6 +210,37 @@ public class TweenManager : MonoBehaviour
 
     }
 
+    public static Tween<Vector3> PositionTween(GameObject gameObject, Vector3 start, Vector3 end, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
+    {
+        dynamic tranformation = null;
+        bool is2D = false;
+        if (gameObject.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObject.GetComponent<RectTransform>();
+            is2D = true;
+        }
+        else
+            tranformation = gameObject.GetComponent<Transform>();
+
+        float value = UnityEngine.Random.value;
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_Y_{value}";
+
+        Tween<Vector3> tween = new Tween<Vector3>(gameObject, identifier, start, end, duration, value =>
+        {
+            if (is2D)
+            {
+                tranformation.anchoredPosition = new Vector2(value.x, value.y);
+            }
+            else
+            {
+                tranformation.position = new Vector3(value.x, value.y, value.z);
+            }
+        }, type, onComplete, lua);
+
+        return tween;
+
+    }
+
     public static Tween<Color> ColorTween(GameObject gameObject, Color startColor, Color endColor, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic spriteRenderer = null;

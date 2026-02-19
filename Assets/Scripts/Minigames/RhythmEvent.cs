@@ -26,7 +26,7 @@ namespace Starborn.InputSystem
         //public SetUp setUp;
 
         //Where to start the event
-        [HideInInspector] public float startPoint;
+        [HideInInspector] protected float startPoint;
         public List<Parameter> parameters = new List<Parameter>();
         /*public List<Attribute> attributes;
         public void AddAttribute(string name, Func<dynamic> property, Type type, dynamic value = null)
@@ -119,6 +119,8 @@ namespace Starborn.InputSystem
             MinigameManager.instance.events.Add(this);
         }
 
+        //A callback event for pre charting setup if the event is reliant of time
+        public Action<float> timeCallback;
         public void AddToChart(float time, float crochet = 1)
         {
             startPoint = time;
@@ -132,6 +134,7 @@ namespace Starborn.InputSystem
                 }
                 actions_in_chart.Add(newCFA);
             }
+            timeCallback?.Invoke(startPoint);
         }
 
         //Call if the time of the song has been played for each event
