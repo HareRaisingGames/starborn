@@ -43,6 +43,7 @@ public abstract class Minigame : MonoBehaviour
     //public List<RhythmInput> inputs = new List<RhythmInput>();
     [HideInInspector]
     public List<string> eventsList = new List<string>();
+    public string countdown;
     [SerializeField]
     public List<Charting> chartings = new List<Charting>();
     [SerializeField]
@@ -50,6 +51,7 @@ public abstract class Minigame : MonoBehaviour
     public List<Charting> checkChartings = new List<Charting>();
 
     public Tutorial tutorial;
+    public string tutorialCountdown;
     public List<Charting> endlessChartings = new List<Charting>();
     [HideInInspector] public List<RhythmEvent> events = new List<RhythmEvent>();
     protected Charting selectedCharting;
@@ -78,7 +80,6 @@ public abstract class Minigame : MonoBehaviour
 
     [HideInInspector]
     public System.Func<int> amountJudger;
-
 
     public static double NgEarlyTime(float pitch = -1, double margin = 0)
     {
@@ -326,6 +327,7 @@ public abstract class Minigame : MonoBehaviour
     public System.Action<int> OnStepTutorial;
 
     public System.Action OnSongStart;
+    public System.Action OnGameOver;
 
     public void BeatUpdate()
     {

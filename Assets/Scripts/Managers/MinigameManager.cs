@@ -277,6 +277,7 @@ public class MinigameManager : MonoBehaviour
         {
             _gameOver = true;
             MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f, delegate() {
+                if (minigame != null) minigame.OnGameOver?.Invoke();
                 Conductor.instance.music.Stop();
                 if(FindObjectOfType<DialogueManager>(true) != null)
                 {

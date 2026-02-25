@@ -8,6 +8,22 @@ using Newtonsoft.Json.Linq;
 public static class Progress
 {
     public static readonly string progressPath = $"{Application.persistentDataPath}/Progress/save";
+
+    public static readonly List<string> unlockableMinigames = new List<string>() 
+    { 
+        "Jam Session",
+        "Hitchhike",
+        "Assembly Line",
+        "The Great Escape",
+        "Trojan"
+    };
+
+    public static readonly List<string> demoMinigames = new List<string>()
+    {
+        "Tosstail",
+        "Trojan",
+        "Boomerang"
+    };
 }
 
 public class AppStartup

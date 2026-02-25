@@ -18,7 +18,11 @@ public class Countdown : MonoBehaviour
     AudioSource lets;
     AudioSource go;
 
-    static string _folder = "base";
+    readonly static string defaultFolder = "base";
+    static string _folder = defaultFolder;
+    public static CountdownMode mode;
+    public static string prefabName;
+    public static Camera cam;
 
     static PauseToken pauseToken;
     public static PauseTokenSource pauseTokenSource;
@@ -43,8 +47,8 @@ public class Countdown : MonoBehaviour
                 {
                     if (FindObjectOfType<Countdown>() == null)
                     {
-                        GameObject countdown = null;
-                        GameObject prefab = Resources.Load<GameObject>("Prefabs/Countdown");
+                        GameObject countdown;
+                        GameObject prefab = Resources.Load<GameObject>($"Prefabs/{prefabName}");
                         if (prefab != null)
                         {
                             countdown = Instantiate(prefab, Vector3.zero, Quaternion.identity);
@@ -53,8 +57,18 @@ public class Countdown : MonoBehaviour
                         }
                         else
                         {
-                            countdown = new GameObject("Countdown");
-                            _instance = countdown.AddComponent<Countdown>();
+                            prefab = Resources.Load<GameObject>($"Prefabs/Countdown");
+                            if (prefab != null)
+                            {
+                                countdown = Instantiate(prefab, Vector3.zero, Quaternion.identity);
+                                countdown.name = "Countdown";
+                                _instance = countdown.GetComponent<Countdown>();
+                            }
+                            else
+                            {
+                                countdown = new GameObject("Countdown");
+                                _instance = countdown.AddComponent<Countdown>();
+                            }
                         }
 
                         _instance.three = SetAudioSource("Three", countdown.transform);
@@ -156,6 +170,20 @@ public class Countdown : MonoBehaviour
         i++;
         StartCountdown(time, callback, i);*/
 
+        switch(mode)
+        {
+            case CountdownMode.Camera:
+                Canvas canvas = instance.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                canvas.worldCamera = cam != null ? cam : Camera.main;
+                break;
+            case CountdownMode.World:
+                Canvas canva = instance.GetComponent<Canvas>();
+                canva.renderMode = RenderMode.WorldSpace;
+                canva.worldCamera = cam != null ? cam : Camera.main;
+                break;
+        }
+
         _activatedCountdown = true;
         pauseTokenSource = new PauseTokenSource();
         pauseToken = pauseTokenSource.Token;
@@ -163,6 +191,8 @@ public class Countdown : MonoBehaviour
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
         stop = false;
+
+
 
         await CountdownTask(time, callback);
     }
@@ -212,6 +242,9 @@ public class Countdown : MonoBehaviour
                 AddText("");
                 callback?.Invoke();
                 _activatedCountdown = false;
+                folder = defaultFolder;
+                mode = 0;
+                cam = null;
                 Destroy(_instance.gameObject);
                 _instance = null;
                 return;
@@ -331,4 +364,11 @@ public class Countdown : MonoBehaviour
         CancelCountdown();
     }
     #endregion
+}
+
+public enum CountdownMode
+{
+    Default,
+    Camera,
+    World
 }

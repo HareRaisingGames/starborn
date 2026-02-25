@@ -5115,5 +5115,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90bf7c0247c886c4cae93ace66e3e8fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 2
   explosion: {fileID: 5984657531033178871}
   explosionSFX: {fileID: 5168925765480604552}
+  isFried: 0

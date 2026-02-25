@@ -89,6 +89,7 @@ namespace Starborn.Tosstail
 
         public override void StartSong()
         {
+            niko.SetExpression(niko.defaultExpression.name);
             hasCompleted = delegate ()
             {
                 return Conductor.instance.isFinished;

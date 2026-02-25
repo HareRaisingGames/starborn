@@ -10,7 +10,7 @@ namespace Starborn.Trojan
         protected Vector2 middlePos;
         public void SetVirus(Vector2 center, Vector2 spawn, Vector2 start, Vector2 move = default, float angle = 0)
         {
-            base.SetVirus(center, spawn, start, angle);
+            base.SetVirus("malworm", center, spawn, start, angle);
             startPos = move;
 
             middlePos = (spawn + move) / 2;
@@ -27,6 +27,8 @@ namespace Starborn.Trojan
                 transform.position = middlePos;
             else
                 transform.position = spawnPosition;
+
+            i++;
         }
     }
 }

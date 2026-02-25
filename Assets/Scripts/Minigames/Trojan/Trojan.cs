@@ -28,7 +28,16 @@ namespace Starborn.Trojan
         public static Trojan game;
         protected List<float> timestamps = new List<float>();
 
+        public Transform virusParent;
+
         List<Virus> existingViruses = new List<Virus>();
+
+        [Header("Additional Assets")]
+        public ProgressBar downloadBar;
+        public GameObject head;
+        public float rotateSpeed = 1f;
+        public Vector3 rotateAxis;
+        public Camera countdownCamera;
 
         public static Virus SpawnVirus(string tag, out AudioSource audio)
         {
@@ -38,6 +47,33 @@ namespace Starborn.Trojan
             Vector3 spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
             Vector3 startPosition = PositionFromRadius(game.center, game.revRadius, degree);
             Virus virus = null;
+
+            bool inBound = false;
+            foreach(Virus v in game.existingViruses)
+            {
+                if (Vector3.Distance(spawnPosition, v.spawnPosition) <= v.radius)
+                {
+                    inBound = true;
+                    break;
+                }
+            }
+
+            while(inBound)
+            {
+                degree = random.Next(0, 361);
+                spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
+                startPosition = PositionFromRadius(game.center, game.revRadius, degree);
+                foreach (Virus v in game.existingViruses)
+                {
+                    if (Vector3.Distance(spawnPosition, v.spawnPosition) <= v.radius)
+                    {
+                        inBound = true;
+                        break;
+                    }
+                    else
+                        inBound = false;
+                }
+            }
 
             switch(tag.ToLower())
             {
@@ -52,6 +88,9 @@ namespace Starborn.Trojan
                     }
                     MalwormVirus worm = Instantiate(game.malwormPrefab, malSpawn, Quaternion.identity).GetComponent<MalwormVirus>();
                     worm.SetVirus(game.center, spawnPosition, startPosition, malSpawn, degree);
+                    worm.transform.parent = game.virusParent;
+                    if (game.virusParent != null)
+                        worm.gameObject.layer = game.virusParent.gameObject.layer;
                     GameObject wormAudio = new GameObject("SFX");
                     audio = wormAudio.AddComponent<AudioSource>();
                     audio.playOnAwake = false;
@@ -61,14 +100,17 @@ namespace Starborn.Trojan
                     return worm;
                 case "turbot":
                     virus = Instantiate(game.turbotPrefab, spawnPosition, Quaternion.identity).GetComponent<Virus>();
-                    virus.SetVirus(game.center, spawnPosition, startPosition, degree);
+                    virus.SetVirus("turbot", game.center, spawnPosition, startPosition, degree);
                     break;
                 case "hairsplit":
                     virus = Instantiate(game.hairsplitPrefab, spawnPosition, Quaternion.identity).GetComponent<Virus>();
-                    virus.SetVirus(game.center, spawnPosition, startPosition, degree);
+                    virus.SetVirus("hairsplit", game.center, spawnPosition, startPosition, degree);
                     break;
             }
 
+            virus.transform.parent = game.virusParent;
+            if (game.virusParent != null)
+                virus.gameObject.layer = game.virusParent.gameObject.layer;
             GameObject obj = new GameObject("SFX");
             audio = obj.AddComponent<AudioSource>();
             audio.transform.parent = virus.gameObject.transform;
@@ -132,6 +174,13 @@ namespace Starborn.Trojan
             {
                 border.transform.Rotate(Vector3.forward * speed * 10 * Time.deltaTime);
             }
+
+            existingViruses = new List<Virus>(FindObjectsOfType<Virus>());
+
+            if(head != null)
+            {
+                head.transform.Rotate(rotateAxis * rotateSpeed * Time.deltaTime);
+            }
         }
 
         private ParticleSystem.Particle[] particles;
@@ -145,9 +194,29 @@ namespace Starborn.Trojan
         public override void Start()
         {
             base.Start();
+            OnSongStart = () => {
+                AddTimestamp(Conductor.instance.music.clip.length);
+                downloadBar.activate = true;
+            };
 
-            if(border != null)
+            if (downloadBar != null)
+            {
+                downloadBar.value = () => {
+                    if (Conductor.instance.isFinished)
+                        return 1;
+                    else
+                        return Conductor.instance.music.time / timestamps[0];
+                };
+            }
+
+            OnGameOver = delegate ()
+            {
+                if (downloadBar != null) downloadBar.activate = false;
+            };
+
+            if (border != null)
                 particles = new ParticleSystem.Particle[border.main.maxParticles];
+
 
             StartCoroutine(PlayMusic());
             IEnumerator PlayMusic()
@@ -155,6 +224,22 @@ namespace Starborn.Trojan
                 yield return new WaitForSeconds(1);
                 //Debug.Log("Go!");
                 SetUpSong();
+            }
+        }
+
+        public void AddTimestamp(float point) => timestamps.Add(point);
+
+        public void FooledYou(float time)
+        {
+            if(timestamps.Count > 1)
+            {
+                float startPoint = timestamps[0];
+                float endPoint = timestamps[1];
+
+                timestamps.RemoveAt(0);
+                timestamps[0] = startPoint;
+
+                TweenManager.NumTween(() => timestamps[0], (value) => { timestamps[0] = value; }, endPoint, time, Eases.EaseOutSine);
             }
         }
 
@@ -180,6 +265,18 @@ namespace Starborn.Trojan
         public override void AdditionalSongSetup()
         {
             base.AdditionalSongSetup();
+        }
+
+        public override void StartSong()
+        {
+            Countdown.folder = "bitcrush";
+            Countdown.mode = CountdownMode.Camera;
+            Countdown.cam = countdownCamera;
+            hasCompleted = delegate ()
+            {
+                return Conductor.instance.isFinished;
+            };
+            base.StartSong();
         }
 
         void OnDrawGizmos()
@@ -221,7 +318,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
                     virus.Explode(Conductor.instance.crochet * 0.25f);
-                }),
+                }, (value) => { virus.isFried = true; }),
             };
         }
     }
@@ -247,7 +344,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 2f, RhythmInputs.A, 1f, 1f, ()=>{
                     virus.Explode(Conductor.instance.crochet * 0.25f);
-                }),
+                }, (value) => { virus.isFried = true; }),
             };
         }
     }
@@ -279,7 +376,7 @@ namespace Starborn.Trojan
                     split2.Rev(Conductor.instance.crochet * 0.5f);
                 }, 3f, RhythmInputs.A, 1f, 1f, ()=>{
                     split1.Explode(Conductor.instance.crochet * 0.125f);
-                }),
+                }, (value) => { split1.isFried = true; }),
                 new CallForAction(()=>{
                     split2.Attack(Conductor.instance.crochet);
                 }, 3.5f),
@@ -287,7 +384,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
                     split2.Explode(Conductor.instance.crochet * 0.125f);
-                }),
+                }, (value) => { split2.isFried = true; }),
             };
         }
 
@@ -306,9 +403,25 @@ namespace Starborn.Trojan
         }
     }
 
-    public class ProgressMarker : RhythmEvent
+    public class ProgressMarker : TrojanEvent
     {
+        public override void SetUp()
+        {
+            base.SetUp();
+            timeCallback = game.AddTimestamp;
+        }
+    }
 
+    public class TimerFakeOut : TrojanEvent
+    {
+        public TimerFakeOut()
+        {
+            actions = new List<CallForAction>() {
+                new CallForAction(()=>{
+                    game.FooledYou(Conductor.instance.crochet * 5);
+                }, 1f)
+            };
+        }
     }
 }
 

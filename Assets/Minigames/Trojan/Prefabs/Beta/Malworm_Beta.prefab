@@ -99,8 +99,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0a1b366bb4c83140bfd83b23de2df38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  radius: 2
   explosion: {fileID: 5642569629766356781}
   explosionSFX: {fileID: 9055693400489277307}
+  isFried: 0
 --- !u!1 &7685305458193260653
 GameObject:
   m_ObjectHideFlags: 0

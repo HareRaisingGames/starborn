@@ -52,6 +52,7 @@ namespace Starborn.InputSystem
             private float _start;
             private float _end;
             private Action _onHit;
+            private Action<bool> _onHalfHit;
 
             private bool _hasInput = false;
             public bool hasInput => _hasInput;
@@ -61,8 +62,9 @@ namespace Starborn.InputSystem
             public float startPoint => _start;
             public float endPoint => _end;
             public Action onHit => _onHit;
+            public Action<bool> onHalfHit => _onHalfHit;
 
-            public CallForAction(Action action, float beat, RhythmInputs input = RhythmInputs.None, float start = 1, float end = 1, Action onHit = null)
+            public CallForAction(Action action, float beat, RhythmInputs input = RhythmInputs.None, float start = 1, float end = 1, Action onHit = null, Action<bool> onHalfHit = null)
             {
                 _action = action;
                 _beat = beat;
@@ -70,6 +72,7 @@ namespace Starborn.InputSystem
                 _start = start;
                 _end = end;
                 _onHit = onHit;
+                _onHalfHit = onHalfHit;
 
                 _hasInput = input != RhythmInputs.None;
 
@@ -88,7 +91,7 @@ namespace Starborn.InputSystem
 
             public CallForAction AddInput(float length, bool enable = false)
             {
-                input = new RhythmInput(inputMarker).SetDestination(beat).SetRange(_start * length, _end * length).SetOnHit(_onHit);
+                input = new RhythmInput(inputMarker).SetDestination(beat).SetRange(_start * length, _end * length).SetOnHit(_onHit).SetOnHalfHit(_onHalfHit);
                 if (input.action != RhythmInputs.None && enable) input.Enable();
                 return this;
             }

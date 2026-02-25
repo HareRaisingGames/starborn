@@ -20,14 +20,29 @@ namespace Starborn.Trojan
             one = Instantiate(miniPrefab, transform.position, Quaternion.identity).GetComponent<Virus>();
             two = Instantiate(miniPrefab, transform.position, Quaternion.identity).GetComponent<Virus>();
 
-            one.SetVirus(center, spawnPos1, revPos1);
-            two.SetVirus(center, spawnPos2, revPos2);
+            one.SetVirus("hairsplit", center, spawnPos1, revPos1);
+            two.SetVirus("hairsplit", center, spawnPos2, revPos2);
             TweenManager.PositionTween(one.gameObject, spawnPosition, spawnPos1, time, Eases.EaseInOutQuart, delegate() {
                 
             });
             TweenManager.PositionTween(two.gameObject, spawnPosition, spawnPos2, time, Eases.EaseInOutQuart, delegate () {
                 
             });
+
+            one.transform.parent = transform.parent;
+            two.transform.parent = transform.parent;
+
+            one.gameObject.layer = gameObject.layer;
+            two.gameObject.layer = gameObject.layer;
+
+            if (explosion != null)
+            {
+                explosion.transform.parent = null;
+                var main = explosion.main;
+                main.stopAction = ParticleSystemStopAction.Destroy;
+                explosion.Play();
+            }
+
             Destroy(this.gameObject);
         }
     }
