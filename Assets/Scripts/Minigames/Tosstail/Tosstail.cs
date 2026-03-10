@@ -27,6 +27,10 @@ namespace Starborn.Tosstail
 
         public override void Start()
         {
+            Resources.Load<AudioClip>("Audio/blip");
+            Resources.Load<AudioClip>("Audio/Tosstail/cake");
+            Resources.Load<AudioClip>("Audio/Tosstail/donut");
+
             base.Start();
             TweenManager.instance.AddManager();
             TweenManager.XTween(shaker.gameObject, 
@@ -75,9 +79,9 @@ namespace Starborn.Tosstail
                 niko.Bounce();
         }
 
-        public override void AdditionalSongSetup()
+        public override void AdditionalSongSetup(string tag = "")
         {
-            base.AdditionalSongSetup();
+            base.AdditionalSongSetup(tag);
             if(Conductor.instance != null && niko != null)
             {
                 niko.canBlink = false;

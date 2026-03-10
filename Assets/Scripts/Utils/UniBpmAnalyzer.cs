@@ -50,13 +50,13 @@ public class UniBpmAnalyzer
         {
             return -1;
         }
-        Debug.Log("AnalyzeBpm audioClipName : " + clip.name);
+        //Debug.Log("AnalyzeBpm audioClipName : " + clip.name);
 
         int frequency = clip.frequency;
-        Debug.Log("Frequency : " + frequency);
+        //Debug.Log("Frequency : " + frequency);
 
         int channels = clip.channels;
-        Debug.Log("Channels : " + channels);
+        //Debug.Log("Channels : " + channels);
 
         int splitFrameSize = Mathf.FloorToInt(((float)frequency / (float)BASE_FREQUENCY) * ((float)channels / (float)BASE_CHANNELS) * (float)BASE_SPLIT_SAMPLE_SIZE);
 

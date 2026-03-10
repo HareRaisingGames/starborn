@@ -8,6 +8,7 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using Starborn.InputSystem;
 using UnityEngine.Serialization;
+using UnityEditor;
 
 public class OptionMenu : MonoBehaviour
 {
@@ -26,7 +27,9 @@ public class OptionMenu : MonoBehaviour
         }
     }
     public List<Option> options = new List<Option>();
+    public OptionType type;
     public Image cursor;
+    public Color selectedColor;
     public float offset = 2;
     StarbornInputSystem inputActions;
     public virtual void Awake()
@@ -280,11 +283,32 @@ public class OptionMenu : MonoBehaviour
     protected virtual void SetSelection(int s)
     {
         float itemWidth = Mathf.Abs(options[s].item.sizeDelta.x / 2);
-        if(cursor != null)
+        if(cursor != null && type == OptionType.Cursor)
         {
             float cursorWidth = Mathf.Abs(cursor.rectTransform.sizeDelta.x / 2);
             cursor.rectTransform.anchoredPosition
                 = new Vector2(options[s].item.anchoredPosition.x - itemWidth - cursorWidth - offset, options[s].item.anchoredPosition.y);
+        }
+        else if(type == OptionType.Color)
+        {
+            foreach(Option opt in options)
+            {
+                if (opt.item.GetComponent<Image>())
+                    if (opt.item.GetComponent<Button>())
+                        opt.item.GetComponent<Image>().color = opt.item.GetComponent<Button>().colors.normalColor;
+                    else
+                        opt.item.GetComponent<Image>().color = Color.white;
+                else if (opt.item.GetComponent<TMPro.TMP_Text>())
+                    if (opt.item.GetComponent<Button>())
+                        opt.item.GetComponent<TMPro.TMP_Text>().color = opt.item.GetComponent<Button>().colors.normalColor;
+                    else
+                        opt.item.GetComponent<TMPro.TMP_Text>().color = Color.white;
+            }
+
+            if (options[s].item.GetComponent<Image>())
+                options[s].item.GetComponent<Image>().color = selectedColor;
+            else if (options[s].item.GetComponent<TMPro.TMP_Text>())
+                options[s].item.GetComponent<TMPro.TMP_Text>().color = selectedColor;
         }
         
     }
@@ -329,4 +353,10 @@ public class Option
     {
         return rectangle == item;
     }
+}
+
+public enum OptionType
+{
+    Cursor,
+    Color
 }

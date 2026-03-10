@@ -77,6 +77,9 @@ namespace Starborn.InputSystem
         public string dialogue;
         public Charting section;
         public int amount = 1;
+        public string tag;
+        public bool noMusic;
+        public bool noApplause;
     }
     [System.Serializable]
     public class Section

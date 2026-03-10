@@ -194,6 +194,9 @@ public abstract class Minigame : MonoBehaviour
         m_inputSystem.Rhythm.Pad.canceled += onReleasePad;
 
         if (chartings.Count != 0) selectedCharting = chartings[Random.Range(0, chartings.Count - 1)];
+
+        MinigameManager.managerType = "";
+        Resources.Load<GameObject>($"Prefabs/Manager");
     }
 
     private void OnEnable()
@@ -226,7 +229,7 @@ public abstract class Minigame : MonoBehaviour
 
     [HideInInspector]
     public bool setUpSong = false;
-    public void SetUpSong()
+    public virtual void SetUpSong()
     {
         TweenManager.instance.AddManager();
         if (isTutorial)
@@ -320,6 +323,11 @@ public abstract class Minigame : MonoBehaviour
         }
     }
 
+    public virtual void onDestroy()
+    {
+        Resources.UnloadUnusedAssets();
+    }
+
     public System.Action<int> OnBeatChange;
     public System.Action<int> OnBeatTutorial;
 
@@ -349,7 +357,7 @@ public abstract class Minigame : MonoBehaviour
         prevStep = _curStep;
     }
 
-    public virtual void AdditionalSongSetup()
+    public virtual void AdditionalSongSetup(string tag = "")
     {
 
     }

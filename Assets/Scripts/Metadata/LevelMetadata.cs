@@ -25,13 +25,13 @@ public static class MetadataManager
                     StarbornFileHandler.ExtractDialogue(file);
 
                     SimpleSBDFile dialogue = StarbornFileHandler.ReadSimpleDialogue(filename);
+                    if(!levels.ContainsKey(dialogue.fileName))
                     levels.Add(dialogue.fileName,
                         new LevelMetadata(dialogue.displayName, dialogue.description, dialogue.chapter, dialogue.volume, dialogue.type));
                     //Debug.Log(filename);
                 }
             }
         }
-
         StarbornFileHandler.ClearCache();
     }
 }

@@ -93,9 +93,12 @@ public class DialogueManager : MonoBehaviour
     public GameObject loadingIcon;
     public GameObject nextButton;
 
+    static TranscriptGroup transcript = new TranscriptGroup();
+
     UniversalAdditionalCameraData baseCameraData;
     UniversalAdditionalCameraData defaultBaseCameraData;
     LayerMask defaultMask;
+
     #endregion
 
     #region Audio
@@ -112,10 +115,6 @@ public class DialogueManager : MonoBehaviour
         m_inputSystem.Dialogue.A.performed += onA;
         m_inputSystem.Dialogue.Pause.performed += OnPause;
 
-        baseCameraData = Camera.main.GetUniversalAdditionalCameraData();
-        defaultBaseCameraData = baseCameraData;
-        defaultMask = Camera.main.cullingMask;
-
         LuaMethods.SetInstance(this);
     }
 
@@ -131,6 +130,9 @@ public class DialogueManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Resources.Load<GameObject>("Prefabs/GameOver");
+        Resources.Load<GameObject>("Prefabs/Pause Menu");
+
         scene = SceneManager.GetSceneByName("DialogueState");
         sceneName = scene.name;
         if (flash != null)
@@ -140,6 +142,10 @@ public class DialogueManager : MonoBehaviour
 
         MixerSettings.SetAudioGroup(musicSource, "Music");
         MixerSettings.SetAudioGroup(dialogueSource, "Dialogue");
+
+        baseCameraData = Camera.main.GetUniversalAdditionalCameraData();
+        defaultBaseCameraData = baseCameraData;
+        defaultMask = Camera.main.cullingMask;
 
         StartCoroutine(LoadStreamingAsset());
         IEnumerator LoadStreamingAsset()
@@ -614,7 +620,7 @@ public class DialogueManager : MonoBehaviour
 
         if (cameraData != null)
         {
-            Debug.Log(cameraData.cameraStack);
+            Debug.Log(baseCameraData.gameObject.name);
             baseCameraData.cameraStack.AddRange(cameraData.cameraStack);
             SetMainCameraRenderer(cameraData);
         }
@@ -867,6 +873,7 @@ public class DialogueManager : MonoBehaviour
         {
             MusicUtils.MusicFadeOut(musicSource, 0.5f, delegate () { musicSource.Pause(); });
             GameIn(lines[line].minigame);
+            MinigameManager.returnCallback = FromGame;
             previousLine = null;
             return;
         }
@@ -874,6 +881,12 @@ public class DialogueManager : MonoBehaviour
         dialogueBox.t = line;
         dialogueBox.onFinish = delegate (int t)
         {
+            if (!isGameOver)
+                if (curLines[line].name != null)
+                    transcript.Add(curLines[line].name, curLines[line].text);
+                else
+                    transcript.Add(curLines[line].text);
+
             curLine++;
             dialogueLine++;
             LuaFunctions.OnLineEnd(line);
@@ -1258,6 +1271,7 @@ public class DialogueManager : MonoBehaviour
                 fade.SetActive(true);
                 ColorUtils.SetAlpha(fade, 0);
             }
+            transcript.Clear();
             MusicUtils.MusicFadeOut(musicSource, 0.25f, delegate () { musicSource.Stop(); });
             if (FindObjectOfType<PauseMenu>(true) != null)
                 Destroy(FindObjectOfType<PauseMenu>(true).gameObject);
@@ -1594,5 +1608,55 @@ public class DialogueManager : MonoBehaviour
     }
     #endregion
 
+    #endregion
+
+    #region Structs
+    public struct Transcript
+    {
+        private string name;
+        private string dialogue;
+
+        public Transcript(string name, string dialogue)
+        {
+            this.name = name;
+            this.dialogue = dialogue;
+        }
+
+        public Transcript(string dialogue)
+        {
+            name = "";
+            this.dialogue = dialogue;
+        }
+
+        public override string ToString()
+        {
+            if (name != null && name != "")
+                return $"{name}:\n  {dialogue}";
+
+            return $"  {dialogue}";
+        }
+    }
+
+    public class TranscriptGroup
+    {
+        protected List<Transcript> transcript = new List<Transcript>();
+
+        public void Add(string name, string description) => transcript.Add(new Transcript(name, description));
+        public void Add(string description) => transcript.Add(new Transcript(description));
+
+        public void Clear() => transcript.Clear();
+
+        public override string ToString()
+        {
+            string fullTranscript = "";
+            foreach(Transcript line in transcript)
+            {
+                fullTranscript += line;
+                if (transcript.IndexOf(line) < transcript.Count - 1)
+                    fullTranscript += "\n";
+            }
+            return fullTranscript;
+        }
+    }
     #endregion
 }

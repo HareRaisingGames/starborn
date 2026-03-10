@@ -22,6 +22,7 @@ namespace Starborn.Trojan
 
         [Header("Particles")]
         public ParticleSystem forcefield;
+        public AudioSource forcefieldSFX;
         public ParticleSystem border;
         public float speed = 1f;
 
@@ -31,6 +32,10 @@ namespace Starborn.Trojan
         public Transform virusParent;
 
         List<Virus> existingViruses = new List<Virus>();
+
+        int clicks = 0;
+        bool canClick = false;
+        string tagName = "";
 
         [Header("Additional Assets")]
         public ProgressBar downloadBar;
@@ -147,7 +152,8 @@ namespace Starborn.Trojan
         public override void onA(InputAction.CallbackContext context)
         {
             base.onA(context);
-            if (autoPlay) return;
+            if (autoPlay && tagName != "activate") return;
+            if (!canClick) return;
 
             ActivateForceField();
         }
@@ -166,6 +172,9 @@ namespace Starborn.Trojan
         {
             if (forcefield != null)
                 forcefield.Play();
+            if (forcefieldSFX != null)
+                forcefieldSFX.Play();
+            clicks++;
         }
         public override void Update()
         {
@@ -193,6 +202,19 @@ namespace Starborn.Trojan
 
         public override void Start()
         {
+            Resources.Load<AudioClip>($"Prefabs/Managers/Trojan");
+            Resources.Load<AudioClip>($"Audio/Trojan/malworm_1");
+            Resources.Load<AudioClip>($"Audio/Trojan/malworm_2");
+            Resources.Load<AudioClip>($"Audio/Trojan/malworm_3");
+            Resources.Load<AudioClip>($"Audio/Trojan/turbot_1");
+            Resources.Load<AudioClip>($"Audio/Trojan/turbot_2");
+            if (Resources.Load<AudioClip>($"Audio/Trojan/hairsplit_1") != null)
+                Resources.Load<AudioClip>($"Audio/Trojan/hairsplit_1");
+            if (Resources.Load<AudioClip>($"Audio/Trojan/hairsplit_2") != null)
+                Resources.Load<AudioClip>($"Audio/Trojan/hairsplit_2");
+
+            Resources.LoadAll<AudioClip>("Audio/Trojan/death");
+
             base.Start();
             OnSongStart = () => {
                 AddTimestamp(Conductor.instance.music.clip.length);
@@ -207,6 +229,8 @@ namespace Starborn.Trojan
                     else
                         return Conductor.instance.music.time / timestamps[0];
                 };
+
+                downloadBar.gameObject.SetActive(false);
             }
 
             OnGameOver = delegate ()
@@ -217,14 +241,15 @@ namespace Starborn.Trojan
             if (border != null)
                 particles = new ParticleSystem.Particle[border.main.maxParticles];
 
-
-            StartCoroutine(PlayMusic());
-            IEnumerator PlayMusic()
+            /*if(FindObjectOfType<PauseMenu>(true) == null)
             {
-                yield return new WaitForSeconds(1);
-                //Debug.Log("Go!");
-                SetUpSong();
-            }
+                StartCoroutine(PlayMusic());
+                IEnumerator PlayMusic()
+                {
+                    yield return new WaitForSeconds(1);
+                    SetUpSong();
+                }
+            }*/
         }
 
         public void AddTimestamp(float point) => timestamps.Add(point);
@@ -262,9 +287,80 @@ namespace Starborn.Trojan
             border.SetParticles(particles, numParticles);
         }
 
-        public override void AdditionalSongSetup()
+        public override void SetUpSong()
         {
-            base.AdditionalSongSetup();
+            MinigameManager.managerType = "Trojan";
+            base.SetUpSong();
+            foreach(Transform inst in MinigameManager.instance.transform)
+            {
+                if (inst == null)
+                    continue;
+
+                if(inst.GetComponent<Canvas>() != null)
+                {
+                    if(inst.GetComponent<Canvas>().renderMode == RenderMode.ScreenSpaceCamera)
+                    {
+                        inst.GetComponent<Canvas>().worldCamera = Camera.main;
+                    }
+                }
+            }
+        }
+
+        public override void AdditionalSongSetup(string tag = "")
+        {
+            base.AdditionalSongSetup(tag);
+            if (tag == "activate")
+            {
+                tagName = "activate";
+                amountJudger = () => clicks;
+                canClick = true;
+            }
+        }
+
+        public override void TutorialAdditionals()
+        {
+            base.TutorialAdditionals();
+
+            Countdown.folder = "bitcrush";
+            Countdown.mode = CountdownMode.Camera;
+            Countdown.cam = countdownCamera;
+            canClick = true;
+
+            if (tagName == "activate")
+            {
+                if (MinigameManager.instance.remainingText != null && amountJudger != null)
+                {
+                    MinigameManager.instance.remainingText.text = MinigameManager.instance.requiredText;
+                }
+
+                if (hasCompleted != null && hasCompleted.Invoke())
+                    OnBeatTutorial(0);
+
+                //Debug.Log(hasCompleted.Invoke());
+            }
+            //Debug.Log(amountJudger.Invoke());
+        }
+
+        public override void TutorialOnComplete(int amount, string tag = "")
+        {
+            hasCompleted = null;
+            base.TutorialOnComplete(amount, tag);
+            if(tag == "activate")
+            {
+                hasCompleted = delegate ()
+                {
+                    return clicks >= amount;
+                };
+            }
+        }
+
+        public override void TutorialReset()
+        {
+            base.TutorialReset();
+            tagName = "";
+            clicks = 0;
+            canClick = false;
+            hasCompleted = null;
         }
 
         public override void StartSong()
@@ -272,10 +368,31 @@ namespace Starborn.Trojan
             Countdown.folder = "bitcrush";
             Countdown.mode = CountdownMode.Camera;
             Countdown.cam = countdownCamera;
+            canClick = true;
             hasCompleted = delegate ()
             {
                 return Conductor.instance.isFinished;
             };
+
+            if(downloadBar != null)
+            {
+                downloadBar.gameObject.SetActive(true);
+                GameObject[] hiddenStuff = { downloadBar.text.gameObject, 
+                    downloadBar._slider.transform.Find("Background").gameObject,
+                downloadBar._slider.transform.Find("Fill Area").transform.Find("Fill").gameObject};
+
+                Vector3 barPos = downloadBar.GetComponent<RectTransform>().anchoredPosition3D;
+
+                foreach(GameObject stuff in hiddenStuff)
+                {
+                    ColorUtils.SetAlpha(stuff, 0);
+                    TweenManager.AlphaTween(stuff, 0, 1, 3f, Eases.EaseOutCubic);
+                }
+
+                TweenManager.YTween(downloadBar.gameObject, barPos.y + 2, barPos.y, 1.5f, Eases.EaseInOutQuad);
+            }
+
+
             base.StartSong();
         }
 

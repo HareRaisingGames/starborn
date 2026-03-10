@@ -39,7 +39,6 @@ public class Screenshot : MonoBehaviour
 
     void Snap(InputAction.CallbackContext context)
     {
-        Debug.Log("Click!");
         while (File.Exists($"{Application.dataPath}/{filename}_{i}.png"))
             i++;
         ScreenCapture.CaptureScreenshot($"{Application.dataPath}/{filename}_{i}.png");

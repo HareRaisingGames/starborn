@@ -41,11 +41,13 @@ public class LoadingManager : MonoBehaviour
                 SceneManager.UnloadSceneAsync(currentScene);
                 if (callback != null)
                 {
-                    callback.Invoke();
-                    FadeOut(null);
+                    FadeOut(callback);
                     callback = null;
                 }
             };
+
+
+
         }).SetStartDelay(0.1f).SetIgnoreTimeScale();
         TweenManager.XTween(bugz, -1000, -70, 0.5f, Eases.EaseOutSine, delegate () {
 
@@ -81,9 +83,13 @@ public class LoadingManager : MonoBehaviour
                 yield return new WaitForSeconds(waitTime);
                 waitTime = defaultTime;
                 //SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene());
-                Destroy(instance.gameObject);
-                Destroy(instance);
-                instance = null;
+                //if(instance != null)
+                //{
+                    Destroy(instance.gameObject);
+                    Destroy(instance);
+                    instance = null;
+                //}
+
             }
         }).SetStartDelay(0.5f).SetIgnoreTimeScale();
         TweenManager.XTween(instance.bugz, -70, 1000, 1f, Eases.EaseInCubic, delegate () {
@@ -119,4 +125,33 @@ public class LoadingManager : MonoBehaviour
         // Optional: Call Resources.UnloadUnusedAssets to free up memory from assets no longer referenced.
         yield return Resources.UnloadUnusedAssets();
     }
+
+    /*
+     StartCoroutine(LoadScene());
+            IEnumerator LoadScene()
+            {
+                AsyncOperation operation = SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive);
+                operation.allowSceneActivation = false;
+                operation.completed += delegate (AsyncOperation op)
+                {
+                    Camera.main.gameObject.SetActive(false);
+                    SceneManager.UnloadSceneAsync(currentScene);
+                    if (callback != null)
+                    {
+                        FadeOut(callback);
+                        callback = null;
+                    }
+                };
+
+                while(!operation.isDone)
+                {
+                    float progress = Mathf.Clamp01(operation.progress / 0.9f);
+                    if(operation.progress >= 0.9f)
+                    {
+                        operation.allowSceneActivation = true;
+                    }
+                    yield return null;
+                }
+            }
+     */
 }

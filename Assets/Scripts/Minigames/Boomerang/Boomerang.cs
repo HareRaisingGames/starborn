@@ -112,9 +112,9 @@ namespace Starborn.Boomerang
             if (autoPlay) Duck();
         }
 
-        public override void AdditionalSongSetup()
+        public override void AdditionalSongSetup(string tag = "")
         {
-            base.AdditionalSongSetup();
+            base.AdditionalSongSetup(tag);
             if (Conductor.instance != null && marty != null)
             {
                 marty.SetSpeed(Conductor.instance.songBpm);

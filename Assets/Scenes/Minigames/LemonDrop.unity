@@ -398,6 +398,7 @@ MonoBehaviour:
   eventsList:
   - LemonToss
   - LemonTossTutorial
+  countdown: 
   chartings:
   - skipCountdown: 1
     sections:
@@ -495,6 +496,7 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+  tutorialCountdown: 
   endlessChartings: []
   events: []
   defaultCamera: {fileID: 214271015}

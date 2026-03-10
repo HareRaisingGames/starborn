@@ -14,6 +14,9 @@ public class MinigameManager : MonoBehaviour
     Minigame minigame;
     Conductor conductor;
 
+    public static string managerType;
+    public static System.Action returnCallback;
+
     [HideInInspector]
     public List<RhythmEvent> events = new List<RhythmEvent>();
     [HideInInspector]
@@ -60,7 +63,7 @@ public class MinigameManager : MonoBehaviour
 
     public AudioClip press;
     public AudioClip release;
-    
+
     public bool gameOver
     {
         get
@@ -107,21 +110,26 @@ public class MinigameManager : MonoBehaviour
         {
             if (_instance == null)
             {
-                if(FindObjectOfType<MinigameManager>() == null)
+                if (FindObjectOfType<MinigameManager>() == null)
                 {
-                    GameObject prefab = Resources.Load<GameObject>("Prefabs/Manager");
-                    if(prefab != null)
+                    GameObject prefab;
+                    if (managerType != "")
+                        prefab = Resources.Load<GameObject>($"Prefabs/Managers/{managerType}");
+                    else
+                        prefab = Resources.Load<GameObject>($"Prefabs/Manager");
+
+                    if (prefab != null)
                     {
                         Instantiate(prefab, Vector3.zero, Quaternion.identity).name = "Manager";
                     }
                     else
                     {
-                        GameObject manager = new GameObject("Minigame");
+                        GameObject manager = new GameObject("Manager");
                         _instance = manager.AddComponent<MinigameManager>();
                     }
                 }
                 _instance = FindObjectOfType<MinigameManager>();
-                
+
             }
 
             return _instance;
@@ -176,7 +184,7 @@ public class MinigameManager : MonoBehaviour
 
         if (nextButton != null) ColorUtils.SetAlpha(nextButton, 0);
 
-        if(Resources.Load<AudioClip>("Audio/applause") != null)
+        if (Resources.Load<AudioClip>("Audio/applause") != null)
         {
             GameObject applauseObj = new GameObject("Applause");
             applause = applauseObj.AddComponent<AudioSource>();
@@ -201,10 +209,10 @@ public class MinigameManager : MonoBehaviour
 
         if (remainingText != null) remainingText.text = "";
 
-        if(minigame != null)
+        if (minigame != null)
         {
             InputAction skip = minigame.inputSystem.Dialogue.Skip;
-            if(skipText != null)
+            if (skipText != null)
             {
                 ColorUtils.SetAlpha(skipText.gameObject, 0);
                 skipText.text = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(skip)}\"> to skip";
@@ -214,13 +222,13 @@ public class MinigameManager : MonoBehaviour
 
     public void LoseALife(float amount = 1)
     {
-        if(_consequences)
+        if (_consequences)
             _lives -= amount;
     }
 
     [HideInInspector]
     public float displayAccuracy = 0;
-    
+
     public float totalAccuracy
     {
         get
@@ -246,7 +254,7 @@ public class MinigameManager : MonoBehaviour
     {
         if (Conductor.instance.isPlaying)
         {
-            foreach(RhythmEvent e in events)
+            foreach (RhythmEvent e in events)
             {
                 e.CheckForInvoke(Conductor.instance.songPosition);
             }
@@ -273,22 +281,22 @@ public class MinigameManager : MonoBehaviour
             CheckForAdditionalAssets();
         }
 
-        if(_lives <= 0 && !inTutorial && !_gameOver)
+        if (_lives <= 0 && !inTutorial && !_gameOver)
         {
             _gameOver = true;
-            MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f, delegate() {
+            MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f, delegate () {
                 if (minigame != null) minigame.OnGameOver?.Invoke();
                 Conductor.instance.music.Stop();
-                if(FindObjectOfType<DialogueManager>(true) != null)
+                if (FindObjectOfType<DialogueManager>(true) != null)
                 {
                     FindObjectOfType<DialogueManager>(true).GameOver();
-                    if(GetComponent<Canvas>()) GetComponent<Canvas>().sortingOrder = -2;
+                    if (GetComponent<Canvas>()) GetComponent<Canvas>().sortingOrder = -2;
                 }
                 //Debug.Log();
             });
         }
 
-        if(accuracyText != null) accuracyText.text = Mathf.Round(displayAccuracy * 100) + "%";
+        if (accuracyText != null) accuracyText.text = Mathf.Round(displayAccuracy * 100) + "%";
         if (livesText != null) livesText.text = Mathf.Clamp(lives, 0, Mathf.Infinity).ToString();
         if (beatsText != null) beatsText.text = conductor.curBeat.ToString();
         if (backdrop != null && text != null) backdrop.SetActive(text.text != "");
@@ -300,12 +308,12 @@ public class MinigameManager : MonoBehaviour
 
         foreach (RhythmInput input in inputs) input.canPlay = _canPlay;
 
-        if(minigame != null)
+        if (minigame != null)
         {
             bool? done = minigame.hasCompleted?.Invoke();
             //Debug.Log(done);
             //The requirement for when a minigame is completed
-            if(!inTutorialMinigame)
+            if (!inTutorialMinigame)
             {
                 if (minigame.hasCompleted != null && minigame.hasCompleted.Invoke() && !finishedGame && !_gameOver && minigame.eligibleForClear)
                 {
@@ -318,7 +326,7 @@ public class MinigameManager : MonoBehaviour
             }
             else
             {
-                if(Conductor.instance.music.isPlaying)
+                if (Conductor.instance.music.isPlaying)
                 {
                     minigame.TutorialAdditionals();
                     if (Conductor.instance.music.timeSamples < previousTimeSamples && previousTimeSamples > 0)
@@ -330,6 +338,10 @@ public class MinigameManager : MonoBehaviour
                     previousTimeSamples = Conductor.instance.music.timeSamples;
                     //Debug.Log(previousTimeSamples);
                 }
+                else if (lines[t].noMusic)
+                {
+                    minigame.TutorialAdditionals();
+                }
 
             }
 
@@ -338,7 +350,7 @@ public class MinigameManager : MonoBehaviour
             {
                 skipText.text = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(skip)}\"> to skip";
             }
-               
+
         }
 
         /*if (Gamepad.current != null)
@@ -363,14 +375,14 @@ public class MinigameManager : MonoBehaviour
 
     public void CheckForAdditionalAssets()
     {
-        if(FindObjectOfType<DialogueManager>(true) != null)
+        if (FindObjectOfType<DialogueManager>(true) != null)
         {
             DialogueManager manager = FindObjectOfType<DialogueManager>(true);
             GameObject[] rootObjects = scene.GetRootGameObjects();
 
             foreach (GameObject obj in rootObjects)
             {
-                if(!manager.sceneVisibilities[scene.name].ContainsKey(obj))
+                if (!manager.sceneVisibilities[scene.name].ContainsKey(obj))
                     manager.sceneVisibilities[scene.name].Add(obj, obj.activeInHierarchy);
             }
 
@@ -378,19 +390,20 @@ public class MinigameManager : MonoBehaviour
     }
 
     bool inTutorial;
-    bool skipTutorial;
+    [HideInInspector]
+    public bool skipTutorial;
     List<TutorialLine> lines = new List<TutorialLine>();
     public void StartTutorial()
     {
-        if(minigame != null)
+        if (minigame != null)
         {
-            if(minigame.isTutorial && minigame.tutorial.lines.Count != 0)
+            if (minigame.isTutorial && minigame.tutorial.lines.Count != 0)
             {
                 lines = minigame.tutorial.lines;
                 _consequences = false;
                 inTutorial = true;
 
-                if(skipText != null)
+                if (skipText != null)
                 {
                     ColorUtils.SetAlpha(skipText.gameObject, 0);
                     TweenManager.AlphaTween(skipText.gameObject, 0, 1, 1f, Eases.EaseInOutQuart, null, "fade_in").SetStartDelay(0.1f);
@@ -425,9 +438,9 @@ public class MinigameManager : MonoBehaviour
                 minigame.OnBeatTutorial = null;
                 minigame.PostTutorialAdditionals();
 
-                if(!skipTutorial)
+                if (!skipTutorial)
                 {
-                    if(skipText != null)
+                    if (skipText != null)
                     {
                         TweenManager.AlphaTween(skipText.gameObject, 1, 0, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
                         TweenManager.XTween(skipText.gameObject, -10, 300, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
@@ -443,7 +456,7 @@ public class MinigameManager : MonoBehaviour
             }
             text.text = FilterDialogue(lines[t].dialogue);
 
-            if (lines[t].section.sections.Count != 0)
+            if (lines[t].section.sections.Count != 0 || lines[t].noMusic)
             {
                 if (minigame.tutorialSong != null) Conductor.instance.music.clip = minigame.tutorialSong;
                 Conductor.instance.music.loop = true;
@@ -451,8 +464,10 @@ public class MinigameManager : MonoBehaviour
                 if (lines[t].section.setBPM && lines[t].section.bpm > 0)
                     Conductor.instance.manualBpm = lines[t].section.bpm;
                 inTutorialMinigame = true;
-                Conductor.instance.SetUpBPM();
-                minigame.TutorialOnComplete(lines[t].amount);
+                if(!lines[t].noMusic)
+                    Conductor.instance.SetUpBPM();
+
+                minigame.TutorialOnComplete(lines[t].amount, lines[t].tag);
                 requiredAmount = lines[t].amount;
                 minigame.OnBeatTutorial = OnCompleteTutorialSection;
                 lines[t].section.AddCharting(Conductor.instance.crochet, minigame.minigameName);
@@ -460,9 +475,13 @@ public class MinigameManager : MonoBehaviour
                 IEnumerator SetUp()
                 {
                     yield return new WaitForSeconds(0.5f);
-                    minigame.AdditionalSongSetup();
+                    minigame.AdditionalSongSetup(lines[t].tag);
                     if (lines[t].section.skipCountdown)
                         Conductor.instance.PlayMusicWithoutCallback();
+                    else if (lines[t].noMusic)
+                    {
+                        Conductor.startSong = true;
+                    }
                     else
                         Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusicWithoutCallback);
 
@@ -484,6 +503,17 @@ public class MinigameManager : MonoBehaviour
     }
 
     int requiredAmount = 0;
+
+    public string requiredText
+    { 
+        get 
+        {
+            if(instance != null)
+                return $"{instance.requiredAmount - instance.minigame.amountJudger.Invoke()}\n<size=25>left</size>";
+
+            return "";
+        } 
+    }
 
     string FilterDialogue(string line)
     {
@@ -517,13 +547,13 @@ public class MinigameManager : MonoBehaviour
                 minigame.startGame = false;
                 Conductor.instance.music.Stop();
                 minigame.hasCompleted = null;
-                t++;
-                text.text = "";
                 Conductor.instance.music.loop = false;
                 if (remainingText != null) remainingText.text = "";
-                if (applause != null)
+                if (applause != null && !lines[t].noApplause)
                     applause.Play();
                 Conductor.startSong = false;
+                t++;
+                text.text = "";
                 minigame.TutorialReset();
                 Clear();
                 StartCoroutine(Next());
@@ -578,10 +608,21 @@ public class MinigameManager : MonoBehaviour
                 ColorUtils.SetAlpha(manager.fade, 0);
             }
             manager.TryAgain(delegate () { Time.timeScale = 1; });
-            PauseMenu.instance.gameObject.SetActive(false);
-            PopupMenu.instance.SolidDestroy();
-            Countdown.CancelCountdown();
         }
+        else
+        {
+            /*LoadingManager.LoadScene(SceneManager.GetActiveScene().path.Replace(".unity","").Replace("Assets/",""), delegate()
+            {
+                StaticProperties.canPause = true;
+                Time.timeScale = 1;
+                returnCallback = delegate () {
+                    LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+                };
+            });*/
+        }
+        PauseMenu.instance.gameObject.SetActive(false);
+        PopupMenu.instance.SolidDestroy();
+        Countdown.CancelCountdown();
 
         Minigame.gotGameOver = true;
         Conductor.startSong = false;
@@ -664,8 +705,10 @@ public class MinigameManager : MonoBehaviour
                     totalAccuracies.Add(totalAccuracy);
                     minigameAccuracies.Add(SceneManager.GetActiveScene().name, totalAccuracy);
                     Clear();
-                    FindObjectOfType<DialogueManager>(true).FromGame();
+                    //FindObjectOfType<DialogueManager>(true).FromGame();
                 }
+                returnCallback?.Invoke();
+                returnCallback = null;
             }
             hasPressed = false;
             releaseSource.Play();
@@ -685,10 +728,12 @@ public class MinigameManager : MonoBehaviour
             {
                 Conductor.instance.music.Stop();
                 Conductor.instance.ManualSetUpBPM(0);
-                inTutorialMinigame = false;
                 Conductor.instance.music.loop = false;
                 previousTimeSamples = 0;
             }
+            
+            inTutorialMinigame = false;
+
             if (skipText != null)
             {
                 TweenManager.instance.RemoveTween("fade_in");
