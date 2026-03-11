@@ -16946,7 +16946,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.Tosstail
   conductor: {fileID: 1202914535}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 1
   song: {fileID: 8300000, guid: eb0abd3f3ec615f429b5cda92d7f7ac0, type: 3}
   tutorialSong: {fileID: 8300000, guid: f06e1aa4543413c40b518124a48fc0f6, type: 3}
@@ -16956,6 +16956,7 @@ MonoBehaviour:
   - LongToss
   - StopBouncing
   - StartBouncing
+  countdown: 
   chartings:
   - skipCountdown: 0
     sections:
@@ -17981,6 +17982,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Welcome to Tosstail
       section:
         skipCountdown: 0
@@ -17988,6 +17992,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: In this game, all you have to do is catch the shaker as I toss it
       section:
         skipCountdown: 0
@@ -17995,6 +18002,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Timing is key, so listen carefully
       section:
         skipCountdown: 0
@@ -18002,6 +18012,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: 
       section:
         skipCountdown: 0
@@ -18017,6 +18030,9 @@ MonoBehaviour:
         setBPM: 1
         bpm: 164
       amount: 2
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Just like that!
       section:
         skipCountdown: 0
@@ -18024,6 +18040,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Now let's try something else!
       section:
         skipCountdown: 0
@@ -18031,6 +18050,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: 
       section:
         skipCountdown: 0
@@ -18046,6 +18068,9 @@ MonoBehaviour:
         setBPM: 1
         bpm: 164
       amount: 2
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Ok! Enough practice!
       section:
         skipCountdown: 0
@@ -18053,6 +18078,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Let's do it for real now!
       section:
         skipCountdown: 0
@@ -18060,6 +18088,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     skipTutorial:
     - dialogue: Oh! You already know it? Well, let's get into it.
       section:
@@ -18068,6 +18099,10 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+  tutorialCountdown: 
   endlessChartings: []
   events: []
   defaultCamera: {fileID: 519420031}

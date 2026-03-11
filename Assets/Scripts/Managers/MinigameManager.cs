@@ -292,6 +292,12 @@ public class MinigameManager : MonoBehaviour
                     FindObjectOfType<DialogueManager>(true).GameOver();
                     if (GetComponent<Canvas>()) GetComponent<Canvas>().sortingOrder = -2;
                 }
+                else
+                {
+                    Minigame.gotGameOver = true;
+                    GameOverMenu.tryAgainCallback = RestartMinigame;
+                    Instantiate(Resources.Load<GameObject>("Prefabs/GameOver"), Vector3.zero, Quaternion.identity);
+                }
                 //Debug.Log();
             });
         }
@@ -495,7 +501,7 @@ public class MinigameManager : MonoBehaviour
             if (nextButton != null)
             {
                 TweenManager.AlphaTween(nextButton, 0, 1, 1f, Eases.EaseInOutSine, null, "ping-pong").SetStartDelay(1.5f).SetPingPong(0);
-                RectTransform buttonPos = nextButton.GetComponent<RectTransform>();
+                //RectTransform buttonPos = nextButton.GetComponent<RectTransform>();
                 //nextButton.GetComponent<RectTransform>().anchoredPosition = new Vector2(text.rectTransform.anchoredPosition.x + text.preferredWidth/2, buttonPos.anchoredPosition.y);
             }
             t++;
@@ -611,14 +617,14 @@ public class MinigameManager : MonoBehaviour
         }
         else
         {
-            /*LoadingManager.LoadScene(SceneManager.GetActiveScene().path.Replace(".unity","").Replace("Assets/",""), delegate()
+            LoadingManager.LoadScene(SceneManager.GetActiveScene().path.Replace(".unity","").Replace("Assets/",""), delegate()
             {
                 StaticProperties.canPause = true;
                 Time.timeScale = 1;
                 returnCallback = delegate () {
                     LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
                 };
-            });*/
+            });
         }
         PauseMenu.instance.gameObject.SetActive(false);
         PopupMenu.instance.SolidDestroy();

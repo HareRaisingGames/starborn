@@ -84,7 +84,9 @@ public class DialogueManager : MonoBehaviour
     public GameObject spritesObject;
     public GameObject foregroundsObject;
     public DialogueBox dialogueBox;
+    private RectTransform dialogueBoxTransform;
     public GameObject nameObject; //Up = 115, Down = 65
+    private RectTransform nameTransform;
     public TMP_Text nameTxt;
     public GameObject transitionCanvas;
     public GameObject transition;
@@ -159,7 +161,10 @@ public class DialogueManager : MonoBehaviour
             }
             StaticProperties.canPause = false;
             //fade.SetActive(true);
+            dialogueBoxTransform = dialogueBox.GetComponent<RectTransform>();
             dialogueBox.gameObject.SetActive(false);
+
+            nameTransform = nameObject.GetComponent<RectTransform>();
             UnityWebRequest www = UnityWebRequest.Get(path);
             yield return www.SendWebRequest();
 
@@ -293,6 +298,10 @@ public class DialogueManager : MonoBehaviour
                 characterSprite.character = characterFile;
                 characterSprite.rectTransform.anchoredPosition = Vector2.zero;
                 characterSprite.rectTransform.localScale = Vector3.one;
+                foreach(Emotion emotion in characterFile.expressions)
+                {
+                    characterSprite.expression = emotion.expression;
+                }
                 //characterSprite.gameObject.SetActive(false);
 
                 sprites.Add(character.Key, characterSprite);
@@ -543,6 +552,8 @@ public class DialogueManager : MonoBehaviour
         minigameIsFinal = line >= lines.Count;
         curLine = 0;
 
+        GameOverMenu.tryAgainCallback = delegate () { TryAgain(delegate () { Destroy(gameObject); }); };
+
         TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
         {
             GameOut(minigame);
@@ -620,7 +631,6 @@ public class DialogueManager : MonoBehaviour
 
         if (cameraData != null)
         {
-            Debug.Log(baseCameraData.gameObject.name);
             baseCameraData.cameraStack.AddRange(cameraData.cameraStack);
             SetMainCameraRenderer(cameraData);
         }
@@ -651,8 +661,8 @@ public class DialogueManager : MonoBehaviour
     {
         dialogueBox.text = "";
         dialogueBox.gameObject.SetActive(true);
-        Vector2 bugzPos = dialogueBox.gameObject.GetComponent<RectTransform>().anchoredPosition;
-        dialogueBox.GetComponent<RectTransform>().anchoredPosition = new Vector2(bugzPos.x, on ? 25 : 75);
+        Vector2 bugzPos = dialogueBoxTransform.anchoredPosition;
+        dialogueBoxTransform.anchoredPosition = new Vector2(bugzPos.x, on ? 25 : 75);
         TweenManager.YTween(dialogueBox.gameObject, on ? 25 : 75, on ? 75 : 25, 0.25f, Eases.EaseInOutCubic);
         foreach (Transform child in dialogueBox.transform)
         {
@@ -666,7 +676,7 @@ public class DialogueManager : MonoBehaviour
             }
         }
 
-        Vector2 namePos = nameObject.GetComponent<RectTransform>().anchoredPosition;
+        Vector2 namePos = nameTransform.anchoredPosition;
         foreach (Transform child in nameObject.transform)
         {
             ColorUtils.SetAlpha(child.gameObject, 0);
@@ -674,7 +684,7 @@ public class DialogueManager : MonoBehaviour
 
         if (firstLineHasName)
         {
-            nameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(namePos.x, 115);
+            //nameTransform.anchoredPosition = new Vector2(namePos.x, 115);
             nameTxt.text = startWithName;
             foreach (Transform child in nameObject.transform)
             {
@@ -692,7 +702,7 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
-            nameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(namePos.x, 65);
+            //nameTransform.anchoredPosition = new Vector2(namePos.x, 65);
         }
     }
     void PlayDialogue()
@@ -913,7 +923,7 @@ public class DialogueManager : MonoBehaviour
             {
                 if (curLines[line].name != null && curLines[line].name != "")
                 {
-                    TweenManager.YTween(nameObject, -115, 0, 0.25f, Eases.EaseInOutCubic);
+                    //TweenManager.YTween(nameObject, -115, 0, 0.25f, Eases.EaseInOutCubic);
                     foreach (Transform child in nameObject.transform)
                     {
                         TweenManager.AlphaTween(child.gameObject, 0, 1, 0.25f, Eases.EaseInOutCubic);
@@ -924,7 +934,7 @@ public class DialogueManager : MonoBehaviour
             {
                 if (curLines[line].name == null || curLines[line].name == "")
                 {
-                    TweenManager.YTween(nameObject, 0, -115, 0.25f, Eases.EaseInOutCubic);
+                    //TweenManager.YTween(nameObject, 0, -115, 0.25f, Eases.EaseInOutCubic);
                     foreach (Transform child in nameObject.transform)
                     {
                         TweenManager.AlphaTween(child.gameObject, 1, 0, 0.25f, Eases.EaseInOutCubic);

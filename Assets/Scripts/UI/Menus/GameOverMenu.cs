@@ -1,12 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class GameOverMenu : PopupMenu
 {
+    public static Action tryAgainCallback;
     public void TryAgain()
     {
-        FindObjectOfType<DialogueManager>(true).TryAgain(delegate() { Destroy(gameObject); });
+        tryAgainCallback?.Invoke();
+        tryAgainCallback = null;
+        /*if (FindObjectOfType<DialogueManager>(true))
+            FindObjectOfType<DialogueManager>(true).TryAgain(delegate () { Destroy(gameObject); });*/
     }
 
     public void ExitToMainMenu()
