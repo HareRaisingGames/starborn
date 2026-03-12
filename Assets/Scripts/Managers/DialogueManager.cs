@@ -552,6 +552,10 @@ public class DialogueManager : MonoBehaviour
         minigameIsFinal = line >= lines.Count;
         curLine = 0;
 
+        Countdown.folder = "base";
+        Countdown.mode = CountdownMode.Default;
+        Countdown.cam = null;
+
         GameOverMenu.tryAgainCallback = delegate () { TryAgain(delegate () { Destroy(gameObject); }); };
 
         TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
@@ -1285,7 +1289,10 @@ public class DialogueManager : MonoBehaviour
             MusicUtils.MusicFadeOut(musicSource, 0.25f, delegate () { musicSource.Stop(); });
             if (FindObjectOfType<PauseMenu>(true) != null)
                 Destroy(FindObjectOfType<PauseMenu>(true).gameObject);
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+            Countdown.folder = "base";
+            Countdown.mode = CountdownMode.Default;
+            Countdown.cam = null;
+            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; TitleState.canInteract = true; }, 0.1f);
             isExiting = true;
 
             /*TweenManager.AlphaTween(fade, 0, 1, 1, Eases.EaseInOutCubic, delegate() {

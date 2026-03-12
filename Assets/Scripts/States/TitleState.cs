@@ -9,6 +9,7 @@ public class TitleState : MonoBehaviour
     public GameObject mainMenu;
     public GameObject gameSelection;
     static string curOption = "title";
+    public static bool canInteract = false;
 
     public Dictionary<string, GameObject> menus = new Dictionary<string, GameObject>();
     static readonly Dictionary<string, string> previousEntries = new Dictionary<string, string>()
@@ -45,8 +46,10 @@ public class TitleState : MonoBehaviour
     public void StartGame()
     {
         //if (FindObjectOfType<LoadingManager>(true) != null)
-            //Destroy(FindObjectOfType<LoadingManager>(true).gameObject);
+        //Destroy(FindObjectOfType<LoadingManager>(true).gameObject);
+        if (!canInteract) return;
         LoadingManager.LoadScene("Scenes/Main/DialogueState");
+        canInteract = false;
     }
 
     public void ChangeMenu(string menu) => ChangeState(menu, true);
@@ -91,6 +94,8 @@ public class TitleState : MonoBehaviour
 
     public void LoadMinigame(string game)
     {
+        if (!canInteract) return;
+
         LoadingManager.LoadScene($"Scenes/Minigames/{game}", delegate() {
             GameObject prefab = Resources.Load<GameObject>("Prefabs/Pause Menu");
             if (prefab != null)
@@ -99,8 +104,9 @@ public class TitleState : MonoBehaviour
             }
             FindObjectOfType<Minigame>().SetUpSong();
             StaticProperties.canPause = true;
+            canInteract = false;
             MinigameManager.returnCallback = delegate() {
-                LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+                LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.01f);
             };
 
         });

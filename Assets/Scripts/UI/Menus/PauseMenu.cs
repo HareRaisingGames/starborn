@@ -209,6 +209,8 @@ public class PauseMenu : OptionMenu
 
     public void Resume()
     {
+        selectSource.clip = resume;
+        selectSource.Play();
         Close();
     }
     public static string restartMessage;
@@ -240,7 +242,7 @@ public class PauseMenu : OptionMenu
         PopupMenu.Open("Are you sure you want to exit to the main menu? Any unsaved progress here will be lost", delegate () {
             Conductor.startSong = false;
             Destroy(this.gameObject);
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; TitleState.canInteract = true; }, 0.1f);
         }, delegate () {
             StartCoroutine(PauseDelay());
             IEnumerator PauseDelay()

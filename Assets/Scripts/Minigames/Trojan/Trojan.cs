@@ -152,6 +152,7 @@ namespace Starborn.Trojan
         public override void onA(InputAction.CallbackContext context)
         {
             base.onA(context);
+            if (paused) return;
             if (autoPlay && tagName != "activate") return;
             if (!canClick) return;
 

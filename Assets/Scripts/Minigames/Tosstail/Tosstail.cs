@@ -75,14 +75,17 @@ namespace Starborn.Tosstail
         public int r = 0;
         void CheckForActivity(int i)
         {
-            if(i % 4 == r)
+            if(i % 4 == r || i == 0)
                 niko.Bounce();
         }
 
         public override void AdditionalSongSetup(string tag = "")
         {
             base.AdditionalSongSetup(tag);
-            if(Conductor.instance != null && niko != null)
+            Countdown.folder = "base";
+            Countdown.mode = CountdownMode.Default;
+            Countdown.cam = null;
+            if (Conductor.instance != null && niko != null)
             {
                 niko.canBlink = false;
                 if (niko.headAnimator != null) niko.headAnimator.enabled = false;
@@ -103,7 +106,6 @@ namespace Starborn.Tosstail
 
         public override void TutorialAdditionals()
         {
-            base.TutorialAdditionals();
             if (shaker.direction)
                 MinigameManager.instance.text.text = leftCatch;
             else

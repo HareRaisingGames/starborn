@@ -622,7 +622,10 @@ public class MinigameManager : MonoBehaviour
                 StaticProperties.canPause = true;
                 Time.timeScale = 1;
                 returnCallback = delegate () {
-                    LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+                    LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; TitleState.canInteract = true; }, 0.1f);
+                    Countdown.folder = "base";
+                    Countdown.mode = CountdownMode.Default;
+                    Countdown.cam = null;
                 };
             });
         }
@@ -660,7 +663,7 @@ public class MinigameManager : MonoBehaviour
     void Unpause()
     {
         if (minigame != null)
-            minigame.paused = true;
+            minigame.paused = false;
         StaticProperties.canPause = true;
         Time.timeScale = 1;
         if (Conductor.instance.isPaused)

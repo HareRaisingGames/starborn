@@ -14,7 +14,7 @@ public class Main : MonoBehaviour
         IEnumerator LoadSceneMode()
         {
             yield return new WaitForSeconds(0.5f);
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; TitleState.canInteract = true; }, 0.1f);
         }
         
     }
