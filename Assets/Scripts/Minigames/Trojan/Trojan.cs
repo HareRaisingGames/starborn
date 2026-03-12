@@ -242,7 +242,7 @@ namespace Starborn.Trojan
             if (border != null)
                 particles = new ParticleSystem.Particle[border.main.maxParticles];
 
-            /*if(FindObjectOfType<PauseMenu>(true) == null)
+            if(FindObjectOfType<PauseMenu>(true) == null)
             {
                 StartCoroutine(PlayMusic());
                 IEnumerator PlayMusic()
@@ -250,7 +250,7 @@ namespace Starborn.Trojan
                     yield return new WaitForSeconds(1);
                     SetUpSong();
                 }
-            }*/
+            }
         }
 
         public void AddTimestamp(float point) => timestamps.Add(point);
@@ -436,7 +436,9 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
                     virus.Explode(Conductor.instance.crochet * 0.25f);
-                }, (value) => { virus.isFried = true; }),
+                }, (value) => { virus.isFried = true;
+                //MinigameManager.instance.LoseALife(0.5f);
+                }),
             };
         }
     }
@@ -462,7 +464,9 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 2f, RhythmInputs.A, 1f, 1f, ()=>{
                     virus.Explode(Conductor.instance.crochet * 0.25f);
-                }, (value) => { virus.isFried = true; }),
+                }, (value) => { virus.isFried = true;
+                //MinigameManager.instance.LoseALife(0.5f);
+                }),
             };
         }
     }
@@ -494,7 +498,9 @@ namespace Starborn.Trojan
                     split2.Rev(Conductor.instance.crochet * 0.5f);
                 }, 3f, RhythmInputs.A, 1f, 1f, ()=>{
                     split1.Explode(Conductor.instance.crochet * 0.125f);
-                }, (value) => { split1.isFried = true; }),
+                }, (value) => { split1.isFried = true;
+                //MinigameManager.instance.LoseALife(0.5f);
+                }),
                 new CallForAction(()=>{
                     split2.Attack(Conductor.instance.crochet);
                 }, 3.5f),
@@ -502,7 +508,9 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
                     split2.Explode(Conductor.instance.crochet * 0.125f);
-                }, (value) => { split2.isFried = true; }),
+                }, (value) => { split2.isFried = true;
+                //MinigameManager.instance.LoseALife(0.5f);
+                }),
             };
         }
 
@@ -547,12 +555,21 @@ public class TrojanEvent : RhythmEvent
 {
     protected Trojan game;
     protected AudioSource audio;
+    protected AudioClip miss;
     public override void SetUp()
     {
         base.SetUp();
         game = Object.FindObjectOfType<Trojan>();
+
+        miss = Resources.Load<AudioClip>($"Audio/blip");
     }
 
+    public void SetMissAudio()
+    {
+        Debug.Log("Hey!");
+        audio.clip = miss;
+        audio.Play();
+    }
     public void SetAudio(string name)
     {
         if(Resources.Load<AudioClip>($"Audio/Trojan/{name}") != null)

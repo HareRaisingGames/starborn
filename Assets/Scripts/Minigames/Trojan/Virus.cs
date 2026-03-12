@@ -67,12 +67,10 @@ namespace Starborn.Trojan
                 if(isFried)
                     MinigameManager.instance.LoseALife(0.5f);
                 else
-                {
                     MinigameManager.instance.LoseALife(1f);
-                    MinigameManager.instance.accuracies.Add(-0.1f);
-                    MinigameManager.instance.displayAccuracy = 0;
-                }
 
+                MinigameManager.instance.accuracies.Add(-0.1f);
+                MinigameManager.instance.displayAccuracy = 0;
                 Destroy(this.gameObject);
             });
         }

@@ -265,7 +265,8 @@ namespace Starborn.InputSystem
 
                 if(curHit > endPoint && !success)
                 {
-                    OnMiss();
+                    //Debug.Log("Ack!");
+                    onMiss?.Invoke();
                     hasHit = true;
                     success = true;
                 }
@@ -274,8 +275,10 @@ namespace Starborn.InputSystem
 
         public void OnMiss()
         {
-            if(_canPlay)
+            Debug.Log("Ack!");
+            if (_canPlay)
             {
+                Debug.Log("Ack!");
                 onMiss?.Invoke();
                 //Debug.Log("Oh no!");
                 //MinigameManager.instance.LoseALife();
