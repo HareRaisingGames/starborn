@@ -398,7 +398,7 @@ public class DialogueManager : MonoBehaviour
             HideEverythingInScene(name);
         };
         scene.allowSceneActivation = false;
-        int i = 0;
+        //int i = 0;
         do
         {
             await Task.Delay(100);

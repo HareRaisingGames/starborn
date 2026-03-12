@@ -69,7 +69,10 @@ public static class AssetsManager
          */
     }
 
-    public static void LoadDialogueFiles()
+    public static void Open()
+    { }
+
+    static void LoadDialogueFiles()
     {
         var path = Path.Combine(Application.streamingAssetsPath, "Dialogue");
         if(Directory.Exists(path))
@@ -77,14 +80,18 @@ public static class AssetsManager
             string[] files = Directory.GetFiles(path);
             foreach(string file in files)
             {
-                if(Path.GetFileName(file).Contains(".sbd"))
+                if(Path.GetFileName(file).EndsWith(".sbd"))
                 {
+                    //Debug.Log(file);
                     string filename = Path.GetFileNameWithoutExtension(file);
-                    StarbornFileHandler.ExtractDialogue(path);
+                    StarbornFileHandler.ExtractDialogue(file);
                     SimpleSBDFile dialogueFile = StarbornFileHandler.ReadSimpleDialogue(filename);
 
                     DialogueMetadata metadata = new DialogueMetadata(dialogueFile.volume.HasValue ? dialogueFile.volume.Value : 0, 
                         dialogueFile.chapter.HasValue ? dialogueFile.chapter.Value : 0, dialogueFile.displayName, dialogueFile.description);
+
+                    if (mainDialogueFiles.ContainsKey(filename) || sideDialogueFiles.ContainsKey(filename))
+                        continue;
 
                     if (dialogueFile.type == StoryType.Main)
                         mainDialogueFiles.Add(filename, metadata);

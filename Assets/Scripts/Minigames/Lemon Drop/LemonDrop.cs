@@ -40,7 +40,7 @@ namespace Starborn.LemonDrop
                 SetUpSong();
             }
         }
-        int i = 0;
+        //int i = 0;
         public override void onA(InputAction.CallbackContext context)
         {
             base.onA(context);

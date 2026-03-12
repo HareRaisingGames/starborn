@@ -329,7 +329,7 @@ public class Option
     public bool Select(AudioSource player = null)
     {
         action?.Invoke();
-        if (player != null) player.Play();
+        if (player != null && player.isActiveAndEnabled) player.Play();
 
         if (action == null) return true;
 
