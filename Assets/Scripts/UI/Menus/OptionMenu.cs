@@ -173,6 +173,9 @@ public class OptionMenu : MonoBehaviour
     {
         if (hasSelected)
             return;
+        if (LoadingManager.isLoading)
+            return;
+
         Vector2 motion = context.ReadValue<Vector2>();
         int c = 0;
         if (motion.y > 0) c = 1;
@@ -222,6 +225,9 @@ public class OptionMenu : MonoBehaviour
     void Select()
     {
         if (hasSelected)
+            return;
+
+        if (LoadingManager.isLoading)
             return;
 
         if (options.Count == 0) return;

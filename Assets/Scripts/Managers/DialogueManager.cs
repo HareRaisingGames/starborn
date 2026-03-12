@@ -1292,7 +1292,7 @@ public class DialogueManager : MonoBehaviour
             Countdown.folder = "base";
             Countdown.mode = CountdownMode.Default;
             Countdown.cam = null;
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; TitleState.canInteract = true; }, 0.1f);
+            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
             isExiting = true;
 
             /*TweenManager.AlphaTween(fade, 0, 1, 1, Eases.EaseInOutCubic, delegate() {

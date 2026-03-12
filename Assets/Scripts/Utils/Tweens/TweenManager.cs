@@ -47,6 +47,8 @@ public class TweenManager : MonoBehaviour
     public void AddTween<T>(Tween<T> tween, bool lua = false)
     {
         //Debug.Log(_activeTweens.Count);
+        if (tween == null) return;
+
         if (lua)
         {
             if (_luaTweens.ContainsKey(tween.Identifier)) _luaTweens[tween.Identifier].OnCompleteKill();

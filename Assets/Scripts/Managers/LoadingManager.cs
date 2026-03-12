@@ -20,6 +20,7 @@ public class LoadingManager : MonoBehaviour
     public static bool unloadAllScenes;
     readonly static float defaultTime = 0.25f;
     static float waitTime = 0.25f;
+    public static bool isLoading = false;
     private void Awake()
     {
         instance = this;
@@ -33,17 +34,14 @@ public class LoadingManager : MonoBehaviour
         Vector2 bugzPos = bugz.GetComponent<RectTransform>().anchoredPosition;
         bugz.GetComponent<RectTransform>().anchoredPosition = new Vector2(-1000, bugzPos.y);
         TweenManager.AlphaTween(blackScreen, 0, 1, 0.5f, Eases.EaseInOutCubic, delegate () {
-            if(unloadAllScenes)
+            if (unloadAllScenes)
                 StartCoroutine(UnloadAllScenesCoroutine());
             SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive).completed += delegate (AsyncOperation op)
             {
                 Camera.main.gameObject.SetActive(false);
                 SceneManager.UnloadSceneAsync(currentScene);
-                if (callback != null)
-                {
-                    FadeOut(callback);
-                    callback = null;
-                }
+                FadeOut(callback);
+                callback = null;
             };
 
 
@@ -66,6 +64,7 @@ public class LoadingManager : MonoBehaviour
         sceneToLoad = scene;
         currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene("Scenes/LoadingScreen", LoadSceneMode.Additive);
+        isLoading = true;
         waitTime = t;
         unloadAllScenes = unloadScenes;
     }
@@ -77,6 +76,7 @@ public class LoadingManager : MonoBehaviour
 
         TweenManager.AlphaTween(instance.blackScreen, 1, 0, 1f, Eases.EaseInOutCubic, delegate () {
             callback?.Invoke();
+            isLoading = false;
             FindObjectOfType<MonoBehaviour>().StartCoroutine(RemoveScene());
             IEnumerator RemoveScene()
             {
