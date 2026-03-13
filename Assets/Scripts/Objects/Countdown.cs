@@ -22,6 +22,7 @@ public class Countdown : MonoBehaviour
     static string _folder = defaultFolder;
     public static CountdownMode mode;
     public static string prefabName;
+    public static bool alt = false;
     public static Camera cam;
 
     static PauseToken pauseToken;
@@ -32,6 +33,8 @@ public class Countdown : MonoBehaviour
 
     static bool _activatedCountdown;
     public static bool activatedCountdown => _activatedCountdown;
+
+    public string[] countdownList = new string[5];
 
     static bool stop;
 
@@ -45,10 +48,8 @@ public class Countdown : MonoBehaviour
             {
                 if(FindObjectOfType<Countdown>() == null)
                 {
-                    if (FindObjectOfType<Countdown>() == null)
-                    {
-                        GameObject countdown;
-                        GameObject prefab = Resources.Load<GameObject>($"Prefabs/{prefabName}");
+                    GameObject countdown;
+                    GameObject prefab = Resources.Load<GameObject>($"Prefabs/Countdowns/{prefabName}");
                         if (prefab != null)
                         {
                             countdown = Instantiate(prefab, Vector3.zero, Quaternion.identity);
@@ -78,8 +79,6 @@ public class Countdown : MonoBehaviour
                         _instance.go = SetAudioSource("Go", countdown.transform);
 
                         _instance.AssignAudioClip(_folder);
-
-                    }
 
                 }
                 else
@@ -119,23 +118,38 @@ public class Countdown : MonoBehaviour
     {
         if(three != null)
         {
-            three.clip = Resources.Load<AudioClip>($"Countdown/{foldername}/three");
+            three.clip = alt 
+                && Resources.Load<AudioClip>($"Countdown/{foldername}/three-alt") != null 
+                ? Resources.Load<AudioClip>($"Countdown/{foldername}/three-alt") : 
+                Resources.Load<AudioClip>($"Countdown/{foldername}/three");
         }
         if (two != null)
         {
-            two.clip = Resources.Load<AudioClip>($"Countdown/{foldername}/two");
+            two.clip = alt
+                && Resources.Load<AudioClip>($"Countdown/{foldername}/two-alt") != null 
+                ? Resources.Load<AudioClip>($"Countdown/{foldername}/two-alt") : 
+                Resources.Load<AudioClip>($"Countdown/{foldername}/two");
         }
         if (one != null)
         {
-            one.clip = Resources.Load<AudioClip>($"Countdown/{foldername}/one");
+            one.clip = alt
+                && Resources.Load<AudioClip>($"Countdown/{foldername}/one-alt") != null 
+                ? Resources.Load<AudioClip>($"Countdown/{foldername}/one-alt") : 
+                Resources.Load<AudioClip>($"Countdown/{foldername}/one");
         }
         if (lets != null)
         {
-            lets.clip = Resources.Load<AudioClip>($"Countdown/{foldername}/lets");
+            lets.clip = alt
+                && Resources.Load<AudioClip>($"Countdown/{foldername}/lets-alt") != null 
+                ? Resources.Load<AudioClip>($"Countdown/{foldername}/lets-alt") : 
+                Resources.Load<AudioClip>($"Countdown/{foldername}/lets");
         }
         if (go != null)
         {
-            go.clip = Resources.Load<AudioClip>($"Countdown/{foldername}/go");
+            go.clip = alt
+                && Resources.Load<AudioClip>($"Countdown/{foldername}/go-alt") 
+                != null ? Resources.Load<AudioClip>($"Countdown/{foldername}/go-alt") : 
+                Resources.Load<AudioClip>($"Countdown/{foldername}/go");
         }
     }
 
@@ -216,23 +230,23 @@ public class Countdown : MonoBehaviour
         switch (i)
         {
             case 0:
-                AddText("3");
+                AddText(instance.countdownList[0]);
                 instance.three.Play();
                 break;
             case 2:
-                AddText("2");
+                AddText(instance.countdownList[1]);
                 instance.two.Play();
                 break;
             case 4:
-                AddText("1");
+                AddText(instance.countdownList[2]);
                 instance.one.Play();
                 break;
             case 5:
-                AddText("Let's");
+                AddText(instance.countdownList[3]);
                 instance.lets.Play();
                 break;
             case 6:
-                AddText(" Go!", false);
+                AddText(instance.countdownList[4], false);
                 instance.go.Play();
                 break;
             case 7:
@@ -243,8 +257,10 @@ public class Countdown : MonoBehaviour
                 callback?.Invoke();
                 _activatedCountdown = false;
                 folder = defaultFolder;
+                prefabName = "";
                 mode = 0;
                 cam = null;
+                alt = false;
                 Destroy(_instance.gameObject);
                 _instance = null;
                 return;
@@ -254,6 +270,21 @@ public class Countdown : MonoBehaviour
         i++;
         await CountdownTask(time, callback, i);
 
+    }
+
+    public static void ResetCountdown()
+    {
+        _activatedCountdown = false;
+        folder = defaultFolder;
+        prefabName = "";
+        mode = 0;
+        cam = null;
+        alt = false;
+
+        if (instance == null) return;
+
+        Destroy(_instance.gameObject);
+        _instance = null;
     }
 
     public static void PauseCountdown()

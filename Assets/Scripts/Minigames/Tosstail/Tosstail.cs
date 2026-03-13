@@ -82,9 +82,6 @@ namespace Starborn.Tosstail
         public override void AdditionalSongSetup(string tag = "")
         {
             base.AdditionalSongSetup(tag);
-            Countdown.folder = "base";
-            Countdown.mode = CountdownMode.Default;
-            Countdown.cam = null;
             if (Conductor.instance != null && niko != null)
             {
                 niko.canBlink = false;

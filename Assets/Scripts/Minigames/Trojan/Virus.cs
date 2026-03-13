@@ -18,11 +18,12 @@ namespace Starborn.Trojan
         protected float angle;
         public float radius;
         public ParticleSystem explosion;
+        public ParticleSystem burned;
         public AudioSource explosionSFX;
         Tween<Vector3> attack;
 
         [HideInInspector]
-        public bool isFried;
+        bool isFried;
 
         private void Awake()
         {
@@ -114,6 +115,18 @@ namespace Starborn.Trojan
                 }
             }
                 
+        }
+
+        public void Charred()
+        {
+            isFried = true;
+            if(burned != null)
+            {
+                burned.Play();
+                sprite.color = Color.black;
+                explosionSFX.clip = Resources.Load<AudioClip>($"Audio/Trojan/burst");
+                explosionSFX.Play();
+            }
         }
 
         void OnParticleSystemStopped()

@@ -380,12 +380,12 @@ public abstract class Minigame : MonoBehaviour
     //If you're in a tutorial and you need to do a reset of something
     public virtual void TutorialReset()
     {
-
+        Countdown.ResetCountdown();
     }
 
     public virtual void TutorialOnComplete(int amount, string tag = "")
     {
-
+        Countdown.ResetCountdown();
     }
 
     public virtual void onA(InputAction.CallbackContext context)

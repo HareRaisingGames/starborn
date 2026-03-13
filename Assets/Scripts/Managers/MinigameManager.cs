@@ -482,12 +482,13 @@ public class MinigameManager : MonoBehaviour
                 {
                     yield return new WaitForSeconds(0.5f);
                     minigame.AdditionalSongSetup(lines[t].tag);
-                    if (lines[t].section.skipCountdown)
-                        Conductor.instance.PlayMusicWithoutCallback();
-                    else if (lines[t].noMusic)
+
+                    if (lines[t].noMusic)
                     {
                         Conductor.startSong = true;
                     }
+                    else if (lines[t].section.skipCountdown)
+                        Conductor.instance.PlayMusicWithoutCallback();
                     else
                         Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusicWithoutCallback);
 
@@ -623,11 +624,9 @@ public class MinigameManager : MonoBehaviour
                 Time.timeScale = 1;
                 returnCallback = delegate () {
                     LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
-                    Countdown.folder = "base";
-                    Countdown.mode = CountdownMode.Default;
-                    Countdown.cam = null;
+                    Countdown.ResetCountdown();
                 };
-            });
+            }, 0.25f, delegate () { Time.timeScale = 1; });
         }
         PauseMenu.instance.gameObject.SetActive(false);
         PopupMenu.instance.SolidDestroy();

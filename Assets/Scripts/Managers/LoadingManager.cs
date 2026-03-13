@@ -16,6 +16,7 @@ public class LoadingManager : MonoBehaviour
     public static string sceneToLoad;
     public static Scene currentScene;
 
+    public static Action afterloadCallback;
     public static Action callback;
     public static bool unloadAllScenes;
     readonly static float defaultTime = 0.25f;
@@ -36,6 +37,8 @@ public class LoadingManager : MonoBehaviour
         TweenManager.AlphaTween(blackScreen, 0, 1, 0.5f, Eases.EaseInOutCubic, delegate () {
             if (unloadAllScenes)
                 StartCoroutine(UnloadAllScenesCoroutine());
+            afterloadCallback?.Invoke();
+            afterloadCallback = null;
             SceneManager.LoadSceneAsync(sceneToLoad, LoadSceneMode.Additive).completed += delegate (AsyncOperation op)
             {
                 Camera.main.gameObject.SetActive(false);
@@ -58,9 +61,10 @@ public class LoadingManager : MonoBehaviour
         
     }
 
-    public static void LoadScene(string scene, Action cback = null, float t = 0.25f, bool unloadScenes = true)
+    public static void LoadScene(string scene, Action cback = null, float t = 0.25f, Action unloadcback = null, bool unloadScenes = true)
     {
         callback = cback;
+        afterloadCallback = unloadcback;
         sceneToLoad = scene;
         currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene("Scenes/LoadingScreen", LoadSceneMode.Additive);

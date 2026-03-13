@@ -214,6 +214,8 @@ namespace Starborn.Trojan
             if (Resources.Load<AudioClip>($"Audio/Trojan/hairsplit_2") != null)
                 Resources.Load<AudioClip>($"Audio/Trojan/hairsplit_2");
 
+            Resources.Load<AudioClip>($"Audio/Trojan/burst");
+
             Resources.LoadAll<AudioClip>("Audio/Trojan/death");
 
             base.Start();
@@ -242,7 +244,7 @@ namespace Starborn.Trojan
             if (border != null)
                 particles = new ParticleSystem.Particle[border.main.maxParticles];
 
-            if(FindObjectOfType<PauseMenu>(true) == null)
+            /*if(FindObjectOfType<PauseMenu>(true) == null)
             {
                 StartCoroutine(PlayMusic());
                 IEnumerator PlayMusic()
@@ -250,7 +252,7 @@ namespace Starborn.Trojan
                     yield return new WaitForSeconds(1);
                     SetUpSong();
                 }
-            }
+            }*/
         }
 
         public void AddTimestamp(float point) => timestamps.Add(point);
@@ -322,7 +324,8 @@ namespace Starborn.Trojan
         {
             base.TutorialAdditionals();
 
-            Countdown.folder = "bitcrush";
+            Countdown.alt = true;
+            Countdown.folder = "computer";
             Countdown.mode = CountdownMode.Camera;
             Countdown.cam = countdownCamera;
             canClick = true;
@@ -345,6 +348,7 @@ namespace Starborn.Trojan
         public override void TutorialOnComplete(int amount, string tag = "")
         {
             hasCompleted = null;
+            Countdown.alt = false;
             base.TutorialOnComplete(amount, tag);
             if(tag == "activate")
             {
@@ -366,7 +370,9 @@ namespace Starborn.Trojan
 
         public override void StartSong()
         {
-            Countdown.folder = "bitcrush";
+            Countdown.prefabName = "TrojanCountdown";
+            Countdown.alt = false;
+            Countdown.folder = "computer";
             Countdown.mode = CountdownMode.Camera;
             Countdown.cam = countdownCamera;
             canClick = true;
@@ -436,7 +442,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
                     virus.Explode(Conductor.instance.crochet * 0.25f);
-                }, (value) => { virus.isFried = true;
+                }, (value) => { virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
             };
@@ -464,7 +470,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 2f, RhythmInputs.A, 1f, 1f, ()=>{
                     virus.Explode(Conductor.instance.crochet * 0.25f);
-                }, (value) => { virus.isFried = true;
+                }, (value) => { virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
             };
@@ -498,7 +504,7 @@ namespace Starborn.Trojan
                     split2.Rev(Conductor.instance.crochet * 0.5f);
                 }, 3f, RhythmInputs.A, 1f, 1f, ()=>{
                     split1.Explode(Conductor.instance.crochet * 0.125f);
-                }, (value) => { split1.isFried = true;
+                }, (value) => { split1.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
                 new CallForAction(()=>{
@@ -508,7 +514,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
                     split2.Explode(Conductor.instance.crochet * 0.125f);
-                }, (value) => { split2.isFried = true;
+                }, (value) => { split2.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
             };
