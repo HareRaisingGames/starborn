@@ -256,6 +256,12 @@ MonoBehaviour:
   - 1
   - Let's
   - ' Go!'
+  altCountdownList:
+  - 3
+  - 2
+  - 1
+  - Let's
+  - ' Go!'
   countdownTxt: {fileID: 6691675374076604183}
 --- !u!1 &8081407145277705518
 GameObject:

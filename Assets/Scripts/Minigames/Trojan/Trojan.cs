@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Starborn.InputSystem;
 using Starborn.Trojan;
+using TMPro;
 using System.IO;
 
 namespace Starborn.Trojan
@@ -39,6 +40,7 @@ namespace Starborn.Trojan
 
         [Header("Additional Assets")]
         public ProgressBar downloadBar;
+        public TMP_Text uploadingTxt;
         public GameObject head;
         public float rotateSpeed = 1f;
         public Vector3 rotateAxis;
@@ -152,6 +154,9 @@ namespace Starborn.Trojan
         public override void onA(InputAction.CallbackContext context)
         {
             base.onA(context);
+            if (completed)
+                return;
+
             if (paused) return;
             if (autoPlay && tagName != "activate") return;
             if (!canClick) return;
@@ -191,6 +196,13 @@ namespace Starborn.Trojan
             {
                 head.transform.Rotate(rotateAxis * rotateSpeed * Time.deltaTime);
             }
+
+            if (uploadingTxt != null && 
+                downloadBar != null && 
+                downloadBar.activate &&
+                Mathf.Clamp01(downloadBar.value.Invoke()) == 1) uploadingTxt.text = "Completed!";
+
+
         }
 
         private ParticleSystem.Particle[] particles;
@@ -222,7 +234,10 @@ namespace Starborn.Trojan
             OnSongStart = () => {
                 AddTimestamp(Conductor.instance.music.clip.length);
                 downloadBar.activate = true;
+                if (uploadingTxt != null) uploadingTxt.text = "Uploading.";
             };
+
+            OnBeatChange = Uploading;
 
             if (downloadBar != null)
             {
@@ -238,6 +253,7 @@ namespace Starborn.Trojan
 
             OnGameOver = delegate ()
             {
+                if (uploadingTxt != null) uploadingTxt.text = "ERROR";
                 if (downloadBar != null) downloadBar.activate = false;
             };
 
@@ -267,7 +283,39 @@ namespace Starborn.Trojan
                 timestamps.RemoveAt(0);
                 timestamps[0] = startPoint;
 
-                TweenManager.NumTween(() => timestamps[0], (value) => { timestamps[0] = value; }, endPoint, time, Eases.EaseOutSine);
+                TweenManager.NumTween(() => timestamps[0], (value) => { timestamps[0] = value; }, endPoint, time, Eases.EaseOutSine, delegate(){
+                    if (uploadingTxt.text != null) uploadingTxt.text = "Uploading";
+                }).SetOnUpdate(delegate() {
+                    if (uploadingTxt.text != null) uploadingTxt.text = "JK! ;)";
+                });
+            }
+        }
+
+        void Uploading(int i)
+        {
+            if (MinigameManager.instance.gameOver)
+                return;
+
+            if(uploadingTxt != null)
+            {
+                switch(uploadingTxt.text)
+                {
+                    case "Uploading":
+                        uploadingTxt.text = "Uploading.";
+                        break;
+                    case "Uploading.":
+                        uploadingTxt.text = "Uploading..";
+                        break;
+                    case "Uploading..":
+                        uploadingTxt.text = "Uploading...";
+                        break;
+                    case "Uploading...":
+                        uploadingTxt.text = "Uploading";
+                        break;
+                    case "ERROR":
+                        uploadingTxt.text = "Uploading";
+                        break;
+                }
             }
         }
 
@@ -290,10 +338,10 @@ namespace Starborn.Trojan
             border.SetParticles(particles, numParticles);
         }
 
-        public override void SetUpSong()
+        public override void SetUpSong(string component = "")
         {
             MinigameManager.managerType = "Trojan";
-            base.SetUpSong();
+            base.SetUpSong(component);
             foreach(Transform inst in MinigameManager.instance.transform)
             {
                 if (inst == null)
@@ -303,7 +351,8 @@ namespace Starborn.Trojan
                 {
                     if(inst.GetComponent<Canvas>().renderMode == RenderMode.ScreenSpaceCamera)
                     {
-                        inst.GetComponent<Canvas>().worldCamera = Camera.main;
+                        if(countdownCamera != null) inst.GetComponent<Canvas>().worldCamera = countdownCamera;
+                        else inst.GetComponent<Canvas>().worldCamera = Camera.main;
                     }
                 }
             }
@@ -371,7 +420,6 @@ namespace Starborn.Trojan
         public override void StartSong()
         {
             Countdown.prefabName = "TrojanCountdown";
-            Countdown.alt = false;
             Countdown.folder = "computer";
             Countdown.mode = CountdownMode.Camera;
             Countdown.cam = countdownCamera;
@@ -424,6 +472,7 @@ namespace Starborn.Trojan
             actions = new List<CallForAction>() {
                 new CallForAction(()=>{
                     virus = Trojan.SpawnVirus("malworm", out audio).GetComponent<MalwormVirus>();
+                    virus.onHitAddtional = delegate(){if(game.uploadingTxt != null) game.uploadingTxt.text = "ERROR"; };
                     SetAudio("malworm_1");
                 }, 1f),
                 new CallForAction(()=>{
@@ -457,6 +506,7 @@ namespace Starborn.Trojan
             actions = new List<CallForAction>() {
                 new CallForAction(()=>{
                     virus = Trojan.SpawnVirus("turbot", out audio);
+                    virus.onHitAddtional = delegate(){if(game.uploadingTxt != null) game.uploadingTxt.text = "ERROR"; };
                     if(game.curStep % 4 == 2 || game.curStep % 4 == 3)
                         SetAudio("turbot_2");
                     else if(game.curStep % 4 == 0 || game.curStep % 4 == 1)
@@ -491,6 +541,8 @@ namespace Starborn.Trojan
                 }, 1f),
                 new CallForAction(()=>{
                     spliter.Split(Conductor.instance.crochet * 0.25f, out split1, out split2);
+                    split1.onHitAddtional = delegate(){if(game.uploadingTxt != null) game.uploadingTxt.text = "ERROR"; };
+                    split2.onHitAddtional = delegate(){if(game.uploadingTxt != null) game.uploadingTxt.text = "ERROR"; };
                     AftermathSound();
                 }, 2f),
                 new CallForAction(()=>{

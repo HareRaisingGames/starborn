@@ -25,6 +25,7 @@ namespace Starborn.SafeCracker
         public TMP_Text instructions;
 
         StartCode codeEvent;
+        StartCode practiceCode = new StartCode(8842);
 
         //string saveInstructions;
 
@@ -53,6 +54,19 @@ namespace Starborn.SafeCracker
             }
         }
 
+        public override void SetUpSong(string component = "")
+        {
+            int number;
+            base.SetUpSong(component);
+            if(component == "random")
+            {
+                codeEvent = new StartCode(Random.Range(1000,9999));
+            }
+            else if(int.TryParse(component, out number))
+            {
+                codeEvent = new StartCode(number);
+            }
+        }
         // Update is called once per frame
         public override void Update()
         {
@@ -151,8 +165,16 @@ namespace Starborn.SafeCracker
         {
             actions = new List<CallForAction>()
             {
-                new CallForAction(()=> {SafeCracker.safeCracker.StartSequence(code); }, 1)
+                new CallForAction(()=> {game.StartSequence(code);}, 1)
             };
+        }
+
+        SafeCracker game;
+
+        public override void SetUp()
+        {
+            base.SetUp();
+            game = Object.FindObjectOfType<SafeCracker>();
         }
     }
 }

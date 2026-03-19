@@ -30,7 +30,15 @@ public abstract class Minigame : MonoBehaviour
             _startGame = value;
         }
     }
-    protected bool completed;
+    protected bool completed
+    {
+        get
+        {
+            if (hasCompleted != null)
+                return hasCompleted.Invoke();
+            return false;
+        }
+    }
 
     public AudioClip song;
     public AudioClip tutorialSong;
@@ -229,7 +237,7 @@ public abstract class Minigame : MonoBehaviour
 
     [HideInInspector]
     public bool setUpSong = false;
-    public virtual void SetUpSong()
+    public virtual void SetUpSong(string component = "")
     {
         TweenManager.instance.AddManager();
         if (isTutorial)

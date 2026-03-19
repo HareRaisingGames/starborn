@@ -255,4 +255,10 @@ MonoBehaviour:
   - 1
   - BE
   - GIN!
+  altCountdownList:
+  - 3
+  - 2
+  - 1
+  - PRAC
+  - TICE!
   countdownTxt: {fileID: 7185722035564834079}

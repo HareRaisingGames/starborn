@@ -547,6 +547,8 @@ public class DialogueManager : MonoBehaviour
             line++;
         }
 
+        minigameComponent = lines[line].minigameComponent;
+
         jumpToLine = line;
         minigameNext = line < lines.Count && lines[jumpToLine].minigame != null && lines[jumpToLine].minigame != "";
         minigameIsFinal = line >= lines.Count;
@@ -563,6 +565,8 @@ public class DialogueManager : MonoBehaviour
             GameOut(minigame);
         });
     }
+
+    string minigameComponent;
 
     void GameOut(string name, bool trans = true)
     {
@@ -585,7 +589,7 @@ public class DialogueManager : MonoBehaviour
                 if (transitionCanvas != null)
                     transitionCanvas.SetActive(false);
                 StaticProperties.canPause = true;
-                Minigame.instance.SetUpSong();
+                Minigame.instance.SetUpSong(minigameComponent);
                 Minigame.instance.setUpSong = true;
 
             }).SetStartDelay(0.1f);

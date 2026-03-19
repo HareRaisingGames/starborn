@@ -22,6 +22,8 @@ namespace Starborn.Trojan
         public AudioSource explosionSFX;
         Tween<Vector3> attack;
 
+        public System.Action onHitAddtional;
+
         [HideInInspector]
         bool isFried;
 
@@ -72,6 +74,7 @@ namespace Starborn.Trojan
 
                 MinigameManager.instance.accuracies.Add(-0.1f);
                 MinigameManager.instance.displayAccuracy = 0;
+                onHitAddtional?.Invoke();
                 Destroy(this.gameObject);
             });
         }
@@ -80,7 +83,7 @@ namespace Starborn.Trojan
         {
             if (attack != null)
             {
-                attack.Pause();
+                attack.FullKill();
                 ColorUtils.SetAlpha(gameObject, 0);
                 explosion.Play();
                 explosion.gameObject.layer = gameObject.layer;

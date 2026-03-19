@@ -628,7 +628,8 @@ public class MinigameManager : MonoBehaviour
                 };
             }, 0.25f, delegate () { Time.timeScale = 1; });
         }
-        PauseMenu.instance.gameObject.SetActive(false);
+        if(PauseMenu.instance != null)
+            PauseMenu.instance.gameObject.SetActive(false);
         PopupMenu.instance.SolidDestroy();
         Countdown.CancelCountdown();
 

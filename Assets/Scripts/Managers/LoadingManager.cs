@@ -22,6 +22,22 @@ public class LoadingManager : MonoBehaviour
     readonly static float defaultTime = 0.25f;
     static float waitTime = 0.25f;
     public static bool isLoading = false;
+
+    static readonly List<string> loadingMessages = new List<string>()
+    {
+        "Each minigame has its own set of rules. If you forgot, you can always replay its tutorial",
+        "Want to voice the characters? You can by muting the dialogue voices right there in the dialogue state!"
+        //"If you're a beginning at rhythm games, switch to easy mode for a better chance"
+    };
+
+    public static string loadingMessage
+    {
+        get
+        {
+            System.Random random = new System.Random();
+            return loadingMessages[random.Next(0,loadingMessages.Count)];
+        }
+    }
     private void Awake()
     {
         instance = this;

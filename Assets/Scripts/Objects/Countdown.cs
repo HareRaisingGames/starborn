@@ -35,6 +35,7 @@ public class Countdown : MonoBehaviour
     public static bool activatedCountdown => _activatedCountdown;
 
     public string[] countdownList = new string[5];
+    public string[] altCountdownList = new string[5];
 
     static bool stop;
 
@@ -230,23 +231,23 @@ public class Countdown : MonoBehaviour
         switch (i)
         {
             case 0:
-                AddText(instance.countdownList[0]);
+                AddText(alt ? instance.altCountdownList[0] : instance.countdownList[0]);
                 instance.three.Play();
                 break;
             case 2:
-                AddText(instance.countdownList[1]);
+                AddText(alt ? instance.altCountdownList[1] : instance.countdownList[1]);
                 instance.two.Play();
                 break;
             case 4:
-                AddText(instance.countdownList[2]);
+                AddText(alt ? instance.altCountdownList[2] : instance.countdownList[2]);
                 instance.one.Play();
                 break;
             case 5:
-                AddText(instance.countdownList[3]);
+                AddText(alt ? instance.altCountdownList[3] : instance.countdownList[3]);
                 instance.lets.Play();
                 break;
             case 6:
-                AddText(instance.countdownList[4], false);
+                AddText(alt ? instance.altCountdownList[4] : instance.countdownList[4], false);
                 instance.go.Play();
                 break;
             case 7:
