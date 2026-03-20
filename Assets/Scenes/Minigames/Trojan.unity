@@ -309,7 +309,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 73c88302e3b85a2488f422f960cb96e7, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 46cf7e74dbb3fa343ac59ea314da6892, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -926,7 +926,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 31233ffe84071454cb6bedcf1265c9f1, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -6499,10 +6499,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.Trojan
   conductor: {fileID: 497405847}
-  autoPlay: 0
+  autoPlay: 1
   isTutorial: 1
   song: {fileID: 8300000, guid: b399b50183d6aac478eb71b1f89c6ec3, type: 3}
-  tutorialSong: {fileID: 0}
+  tutorialSong: {fileID: 8300000, guid: f06e1aa4543413c40b518124a48fc0f6, type: 3}
   paused: 0
   eventsList:
   - Malworm
@@ -6654,14 +6654,236 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
-        Event: Hairsplit
+        Event: Malworm
         displayParameters: []
         mark: 12
       startLength: 0
       length: 16
-      loops: 4
-    setBPM: 0
-    bpm: 0
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      startLength: 0
+      length: 4
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Hairsplit
+        displayParameters: []
+        mark: 4
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      startLength: 0
+      length: 4
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 4.5
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 6
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 4
+      startLength: 0
+      length: 8
+      loops: 3
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Hairsplit
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 6
+      startLength: 0
+      length: 8
+      loops: 1
+    setBPM: 1
+    bpm: 140
   checkChartings: []
   tutorial:
     lines:
@@ -6715,6 +6937,240 @@ MonoBehaviour:
       tag: 
       noMusic: 0
       noApplause: 0
+    - dialogue: Uh oh...Here comes the first creep
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: spawnMalworm
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Looks like a Malworm
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Watch how it behaves
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Then strike them down with the forcefield!
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: 
+      section:
+        skipCountdown: 0
+        sections:
+        - inputList:
+          - events: []
+            Event: Malworm
+            displayParameters: []
+            mark: 0
+          startLength: 0
+          length: 8
+          loops: 4
+        setBPM: 1
+        bpm: 164
+      amount: 4
+      tag: malworm
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Great job!
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Dang! Turbots
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: spawnTurbot
+      noMusic: 0
+      noApplause: 0
+    - dialogue: These guys are bit fast, so be prepared.
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: 
+      section:
+        skipCountdown: 0
+        sections:
+        - inputList:
+          - events: []
+            Event: Turbot
+            displayParameters: []
+            mark: 2
+          startLength: 0
+          length: 4
+          loops: 8
+        setBPM: 0
+        bpm: 0
+      amount: 8
+      tag: turbot
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Wow! You got it on lock
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Alright, this is the last guy
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: spawnHairsplit
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Hairsplits
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: They break into two and attack one by one
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: So you gotta watch them carefully
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: 
+      section:
+        skipCountdown: 0
+        sections:
+        - inputList:
+          - events: []
+            Event: Hairsplit
+            displayParameters: []
+            mark: 0
+          startLength: 0
+          length: 8
+          loops: 4
+        setBPM: 0
+        bpm: 0
+      amount: 4
+      tag: hairsplitter
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Ok...that's enough practice
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: I'm going to start the upload right now
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: There may have been no damage here, but once it starts...
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Things will get serious
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: You ready?
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Ok...good luck!
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     skipTutorial:
     - dialogue: Oh you got it?
       section:
@@ -6750,13 +7206,16 @@ MonoBehaviour:
   spawnRadius: 4.5
   revRadius: 5
   malwormPrefab: {fileID: 1213359481234612675, guid: 956412e5ee2e19c4a89b740479c7d77d, type: 3}
-  turbotPrefab: {fileID: 5595721736679579245, guid: 68a4f2942b2db164190a67ad4533c3b7, type: 3}
+  turbotPrefab: {fileID: 1772690060229981069, guid: f73b28658465f0e44a53eb4260a1df4e, type: 3}
   hairsplitPrefab: {fileID: 1954332490642152648, guid: def2929eca67bdb40b09634faab30035, type: 3}
   forcefield: {fileID: 1752350498}
   forcefieldSFX: {fileID: 347546515}
   border: {fileID: 801389272}
   speed: 1
   virusParent: {fileID: 1677335544}
+  malwormKill: 0
+  turbotKill: 0
+  hairsplitterKill: 0
   downloadBar: {fileID: 954192224}
   uploadingTxt: {fileID: 925413608}
   head: {fileID: 919132148315832058}

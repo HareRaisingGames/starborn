@@ -20,14 +20,14 @@ namespace Starborn.Trojan
         public ParticleSystem explosion;
         public ParticleSystem burned;
         public AudioSource explosionSFX;
-        Tween<Vector3> attack;
+        protected Tween<Vector3> attack;
 
         public System.Action onHitAddtional;
 
         [HideInInspector]
         bool isFried;
 
-        private void Awake()
+        protected virtual void Awake()
         {
             sprite = GetComponent<SpriteRenderer>();
         }
@@ -59,12 +59,12 @@ namespace Starborn.Trojan
             startPosition = start;
         }
 
-        public void Rev(float time)
+        public virtual void Rev(float time)
         {
             TweenManager.PositionTween(gameObject, _spawnPosition, startPosition, time, Eases.EaseInOutSine);
         }
 
-        public void Attack(float time)
+        public virtual void Attack(float time)
         {
             attack = TweenManager.PositionTween(gameObject, startPosition, center, time, Eases.EaseInOutQuart, delegate() {
                 if(isFried)
@@ -79,16 +79,11 @@ namespace Starborn.Trojan
             });
         }
 
-        public void Explode(float duration = 0)
+        public virtual void Explode(float duration = 0, System.Action callback = null)
         {
             if (attack != null)
             {
                 attack.FullKill();
-                ColorUtils.SetAlpha(gameObject, 0);
-                explosion.Play();
-                explosion.gameObject.layer = gameObject.layer;
-                if (explosionSFX != null)
-                    explosionSFX.Play();
 
                 AudioClip[] allDeathSounds = Resources.LoadAll<AudioClip>("Audio/Trojan/death");
                 IEnumerable<AudioClip> filteredSFX = allDeathSounds.Where(sound => sound.name.Contains(being));
@@ -110,14 +105,20 @@ namespace Starborn.Trojan
                 }
 
                 LuaMethods.ShakeCamera(duration, 0.25f);
-                StartCoroutine(Destruct());
-                IEnumerator Destruct()
-                {
-                    yield return new WaitForSeconds(0.375f);
-                    Destroy(this.gameObject);
-                }
             }
-                
+
+            ColorUtils.SetAlpha(gameObject, 0);
+            explosion.Play();
+            explosion.gameObject.layer = gameObject.layer;
+            if (explosionSFX != null)
+                explosionSFX.Play();
+            callback?.Invoke();
+            StartCoroutine(Destruct());
+            IEnumerator Destruct()
+            {
+                yield return new WaitForSeconds(0.375f);
+                Destroy(this.gameObject);
+            }
         }
 
         public void Charred()

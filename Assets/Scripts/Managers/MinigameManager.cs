@@ -396,6 +396,7 @@ public class MinigameManager : MonoBehaviour
     }
 
     bool inTutorial;
+    public bool tutorial => inTutorial;
     [HideInInspector]
     public bool skipTutorial;
     List<TutorialLine> lines = new List<TutorialLine>();
@@ -461,6 +462,7 @@ public class MinigameManager : MonoBehaviour
                 return;
             }
             text.text = FilterDialogue(lines[t].dialogue);
+            minigame.TutorialCallback(lines[t].tag);
 
             if (lines[t].section.sections.Count != 0 || lines[t].noMusic)
             {
@@ -740,7 +742,9 @@ public class MinigameManager : MonoBehaviour
                 Conductor.instance.music.loop = false;
                 previousTimeSamples = 0;
             }
-            
+
+            minigame.OnTutorialStop();
+
             inTutorialMinigame = false;
 
             if (skipText != null)

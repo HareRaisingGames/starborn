@@ -1679,7 +1679,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Upload Completed!
+  m_text: Upload Complete!
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7528947a337ce4441b220543e3cebbff, type: 2}
   m_sharedMaterial: {fileID: 2100000, guid: 9b6c6f990e526bb47974cdb2b2fb7ee4, type: 2}

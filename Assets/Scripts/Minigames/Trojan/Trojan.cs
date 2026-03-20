@@ -34,6 +34,13 @@ namespace Starborn.Trojan
 
         List<Virus> existingViruses = new List<Virus>();
 
+        [HideInInspector]
+        public int malwormKill = 0;
+        [HideInInspector]
+        public int turbotKill = 0;
+        [HideInInspector]
+        public int hairsplitterKill = 0;
+
         int clicks = 0;
         bool canClick = false;
         string tagName = "";
@@ -232,6 +239,9 @@ namespace Starborn.Trojan
 
             base.Start();
             OnSongStart = () => {
+                if (MinigameManager.instance.tutorial)
+                    return;
+
                 AddTimestamp(Conductor.instance.music.clip.length);
                 downloadBar.activate = true;
                 if (uploadingTxt != null) uploadingTxt.text = "Uploading.";
@@ -293,7 +303,7 @@ namespace Starborn.Trojan
 
         void Uploading(int i)
         {
-            if (MinigameManager.instance.gameOver)
+            if (MinigameManager.instance.gameOver || MinigameManager.instance.tutorial)
                 return;
 
             if(uploadingTxt != null)
@@ -367,20 +377,34 @@ namespace Starborn.Trojan
                 amountJudger = () => clicks;
                 canClick = true;
             }
+            else if (tag == "malworm")
+            {
+                amountJudger = () => malwormKill;
+            }
+            else if (tag == "turbot")
+            {
+                amountJudger = () => turbotKill;
+            }
+            else if (tag == "hairsplitter")
+            {
+                amountJudger = () => hairsplitterKill;
+            }
+            else
+                amountJudger = () => 0;
         }
 
         public override void TutorialAdditionals()
         {
             base.TutorialAdditionals();
-
-            Countdown.alt = true;
-            Countdown.folder = "computer";
-            Countdown.mode = CountdownMode.Camera;
-            Countdown.cam = countdownCamera;
             canClick = true;
 
             if (tagName == "activate")
             {
+                Countdown.alt = true;
+                Countdown.folder = "computer";
+                Countdown.mode = CountdownMode.Camera;
+                Countdown.cam = countdownCamera;
+
                 if (MinigameManager.instance.remainingText != null && amountJudger != null)
                 {
                     MinigameManager.instance.remainingText.text = MinigameManager.instance.requiredText;
@@ -406,6 +430,79 @@ namespace Starborn.Trojan
                     return clicks >= amount;
                 };
             }
+            else if(tag == "malworm")
+            {
+                Countdown.alt = true;
+                Countdown.prefabName = "TrojanCountdown";
+                Countdown.folder = "computer";
+                Countdown.mode = CountdownMode.Camera;
+                Countdown.cam = countdownCamera;
+                if (displayMalworm != null) displayMalworm.Explode();
+                hasCompleted = delegate ()
+                {
+                    return malwormKill >= amount;
+                };
+            }
+            else if (tag == "turbot")
+            {
+                Countdown.alt = true;
+                Countdown.prefabName = "TrojanCountdown";
+                Countdown.folder = "computer";
+                Countdown.mode = CountdownMode.Camera;
+                Countdown.cam = countdownCamera;
+                if (displayTurbot != null) displayTurbot.Explode();
+                hasCompleted = delegate ()
+                {
+                    return turbotKill >= amount;
+                };
+            }
+            else if (tag == "hairsplitter")
+            {
+                Countdown.alt = true;
+                Countdown.prefabName = "TrojanCountdown";
+                Countdown.folder = "computer";
+                Countdown.mode = CountdownMode.Camera;
+                Countdown.cam = countdownCamera;
+                if(displayHairSplitter != null) displayHairSplitter.Explode();
+                hasCompleted = delegate ()
+                {
+                    return hairsplitterKill >= amount;
+                };
+            }
+
+            malwormKill = 0;
+            turbotKill = 0;
+            hairsplitterKill = 0;
+        }
+
+        Virus displayMalworm;
+        TurbotVirus displayTurbot;
+        Virus displayHairSplitter;
+        public override void TutorialCallback(string tag = "")
+        {
+            base.TutorialCallback(tag);
+            if (tag == "spawnMalworm")
+            {
+                displayMalworm = Instantiate(game.malwormPrefab, Vector3.left * 5, Quaternion.identity).GetComponent<MalwormVirus>();
+                displayMalworm.GetComponent<SpriteRenderer>().flipX = true;
+            }
+            else if (tag == "spawnTurbot")
+            {
+                displayTurbot = Instantiate(game.turbotPrefab, Vector3.left * 5, Quaternion.identity).GetComponent<TurbotVirus>();
+                displayTurbot.animator.Play(displayTurbot.eye.name);
+            }
+            else if (tag == "spawnHairsplit")
+            {
+                displayHairSplitter = Instantiate(game.hairsplitPrefab, Vector3.left * 5, Quaternion.identity).GetComponent<HairsplitVirus>();
+            }
+
+        }
+
+        public override void OnTutorialStop()
+        {
+            base.OnTutorialStop();
+            foreach (Virus virus in existingViruses)
+                virus.Explode();
         }
 
         public override void TutorialReset()
@@ -472,7 +569,7 @@ namespace Starborn.Trojan
             actions = new List<CallForAction>() {
                 new CallForAction(()=>{
                     virus = Trojan.SpawnVirus("malworm", out audio).GetComponent<MalwormVirus>();
-                    virus.onHitAddtional = delegate(){if(game.uploadingTxt != null) game.uploadingTxt.text = "ERROR"; };
+                    virus.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; };
                     SetAudio("malworm_1");
                 }, 1f),
                 new CallForAction(()=>{
@@ -490,7 +587,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
-                    virus.Explode(Conductor.instance.crochet * 0.25f);
+                    virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.malwormKill++; });
                 }, (value) => { virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
@@ -500,13 +597,13 @@ namespace Starborn.Trojan
 
     public class Turbot : TrojanEvent
     {
-        Virus virus;
+        TurbotVirus virus;
         public Turbot()
         {
             actions = new List<CallForAction>() {
                 new CallForAction(()=>{
-                    virus = Trojan.SpawnVirus("turbot", out audio);
-                    virus.onHitAddtional = delegate(){if(game.uploadingTxt != null) game.uploadingTxt.text = "ERROR"; };
+                    virus = Trojan.SpawnVirus("turbot", out audio).GetComponent<TurbotVirus>();
+                    virus.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; };
                     if(game.curStep % 4 == 2 || game.curStep % 4 == 3)
                         SetAudio("turbot_2");
                     else if(game.curStep % 4 == 0 || game.curStep % 4 == 1)
@@ -519,7 +616,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(game.autoPlay) game.ActivateForceField();
                 }, 2f, RhythmInputs.A, 1f, 1f, ()=>{
-                    virus.Explode(Conductor.instance.crochet * 0.25f);
+                    virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.turbotKill++; });
                 }, (value) => { virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
@@ -532,6 +629,7 @@ namespace Starborn.Trojan
         HairsplitVirus spliter;
         Virus split1;
         Virus split2;
+        int count = 0;
         public Hairsplit()
         {
             actions = new List<CallForAction>() {
@@ -541,8 +639,8 @@ namespace Starborn.Trojan
                 }, 1f),
                 new CallForAction(()=>{
                     spliter.Split(Conductor.instance.crochet * 0.25f, out split1, out split2);
-                    split1.onHitAddtional = delegate(){if(game.uploadingTxt != null) game.uploadingTxt.text = "ERROR"; };
-                    split2.onHitAddtional = delegate(){if(game.uploadingTxt != null) game.uploadingTxt.text = "ERROR"; };
+                    split1.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; };
+                    split2.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; };
                     AftermathSound();
                 }, 2f),
                 new CallForAction(()=>{
@@ -555,7 +653,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay && game.forcefield != null) game.forcefield.Play();
                     split2.Rev(Conductor.instance.crochet * 0.5f);
                 }, 3f, RhythmInputs.A, 1f, 1f, ()=>{
-                    split1.Explode(Conductor.instance.crochet * 0.125f);
+                    split1.Explode(Conductor.instance.crochet * 0.125f, delegate(){ count++; });
                 }, (value) => { split1.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
@@ -565,7 +663,10 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
-                    split2.Explode(Conductor.instance.crochet * 0.125f);
+                    split2.Explode(Conductor.instance.crochet * 0.125f, delegate(){
+                        count++;
+                    if(count >= 2) game.hairsplitterKill++; });
+
                 }, (value) => { split2.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),

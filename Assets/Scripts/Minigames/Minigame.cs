@@ -396,6 +396,16 @@ public abstract class Minigame : MonoBehaviour
         Countdown.ResetCountdown();
     }
 
+    public virtual void TutorialCallback(string tag = "")
+    {
+
+    }
+
+    public virtual void OnTutorialStop()
+    {
+
+    }
+
     public virtual void onA(InputAction.CallbackContext context)
     {
         //If the A button has been pressed
