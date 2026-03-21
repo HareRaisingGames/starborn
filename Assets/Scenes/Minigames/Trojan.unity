@@ -424,7 +424,7 @@ Camera:
   far clip plane: 1000
   field of view: 70.1
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 5.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -6501,7 +6501,7 @@ MonoBehaviour:
   conductor: {fileID: 497405847}
   autoPlay: 1
   isTutorial: 1
-  song: {fileID: 8300000, guid: b399b50183d6aac478eb71b1f89c6ec3, type: 3}
+  song: {fileID: 8300000, guid: 25a628bf1e462574a8c0a9c0624434f4, type: 3}
   tutorialSong: {fileID: 8300000, guid: f06e1aa4543413c40b518124a48fc0f6, type: 3}
   paused: 0
   eventsList:
@@ -6849,15 +6849,6 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
-        Event: Turbot
-        displayParameters: []
-        mark: 2
-      - events:
-        - Malworm
-        - Turbot
-        - Hairsplit
-        - ProgressMarker
-        - TimerFakeOut
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -6879,6 +6870,152 @@ MonoBehaviour:
         Event: Turbot
         displayParameters: []
         mark: 6
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 8
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 10
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Hairsplit
+        displayParameters: []
+        mark: 12
+      startLength: 0
+      length: 16
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2.5
+      startLength: 0
+      length: 4
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Hairsplit
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 4
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2.5
+      startLength: 0
+      length: 4
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Malworm
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        Event: Turbot
+        displayParameters: []
+        mark: 5
       startLength: 0
       length: 8
       loops: 1
@@ -7207,7 +7344,7 @@ MonoBehaviour:
   revRadius: 5
   malwormPrefab: {fileID: 1213359481234612675, guid: 956412e5ee2e19c4a89b740479c7d77d, type: 3}
   turbotPrefab: {fileID: 1772690060229981069, guid: f73b28658465f0e44a53eb4260a1df4e, type: 3}
-  hairsplitPrefab: {fileID: 1954332490642152648, guid: def2929eca67bdb40b09634faab30035, type: 3}
+  hairsplitPrefab: {fileID: 5872958929532159019, guid: c4ef96a0c03961f46be3f6f30fb1feff, type: 3}
   forcefield: {fileID: 1752350498}
   forcefieldSFX: {fileID: 347546515}
   border: {fileID: 801389272}

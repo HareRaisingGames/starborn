@@ -7,9 +7,11 @@ namespace Starborn.Trojan
     public class HairsplitVirus : Virus
     {
         public GameObject miniPrefab;
+        public AnimationClip angrySpawn;
+        public float miniAngle = 10;
         public void Split(float time, out Virus one, out Virus two)
         {
-            Vector2 split = new Vector2(angle - 5, angle + 5);
+            Vector2 split = new Vector2(angle - Mathf.Abs(miniAngle), angle + Mathf.Abs(miniAngle));
 
             Vector2 spawnPos1 = Trojan.PositionFromRadius(center, Trojan.game.spawnRadius, split.x);
             Vector2 revPos1 = Trojan.PositionFromRadius(center, Trojan.game.revRadius, split.x);
@@ -44,6 +46,12 @@ namespace Starborn.Trojan
             }
 
             Destroy(this.gameObject);
+        }
+
+        public void Angry()
+        {
+            animator.speed = Conductor.instance.songBpm / 120;
+            animator.Play(angrySpawn.name);
         }
     }
 }

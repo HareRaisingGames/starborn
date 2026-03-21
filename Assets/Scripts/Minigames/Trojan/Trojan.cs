@@ -105,6 +105,12 @@ namespace Starborn.Trojan
                     worm.transform.parent = game.virusParent;
                     if (game.virusParent != null)
                         worm.gameObject.layer = game.virusParent.gameObject.layer;
+
+                    foreach(Transform child in worm.gameObject.transform)
+                    {
+                        child.gameObject.layer = worm.gameObject.layer;
+                    }
+
                     GameObject wormAudio = new GameObject("SFX");
                     audio = wormAudio.AddComponent<AudioSource>();
                     audio.playOnAwake = false;
@@ -125,6 +131,12 @@ namespace Starborn.Trojan
             virus.transform.parent = game.virusParent;
             if (game.virusParent != null)
                 virus.gameObject.layer = game.virusParent.gameObject.layer;
+
+            foreach (Transform child in virus.gameObject.transform)
+            {
+                child.gameObject.layer = virus.gameObject.layer;
+            }
+
             GameObject obj = new GameObject("SFX");
             audio = obj.AddComponent<AudioSource>();
             audio.transform.parent = virus.gameObject.transform;
@@ -636,6 +648,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     spliter = Trojan.SpawnVirus("hairsplit", out audio).GetComponent<HairsplitVirus>();
                     SetAudio("hairsplit_1");
+                    spliter.Angry();
                 }, 1f),
                 new CallForAction(()=>{
                     spliter.Split(Conductor.instance.crochet * 0.25f, out split1, out split2);

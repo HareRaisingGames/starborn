@@ -42,7 +42,7 @@ public abstract class Minigame : MonoBehaviour
 
     public AudioClip song;
     public AudioClip tutorialSong;
-
+    public string caller = "bugz";
     protected bool inTutorial;
 
     [HideInInspector]
@@ -260,7 +260,9 @@ public abstract class Minigame : MonoBehaviour
         Conductor.instance.SetUpBPM();
         inTutorial = false;
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
+        MinigameManager.SetCongratsAudio(caller);
         AdditionalSongSetup();
+        OnCountdown();
         if (selectedCharting.skipCountdown)
         {
             Conductor.instance.PlayMusic();

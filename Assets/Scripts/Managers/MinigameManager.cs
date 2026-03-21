@@ -8,6 +8,7 @@ using UnityEngine.InputSystem.Controls;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
+using System.Linq;
 
 public class MinigameManager : MonoBehaviour
 {
@@ -56,6 +57,7 @@ public class MinigameManager : MonoBehaviour
     public GameObject pauseGameOver;
 
     public GameObject cleared;
+    public AudioSource congratulations;
 
     AudioSource applause;
     AudioSource pressSource;
@@ -103,6 +105,7 @@ public class MinigameManager : MonoBehaviour
     Scene scene;
 
     private static MinigameManager _instance;
+    //public static string congratsCaller = "bugz";
 
     public static MinigameManager instance
     {
@@ -327,6 +330,7 @@ public class MinigameManager : MonoBehaviour
                     Debug.Log($"{Mathf.Round(totalAccuracy * Mathf.Pow(10, 4)) / 100f}%");
                     if (cleared != null)
                         cleared.SetActive(true);
+                    if (congratulations != null) congratulations.Play();
                     StaticProperties.canPause = false;
                 }
             }
@@ -484,7 +488,7 @@ public class MinigameManager : MonoBehaviour
                 {
                     yield return new WaitForSeconds(0.5f);
                     minigame.AdditionalSongSetup(lines[t].tag);
-
+                    minigame.OnCountdown();
                     if (lines[t].noMusic)
                     {
                         Conductor.startSong = true;
@@ -768,6 +772,14 @@ public class MinigameManager : MonoBehaviour
 
     }
     //int index = 0;
+
+    public static void SetCongratsAudio(string caller = "bugz")
+    {
+        if (string.IsNullOrEmpty(caller) || string.IsNullOrWhiteSpace(caller)) caller = "bugz";
+
+        if(instance.congratulations != null)
+            instance.congratulations.clip = MusicUtils.GetRandomClip("Audio/Victory", caller);
+    }
 
     public static void Clear()
     {

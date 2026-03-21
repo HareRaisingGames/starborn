@@ -16946,10 +16946,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.Tosstail
   conductor: {fileID: 1202914535}
-  autoPlay: 0
+  autoPlay: 1
   isTutorial: 1
   song: {fileID: 8300000, guid: eb0abd3f3ec615f429b5cda92d7f7ac0, type: 3}
   tutorialSong: {fileID: 8300000, guid: f06e1aa4543413c40b518124a48fc0f6, type: 3}
+  caller: bugz
   paused: 0
   eventsList:
   - ShortToss
@@ -18028,7 +18029,7 @@ MonoBehaviour:
           length: 8
           loops: 4
         setBPM: 1
-        bpm: 164
+        bpm: 164.5
       amount: 2
       tag: 
       noMusic: 0
@@ -18066,7 +18067,7 @@ MonoBehaviour:
           length: 8
           loops: 4
         setBPM: 1
-        bpm: 164
+        bpm: 164.5
       amount: 2
       tag: 
       noMusic: 0

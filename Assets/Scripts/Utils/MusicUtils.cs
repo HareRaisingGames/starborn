@@ -4,7 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 
-public static class MusicUtils
+public static partial class MusicUtils
 {
     public static void SlowDownMusic(AudioSource audio, float duration, Action onComplete = null)
     {
@@ -28,5 +28,24 @@ public static class MusicUtils
             audio.volume = Mathf.Clamp01(start.Value);
         }
         TweenManager.NumTween(() => audio.volume, (value) => { audio.volume = value; }, end, duration, Eases.EaseOutInCubic, onComplete);
+    }
+}
+
+public static partial class MusicUtils
+{
+    public static AudioClip GetRandomClip(string directory, string baseName)
+    {
+        AudioClip[] allSounds = Resources.LoadAll<AudioClip>(directory);
+        IEnumerable<AudioClip> filtered = allSounds.Where(sound => sound.name.Contains(baseName));
+        AudioClip[] filteredSFXs = filtered.ToArray();
+
+        if(filteredSFXs.Length != 0)
+        {
+            System.Random random = new System.Random();
+            int r = random.Next(0, filteredSFXs.Length);
+            return filteredSFXs[r];
+        }
+
+        return null;
     }
 }

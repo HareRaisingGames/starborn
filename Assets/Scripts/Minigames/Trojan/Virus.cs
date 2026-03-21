@@ -23,6 +23,8 @@ namespace Starborn.Trojan
         protected Tween<Vector3> attack;
 
         public System.Action onHitAddtional;
+        public Animator animator;
+        public Sprite burnedSprite;
 
         [HideInInspector]
         bool isFried;
@@ -85,21 +87,15 @@ namespace Starborn.Trojan
             {
                 attack.FullKill();
 
-                AudioClip[] allDeathSounds = Resources.LoadAll<AudioClip>("Audio/Trojan/death");
-                IEnumerable<AudioClip> filteredSFX = allDeathSounds.Where(sound => sound.name.Contains(being));
-                AudioClip[] virusDeathSfx = filteredSFX.ToArray();
+                AudioClip dieSFX = MusicUtils.GetRandomClip("Audio/Trojan/death", being);
 
-                if(virusDeathSfx.Length != 0)
+                if(dieSFX != null)
                 {
-                    System.Random random = new System.Random();
-                    int s = random.Next(0, virusDeathSfx.Length);
-                    AudioClip randomClip = virusDeathSfx[s];
-
                     GameObject sound = new GameObject("RIP");
                     SoundByte sfx = sound.AddComponent<SoundByte>();
                     sfx.type = "SongSFX";
                     sound.GetComponent<AudioSource>().playOnAwake = false;
-                    sound.GetComponent<AudioSource>().clip = randomClip;
+                    sound.GetComponent<AudioSource>().clip = dieSFX;
                     sfx.timeSamples = sound.GetComponent<AudioSource>().timeSamples;
                     sound.GetComponent<AudioSource>().Play();
                 }
@@ -127,7 +123,10 @@ namespace Starborn.Trojan
             if(burned != null)
             {
                 burned.Play();
-                sprite.color = Color.black;
+                if (burnedSprite != null)
+                    sprite.sprite = burnedSprite;
+                else
+                    sprite.color = Color.black;
                 explosionSFX.clip = Resources.Load<AudioClip>($"Audio/Trojan/burst");
                 explosionSFX.Play();
             }

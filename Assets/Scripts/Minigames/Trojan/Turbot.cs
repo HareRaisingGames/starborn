@@ -6,7 +6,6 @@ namespace Starborn.Trojan
 {
     public class TurbotVirus : Virus
     {
-        public Animator animator;
         public AnimationClip openEye;
         public AnimationClip closeEye;
         public AnimationClip eye;

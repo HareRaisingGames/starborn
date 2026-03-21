@@ -88,6 +88,7 @@ namespace Starborn.Tosstail
                 if (niko.headAnimator != null) niko.headAnimator.enabled = false;
                 niko.leftArm.SetSpeed(Conductor.instance.songBpm);
                 niko.rightArm.SetSpeed(Conductor.instance.songBpm);
+                niko.SetExpression(niko.defaultExpression.name);
             }
         }
 
