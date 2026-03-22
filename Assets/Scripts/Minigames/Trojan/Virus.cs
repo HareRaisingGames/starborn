@@ -14,7 +14,7 @@ namespace Starborn.Trojan
         protected SpriteRenderer sprite;
         protected Vector2 center;
         protected Vector2 _spawnPosition;
-        protected Vector2 startPosition;
+        protected Vector2 _startPosition;
         protected float angle;
         public float radius;
         public ParticleSystem explosion;
@@ -25,6 +25,11 @@ namespace Starborn.Trojan
         public System.Action onHitAddtional;
         public Animator animator;
         public Sprite burnedSprite;
+
+        bool _isAttacking;
+        public bool isAttacking => _isAttacking;
+        public Vector2 startPosition => _startPosition;
+        public string virusName => being;
 
         [HideInInspector]
         bool isFried;
@@ -58,17 +63,20 @@ namespace Starborn.Trojan
             this.center = center;
             this.angle = angle;
             _spawnPosition = spawn;
-            startPosition = start;
+            _startPosition = start;
+            transform.position = _spawnPosition;
         }
 
         public virtual void Rev(float time)
         {
-            TweenManager.PositionTween(gameObject, _spawnPosition, startPosition, time, Eases.EaseInOutSine);
+            _isAttacking = true;
+            TweenManager.PositionTween(gameObject, _spawnPosition, _startPosition, time, Eases.EaseInOutSine);
         }
 
         public virtual void Attack(float time)
         {
-            attack = TweenManager.PositionTween(gameObject, startPosition, center, time, Eases.EaseInOutQuart, delegate() {
+            _isAttacking = true;
+            attack = TweenManager.PositionTween(gameObject, _startPosition, center, time, Eases.EaseInOutQuart, delegate() {
                 if(isFried)
                     MinigameManager.instance.LoseALife(0.5f);
                 else
@@ -123,6 +131,7 @@ namespace Starborn.Trojan
             if(burned != null)
             {
                 burned.Play();
+                if(animator != null) animator.enabled = false;
                 if (burnedSprite != null)
                     sprite.sprite = burnedSprite;
                 else

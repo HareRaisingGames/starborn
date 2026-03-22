@@ -924,7 +924,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 31233ffe84071454cb6bedcf1265c9f1, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.5
   m_Pitch: 1
@@ -6501,8 +6501,9 @@ MonoBehaviour:
   conductor: {fileID: 497405847}
   autoPlay: 1
   isTutorial: 1
-  song: {fileID: 8300000, guid: 25a628bf1e462574a8c0a9c0624434f4, type: 3}
-  tutorialSong: {fileID: 8300000, guid: f06e1aa4543413c40b518124a48fc0f6, type: 3}
+  song: {fileID: 8300000, guid: 1608cb9e83b8aa34a9f2dd7d9cd0b6f0, type: 3}
+  tutorialSong: {fileID: 8300000, guid: d2be2a11356fd794b957c57216174d56, type: 3}
+  caller: bugz
   paused: 0
   eventsList:
   - Malworm
@@ -6510,6 +6511,8 @@ MonoBehaviour:
   - Hairsplit
   - ProgressMarker
   - TimerFakeOut
+  - TurnOnCameraShake
+  - BigShake
   countdown: 
   chartings:
   - skipCountdown: 0
@@ -6521,6 +6524,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 6
@@ -6534,6 +6539,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -6547,6 +6554,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 0
@@ -6556,6 +6565,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Hairsplit
         displayParameters: []
         mark: 4
@@ -6569,6 +6580,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 0
@@ -6578,6 +6591,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -6587,6 +6602,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 8
@@ -6596,6 +6613,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Hairsplit
         displayParameters: []
         mark: 12
@@ -6609,6 +6628,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 0
@@ -6618,6 +6639,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6627,6 +6650,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Hairsplit
         displayParameters: []
         mark: 4
@@ -6636,6 +6661,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 8
@@ -6645,6 +6672,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 10
@@ -6654,6 +6683,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 12
@@ -6667,6 +6698,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 0
@@ -6676,6 +6709,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6689,6 +6724,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 0
@@ -6698,6 +6735,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6707,6 +6746,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Hairsplit
         displayParameters: []
         mark: 4
@@ -6720,6 +6761,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 0
@@ -6729,6 +6772,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6742,6 +6787,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 0
@@ -6751,6 +6798,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6760,6 +6809,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 4
@@ -6769,6 +6820,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 4.5
@@ -6778,6 +6831,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 6
@@ -6791,6 +6846,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 0
@@ -6800,6 +6857,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6809,6 +6868,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -6818,6 +6879,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -6831,6 +6894,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 0
@@ -6840,6 +6905,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6849,6 +6916,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -6858,6 +6927,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Hairsplit
         displayParameters: []
         mark: 4
@@ -6867,6 +6938,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 6
@@ -6880,6 +6953,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6889,6 +6964,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -6898,6 +6975,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 8
@@ -6907,6 +6986,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 10
@@ -6916,6 +6997,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Hairsplit
         displayParameters: []
         mark: 12
@@ -6929,6 +7012,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6938,6 +7023,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2.5
@@ -6951,6 +7038,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Hairsplit
         displayParameters: []
         mark: 0
@@ -6960,6 +7049,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -6973,6 +7064,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -6982,6 +7075,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2.5
@@ -6995,6 +7090,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 2
@@ -7004,6 +7101,8 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Malworm
         displayParameters: []
         mark: 4
@@ -7013,11 +7112,368 @@ MonoBehaviour:
         - Hairsplit
         - ProgressMarker
         - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
         Event: Turbot
         displayParameters: []
         mark: 5
       startLength: 0
       length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Malworm
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Malworm
+        displayParameters: []
+        mark: 3
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 10
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 10.5
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Hairsplit
+        displayParameters: []
+        mark: 12
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 14
+      startLength: 0
+      length: 16
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Malworm
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Hairsplit
+        displayParameters: []
+        mark: 4
+      startLength: 0
+      length: 8
+      loops: 3
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Malworm
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Hairsplit
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Malworm
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 6
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: ProgressMarker
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: TimerFakeOut
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 18
+      startLength: 0
+      length: 20
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Malworm
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 2.5
+      startLength: 0
+      length: 4
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Hairsplit
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Hairsplit
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Hairsplit
+        displayParameters: []
+        mark: 4
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Malworm
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 2.5
+      startLength: 0
+      length: 4
+      loops: 2
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 2
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Malworm
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Hairsplit
+        displayParameters: []
+        mark: 4
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: Turbot
+        displayParameters: []
+        mark: 6
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: ProgressMarker
+        displayParameters: []
+        mark: 0
+      - events:
+        - Malworm
+        - Turbot
+        - Hairsplit
+        - ProgressMarker
+        - TimerFakeOut
+        - TurnOnCameraShake
+        - BigShake
+        Event: BigShake
+        displayParameters: []
+        mark: 0
+      startLength: 0
+      length: 4
       loops: 1
     setBPM: 1
     bpm: 140
@@ -7127,7 +7583,7 @@ MonoBehaviour:
           length: 8
           loops: 4
         setBPM: 1
-        bpm: 164
+        bpm: 126
       amount: 4
       tag: malworm
       noMusic: 0
@@ -7174,8 +7630,8 @@ MonoBehaviour:
           startLength: 0
           length: 4
           loops: 8
-        setBPM: 0
-        bpm: 0
+        setBPM: 1
+        bpm: 126
       amount: 8
       tag: turbot
       noMusic: 0
@@ -7242,8 +7698,8 @@ MonoBehaviour:
           startLength: 0
           length: 8
           loops: 4
-        setBPM: 0
-        bpm: 0
+        setBPM: 1
+        bpm: 126
       amount: 4
       tag: hairsplitter
       noMusic: 0
@@ -7342,7 +7798,7 @@ MonoBehaviour:
   center: {x: 0, y: 0, z: 0}
   spawnRadius: 4.5
   revRadius: 5
-  malwormPrefab: {fileID: 1213359481234612675, guid: 956412e5ee2e19c4a89b740479c7d77d, type: 3}
+  malwormPrefab: {fileID: 7183647784965419018, guid: a2dc2a836ad8ac8499e9ebaca69096e8, type: 3}
   turbotPrefab: {fileID: 1772690060229981069, guid: f73b28658465f0e44a53eb4260a1df4e, type: 3}
   hairsplitPrefab: {fileID: 5872958929532159019, guid: c4ef96a0c03961f46be3f6f30fb1feff, type: 3}
   forcefield: {fileID: 1752350498}
@@ -7356,6 +7812,9 @@ MonoBehaviour:
   downloadBar: {fileID: 954192224}
   uploadingTxt: {fileID: 925413608}
   head: {fileID: 919132148315832058}
+  headRenderer: {fileID: 7762067043456819642}
+  neutralExpression: {fileID: 2800000, guid: 8a65ceef1c521d64890aff89fe0b7b76, type: 3}
+  deadExpression: {fileID: 2800000, guid: 52fc0157b4716b5448230dec52851f89, type: 3}
   rotateSpeed: 20
   rotateAxis: {x: 0, y: 1, z: 0}
   countdownCamera: {fileID: 263764550}

@@ -49,12 +49,19 @@ namespace Starborn.Trojan
         public ProgressBar downloadBar;
         public TMP_Text uploadingTxt;
         public GameObject head;
+        public MeshRenderer headRenderer;
+        Material headMaterial;
+        public Texture2D neutralExpression;
+        public Texture2D deadExpression;
         public float rotateSpeed = 1f;
         public Vector3 rotateAxis;
         public Camera countdownCamera;
 
         public static Virus SpawnVirus(string tag, out AudioSource audio)
         {
+            audio = null;
+            if (game.existingViruses.Count >= 6) return null;
+
             System.Random random = new System.Random();
             float degree = random.Next(0, 361);
 
@@ -117,6 +124,54 @@ namespace Starborn.Trojan
                     audio.loop = false;
                     MixerSettings.SetAudioGroup(audio, "SongSFX");
                     wormAudio.transform.parent = worm.gameObject.transform;
+
+                    game.existingViruses.Add(worm);
+                    inBound = false;
+                        foreach (Virus r in game.existingViruses)
+                        {
+                            if (worm == r) continue;
+                            if (Vector3.Distance(r.transform.position, worm.transform.position) <= worm.radius && !worm.isAttacking)
+                            {
+                                inBound = true;
+                                Debug.Log("Collision Dectected");
+                                break;
+                            }
+                        }
+                    //This might still be a little risky
+                    while (inBound)
+                    {
+                        degree = new System.Random().Next(0, 361);
+                        spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
+                        startPosition = PositionFromRadius(game.center, game.revRadius, degree);
+                        malSpawn = PositionFromRadius(game.center, game.spawnRadius + 3, degree);
+                        while (!InCameraBound(malSpawn))
+                        {
+                            degree = random.Next(0, 361);
+                            spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
+                            startPosition = PositionFromRadius(game.center, game.revRadius, degree);
+                            malSpawn = PositionFromRadius(game.center, game.spawnRadius + 3, degree);
+                        }
+
+                        worm.SetVirus(game.center, spawnPosition, startPosition, malSpawn, degree, false);
+
+                        foreach (Virus r in game.existingViruses)
+                        {
+                            if (worm == r) continue;
+                            if (Vector3.Distance(r.transform.position, worm.transform.position) <= worm.radius && !worm.isAttacking)
+                            {
+                                inBound = true;
+                                Debug.Log("Still has collisions");
+                                break;
+                            }
+                            else
+                            {
+                                Debug.Log("Nothing Wrong");
+                                inBound = false;
+                            }
+                                
+                        }
+                    }
+
                     return worm;
                 case "turbot":
                     virus = Instantiate(game.turbotPrefab, spawnPosition, Quaternion.identity).GetComponent<Virus>();
@@ -143,6 +198,48 @@ namespace Starborn.Trojan
             audio.playOnAwake = false;
             audio.loop = false;
             MixerSettings.SetAudioGroup(audio, "SongSFX");
+
+            game.existingViruses.Add(virus);
+            //Debug.Log(game.existingViruses.Count);
+            inBound = false;
+                if (virus.GetComponent<MalwormVirus>() == null)
+                {
+                    foreach (Virus r in game.existingViruses)
+                    {
+                        if (virus == r) continue;
+                        if (Vector3.Distance(r.transform.position, virus.transform.position) <= virus.radius && !virus.isAttacking)
+                        {
+                            inBound = true;
+                            Debug.Log("Collision Dectected");
+                            break;
+                        }
+                    }
+
+                    while (inBound)
+                    {
+                        degree = new System.Random().Next(0, 361);
+                        spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
+                        startPosition = PositionFromRadius(game.center, game.revRadius, degree);
+                        virus.SetVirus(virus.virusName, game.center, spawnPosition, startPosition, degree);
+                        foreach (Virus r in game.existingViruses)
+                        {
+                            if (virus == r) continue;
+                            if (Vector3.Distance(r.transform.position, virus.transform.position) <= virus.radius)
+                            {
+                                inBound = true;
+                                Debug.Log("Still has collisions");
+                                break;
+                            }
+                            else
+                            {
+                                Debug.Log("Nothing Wrong");
+                                inBound = false;
+                            }
+                                
+                        }
+                }
+            }
+
             return virus;
         }
 
@@ -168,6 +265,19 @@ namespace Starborn.Trojan
             return
                 point.x <= cameraPosition.x + halfCameraSize.x && point.x >= cameraPosition.x - halfCameraSize.x &&
                 point.y <= cameraPosition.y + halfCameraSize.y && point.y >= cameraPosition.y - halfCameraSize.y;
+        }
+
+        public void SetHead(string status = "")
+        {
+            switch(status.ToLower())
+            {
+                case "dead":
+                    headMaterial.SetTexture("_Base_Texture", deadExpression);
+                    break;
+                default:
+                    headMaterial.SetTexture("_Base_Texture", neutralExpression);
+                    break;
+            }
         }
 
         public override void onA(InputAction.CallbackContext context)
@@ -201,6 +311,16 @@ namespace Starborn.Trojan
                 forcefieldSFX.Play();
             clicks++;
         }
+        public void OnDestroy()
+        {
+            SetHead();
+        }
+
+        public void OnApplicationQuit()
+        {
+            SetHead();
+        }
+
         public override void Update()
         {
             base.Update();
@@ -210,8 +330,49 @@ namespace Starborn.Trojan
             }
 
             existingViruses = new List<Virus>(FindObjectsOfType<Virus>());
+            /*foreach (Virus v in existingViruses)
+            {
+                bool inBound = false;
+                if(v.GetComponent<MalwormVirus>())
+                {
 
-            if(head != null)
+                }
+                else
+                {
+                    foreach (Virus r in existingViruses)
+                    {
+                        if (v == r) continue;
+                        if (Vector3.Distance(r.spawnPosition, v.spawnPosition) <= v.radius && !v.isAttacking)
+                        {
+                            inBound = true;
+                            break;
+                        }
+                    }
+
+                    while (inBound)
+                    {
+                        float degree = new System.Random().Next(0, 361);
+                        Vector2 spawnPosition = PositionFromRadius(center, spawnRadius, degree);
+                        Vector2 startPosition = PositionFromRadius(center, revRadius, degree);
+                        v.SetVirus(v.virusName, center, spawnPosition, startPosition, degree);
+                        foreach (Virus r in game.existingViruses)
+                        {
+                            if (v == r) continue;
+                            if (Vector3.Distance(r.spawnPosition, v.spawnPosition) <= v.radius)
+                            {
+                                inBound = true;
+                                break;
+                            }
+                            else
+                                inBound = false;
+                        }
+                    }
+                }
+
+
+            }
+            */
+            if (head != null)
             {
                 head.transform.Rotate(rotateAxis * rotateSpeed * Time.deltaTime);
             }
@@ -230,6 +391,7 @@ namespace Starborn.Trojan
         {
             base.Awake();
             game = this;
+            headMaterial = headRenderer.material;
         }
 
         public override void Start()
@@ -315,10 +477,15 @@ namespace Starborn.Trojan
 
         void Uploading(int i)
         {
-            if (MinigameManager.instance.gameOver || MinigameManager.instance.tutorial)
+            if (MinigameManager.instance.gameOver)
                 return;
 
-            if(uploadingTxt != null)
+            SetHead();
+
+            if (MinigameManager.instance.tutorial)
+                return;
+
+            if (uploadingTxt != null)
             {
                 switch(uploadingTxt.text)
                 {
@@ -339,8 +506,24 @@ namespace Starborn.Trojan
                         break;
                 }
             }
-        }
 
+            if (turnOnShaking)
+            {
+                LuaMethods.ShakeCamera(Conductor.instance.crochet * 0.25f, 0.25f);
+            }
+        }
+        protected bool turnOnShaking;
+        public bool shaking
+        {
+            get
+            {
+                return turnOnShaking;
+            }
+            set
+            {
+                turnOnShaking = value;
+            }
+        }
         void LateUpdate()
         {
             if (center == null || border == null) return;
@@ -581,26 +764,33 @@ namespace Starborn.Trojan
             actions = new List<CallForAction>() {
                 new CallForAction(()=>{
                     virus = Trojan.SpawnVirus("malworm", out audio).GetComponent<MalwormVirus>();
-                    virus.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; };
-                    SetAudio("malworm_1");
+                    if(virus != null) virus.onHitAddtional = delegate(){
+                        if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) 
+                            game.uploadingTxt.text = "ERROR";
+                    game.SetHead("dead"); };
+                    if(virus != null) SetAudio("malworm_1");
+                    if(virus != null) virus.PlayAnimation("inch");
                 }, 1f),
                 new CallForAction(()=>{
-                    virus.Move();
-                    SetAudio("malworm_2");
+                    if(virus != null) virus.Move();
+                    if(virus != null) SetAudio("malworm_2");
+                    if(virus != null) virus.PlayAnimation("inch");
                 }, 2f),
                 new CallForAction(()=>{
-                    virus.Move();
-                    virus.Rev(Conductor.instance.crochet * 0.5f);
-                    SetAudio("malworm_3");
+                    if(virus != null) virus.Move();
+                    if(virus != null) virus.Rev(Conductor.instance.crochet * 0.5f);
+                    if(virus != null) SetAudio("malworm_3");
+                    if(virus != null) virus.PlayAnimation("rev");
                 }, 3f),
                 new CallForAction(()=>{
-                    virus.Attack(Conductor.instance.crochet);
+                    if(virus != null) virus.Attack(Conductor.instance.crochet);
+                    if(virus != null) virus.PlayAnimation("attack");
                 }, 3.5f, RhythmInputs.A),
                 new CallForAction(()=>{
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
-                    virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.malwormKill++; });
-                }, (value) => { virus.Charred();
+                    if(virus != null) virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.malwormKill++; });
+                }, (value) => { if(virus != null) virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
             };
@@ -615,21 +805,27 @@ namespace Starborn.Trojan
             actions = new List<CallForAction>() {
                 new CallForAction(()=>{
                     virus = Trojan.SpawnVirus("turbot", out audio).GetComponent<TurbotVirus>();
-                    virus.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; };
-                    if(game.curStep % 4 == 2 || game.curStep % 4 == 3)
-                        SetAudio("turbot_2");
-                    else if(game.curStep % 4 == 0 || game.curStep % 4 == 1)
-                        SetAudio("turbot_1");
-                    virus.Rev(Conductor.instance.crochet * 0.5f);
+                    if(virus != null) virus.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) 
+                            game.uploadingTxt.text = "ERROR";
+                            game.SetHead("dead");};
+                    if(virus != null)
+                    {
+                        if(game.curStep % 4 == 2 || game.curStep % 4 == 3)
+                            SetAudio("turbot_2");
+                        else if(game.curStep % 4 == 0 || game.curStep % 4 == 1)
+                            SetAudio("turbot_1");
+                    }
+
+                    if(virus != null) virus.Rev(Conductor.instance.crochet * 0.5f);
                 }, 1f),
                 new CallForAction(()=>{
-                    virus.Attack(Conductor.instance.crochet);
+                    if(virus != null) virus.Attack(Conductor.instance.crochet);
                 }, 1.5f),
                 new CallForAction(()=>{
                     if(game.autoPlay) game.ActivateForceField();
                 }, 2f, RhythmInputs.A, 1f, 1f, ()=>{
-                    virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.turbotKill++; });
-                }, (value) => { virus.Charred();
+                    if(virus != null) virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.turbotKill++; });
+                }, (value) => { if(virus != null) virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
             };
@@ -647,40 +843,44 @@ namespace Starborn.Trojan
             actions = new List<CallForAction>() {
                 new CallForAction(()=>{
                     spliter = Trojan.SpawnVirus("hairsplit", out audio).GetComponent<HairsplitVirus>();
-                    SetAudio("hairsplit_1");
-                    spliter.Angry();
+                    if(spliter != null) SetAudio("hairsplit_1");
+                    if(spliter != null) spliter.Angry();
                 }, 1f),
                 new CallForAction(()=>{
-                    spliter.Split(Conductor.instance.crochet * 0.25f, out split1, out split2);
-                    split1.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; };
-                    split2.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; };
-                    AftermathSound();
+                    if(spliter != null) spliter.Split(Conductor.instance.crochet * 0.25f, out split1, out split2);
+                    if(split1 != null) split1.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; game.SetHead("dead");};
+                    if(split2 != null) split2.onHitAddtional = delegate(){if(game.uploadingTxt != null && !MinigameManager.instance.tutorial) game.uploadingTxt.text = "ERROR"; game.SetHead("dead");};
+                    if(spliter != null) AftermathSound();
                 }, 2f),
                 new CallForAction(()=>{
-                    split1.Rev(Conductor.instance.crochet * 0.5f);
+                    if(split1 != null)
+                        split1.Rev(Conductor.instance.crochet * 0.5f);
                 }, 2.25f),
                 new CallForAction(()=>{
-                    split1.Attack(Conductor.instance.crochet);
+                    if(split1 != null)
+                        split1.Attack(Conductor.instance.crochet);
                 }, 2.5f),
                 new CallForAction(()=>{
                     if(game.autoPlay && game.forcefield != null) game.forcefield.Play();
-                    split2.Rev(Conductor.instance.crochet * 0.5f);
+                    if(split2 != null)
+                        split2.Rev(Conductor.instance.crochet * 0.5f);
                 }, 3f, RhythmInputs.A, 1f, 1f, ()=>{
-                    split1.Explode(Conductor.instance.crochet * 0.125f, delegate(){ count++; });
-                }, (value) => { split1.Charred();
+                    if(split1 != null) split1.Explode(Conductor.instance.crochet * 0.125f, delegate(){ count++; });
+                }, (value) => { if(split1 != null) split1.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
                 new CallForAction(()=>{
-                    split2.Attack(Conductor.instance.crochet);
+                    if(split2 != null)
+                        split2.Attack(Conductor.instance.crochet);
                 }, 3.5f),
                 new CallForAction(()=>{
                     if(game.autoPlay) game.ActivateForceField();
                 }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
-                    split2.Explode(Conductor.instance.crochet * 0.125f, delegate(){
+                    if(split2 != null) split2.Explode(Conductor.instance.crochet * 0.125f, delegate(){
                         count++;
                     if(count >= 2) game.hairsplitterKill++; });
 
-                }, (value) => { split2.Charred();
+                }, (value) => { if(split2 != null) split2.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
                 }),
             };
@@ -718,6 +918,35 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     game.FooledYou(Conductor.instance.crochet * 5);
                 }, 1f)
+            };
+        }
+    }
+
+    public class TurnOnCameraShake : TrojanEvent
+    {
+        public TurnOnCameraShake()
+        {
+            actions = new List<CallForAction>() {
+                new CallForAction(()=>{
+                    game.shaking = !game.shaking;
+                }, 1f)
+            };
+        }
+    }
+
+    public class BigShake : RhythmEvent
+    {
+        public BigShake()
+        {
+            actions = new List<CallForAction>()
+            {
+                new CallForAction(()=>{
+                    foreach(Camera camera in Object.FindObjectsOfType<Camera>())
+                    {
+                        LuaMethods.ShakeScreen(Conductor.instance.crochet, 1f, camera.gameObject);
+                    }
+                    //LuaMethods.ShakeCamera(Conductor.instance.crochet, 1f);
+                },1f)
             };
         }
     }
