@@ -57,6 +57,8 @@ namespace Starborn.Trojan
         public Vector3 rotateAxis;
         public Camera countdownCamera;
 
+        float defaultCamSize;
+
         public static Virus SpawnVirus(string tag, out AudioSource audio)
         {
             audio = null;
@@ -165,13 +167,12 @@ namespace Starborn.Trojan
                             }
                             else
                             {
-                                Debug.Log("Nothing Wrong");
                                 inBound = false;
                             }
                                 
                         }
                     }
-
+                    //Debug.Log("All Clear!");
                     return worm;
                 case "turbot":
                     virus = Instantiate(game.turbotPrefab, spawnPosition, Quaternion.identity).GetComponent<Virus>();
@@ -232,14 +233,13 @@ namespace Starborn.Trojan
                             }
                             else
                             {
-                                Debug.Log("Nothing Wrong");
                                 inBound = false;
                             }
                                 
                         }
                 }
             }
-
+            //Debug.Log("All Clear!");
             return virus;
         }
 
@@ -382,6 +382,8 @@ namespace Starborn.Trojan
                 downloadBar.activate &&
                 Mathf.Clamp01(downloadBar.value.Invoke()) == 1) uploadingTxt.text = "Completed!";
 
+            //Camera.main.orthographicSize = Mathf.Lerp(Camera.main.orthographicSize, defaultCamSize, Time.deltaTime * 5);
+
 
         }
 
@@ -444,6 +446,8 @@ namespace Starborn.Trojan
             if (border != null)
                 particles = new ParticleSystem.Particle[border.main.maxParticles];
 
+            defaultCamSize = Camera.main.orthographicSize;
+
             /*if(FindObjectOfType<PauseMenu>(true) == null)
             {
                 StartCoroutine(PlayMusic());
@@ -455,6 +459,7 @@ namespace Starborn.Trojan
             }*/
         }
 
+        Tween<float> camTween;
         public void AddTimestamp(float point) => timestamps.Add(point);
 
         public void FooledYou(float time)
@@ -509,8 +514,12 @@ namespace Starborn.Trojan
 
             if (turnOnShaking)
             {
-                LuaMethods.ShakeCamera(Conductor.instance.crochet * 0.25f, 0.25f);
+                if (camTween != null) camTween.FullKill();
+                Camera.main.orthographicSize = defaultCamSize - 0.25f;
+                camTween = TweenManager.NumTween(() => Camera.main.orthographicSize, (value) => { Camera.main.orthographicSize = value; }, defaultCamSize, Conductor.instance.crochet * 0.5f, Eases.Linear);
             }
+
+            
         }
         protected bool turnOnShaking;
         public bool shaking
@@ -715,6 +724,7 @@ namespace Starborn.Trojan
             Countdown.folder = "computer";
             Countdown.mode = CountdownMode.Camera;
             Countdown.cam = countdownCamera;
+            Countdown.alt = false;
             canClick = true;
             hasCompleted = delegate ()
             {
@@ -922,9 +932,9 @@ namespace Starborn.Trojan
         }
     }
 
-    public class TurnOnCameraShake : TrojanEvent
+    public class TurnOnCameraBounce : TrojanEvent
     {
-        public TurnOnCameraShake()
+        public TurnOnCameraBounce()
         {
             actions = new List<CallForAction>() {
                 new CallForAction(()=>{

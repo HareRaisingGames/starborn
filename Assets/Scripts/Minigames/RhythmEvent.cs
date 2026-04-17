@@ -125,6 +125,19 @@ namespace Starborn.InputSystem
             MinigameManager.instance.events.Add(this);
         }
 
+        public RhythmEvent(RhythmEvent copy)
+        {
+            actions = copy.actions;
+            SetUp();
+
+            if (Minigame.instance != null)
+                Minigame.instance.events.Add(this);
+
+            MinigameManager.instance.events.Add(this);
+        }
+
+        //A callback event for pre charting setup
+        public Action preCallback;
         //A callback event for pre charting setup if the event is reliant of time
         public Action<float> timeCallback;
         public void AddToChart(float time, float crochet = 1)
@@ -140,6 +153,7 @@ namespace Starborn.InputSystem
                 }
                 actions_in_chart.Add(newCFA);
             }
+            preCallback?.Invoke();
             timeCallback?.Invoke(startPoint);
         }
 

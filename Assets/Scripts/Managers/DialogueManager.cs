@@ -177,6 +177,7 @@ public class DialogueManager : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("Uh oh");
                     Debug.LogError("Failed to load streaming asset: " + www.error);
                     yield break;
                 }
@@ -296,6 +297,7 @@ public class DialogueManager : MonoBehaviour
                 CharacterSprite characterSprite = new GameObject(character.Key).AddComponent<CharacterSprite>();
                 characterSprite.transform.parent = spritesObject.transform;
                 characterSprite.character = characterFile;
+                characterSprite.speakingAction = SpriteIsSpeaking;
                 characterSprite.rectTransform.anchoredPosition = Vector2.zero;
                 characterSprite.rectTransform.localScale = Vector3.one;
                 foreach(Emotion emotion in characterFile.expressions)
@@ -1047,6 +1049,14 @@ public class DialogueManager : MonoBehaviour
             foreach (CharacterSprite character in charactersInOnlyCurScene)
             {
                 TransitionSprite(character, curPack[charactersInOnlyCurScene.IndexOf(character)], true);
+                foreach (CharacterPack pack in curPack)
+                {
+                    if (character.charName == pack.character)
+                    {
+                        if (pack.isSpeaking) character.color = Color.white;
+                        else character.color = Color.grey;
+                    }
+                }
             }
 
             foreach (CharacterSprite character in charactersInBoth)
@@ -1085,6 +1095,10 @@ public class DialogueManager : MonoBehaviour
                         TweenManager.NumTween(() => character.position.y, (value) => { character.position = new Vector2(xPos, value); }, 0, 0.25f, Eases.EaseInOutCubic);
                         ColorUtils.SetAlpha(character.gameObject, 0);
                         TweenManager.AlphaTween(character.gameObject, 0, 1, 0.25f, Eases.EaseInOutCubic);
+
+                        if (pack.isSpeaking) character.color = Color.white;
+                        else character.color = Color.grey;
+
                         break;
                     }
                 }
@@ -1115,6 +1129,17 @@ public class DialogueManager : MonoBehaviour
         prevSprites.AddRange(curSprites);
     }
 
+    void SpriteIsSpeaking(CharacterSprite character, bool isSpeaking)
+    {
+        if (isSpeaking)
+            TweenManager.ColorTween(character.gameObject, character.color, Color.white, transTime/4f, Eases.EaseInOutCubic, delegate () {
+                character.color = Color.white;
+            });
+        else
+            TweenManager.ColorTween(character.gameObject, character.color, Color.gray, transTime/4f, Eases.EaseInOutCubic, delegate () {
+                character.color = Color.gray;
+            });
+    }
     void TransitionSprite(CharacterSprite character, CharacterPack pack, bool transIn = false)
     {
         List<SpriteTransition> fade = new List<SpriteTransition>() { SpriteTransition.Fade, SpriteTransition.FadeLeft, SpriteTransition.FadeRight, SpriteTransition.FadeVertical };
@@ -1226,6 +1251,7 @@ public class DialogueManager : MonoBehaviour
         }
         ColorUtils.SetAlpha(character.gameObject, 1);
         character.offsetX = pack.offset;
+        character.isSpeaking = pack.isSpeaking;
         TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(value, 0); }, xPos, transTime * 1.5f, Eases.EaseOutQuart, delegate () { character.flipX = pack.flipX; character.isMoving = false; }, pack.character + "x")
             .SetOnPercentCompleted(0.25f, delegate ()
             {

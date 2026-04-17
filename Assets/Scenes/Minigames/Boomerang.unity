@@ -504,56 +504,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.Boomerang
   conductor: {fileID: 366521056}
-  autoPlay: 0
+  autoPlay: 1
   isTutorial: 0
   song: {fileID: 8300000, guid: 31233ffe84071454cb6bedcf1265c9f1, type: 3}
   tutorialSong: {fileID: 0}
+  caller: bugz
   paused: 0
   eventsList:
+  - Interval
+  - A
+  - Go
   - GreenBoomerang
   - RedBoomerang
   - RandomBoomerang
-  chartings:
-  - skipCountdown: 0
-    sections:
-    - inputList:
-      - events:
-        - GreenBoomerang
-        - RedBoomerang
-        - RandomBoomerang
-        Event: RedBoomerang
-        displayParameters: []
-        mark: 0
-      - events:
-        - GreenBoomerang
-        - RedBoomerang
-        - RandomBoomerang
-        Event: GreenBoomerang
-        displayParameters: []
-        mark: 4
-      startLength: 0
-      length: 8
-      loops: 1
-    - inputList:
-      - events:
-        - GreenBoomerang
-        - RedBoomerang
-        - RandomBoomerang
-        Event: RedBoomerang
-        displayParameters: []
-        mark: 0
-      - events:
-        - GreenBoomerang
-        - RedBoomerang
-        - RandomBoomerang
-        Event: GreenBoomerang
-        displayParameters: []
-        mark: 3
-      startLength: 0
-      length: 8
-      loops: 1
-    setBPM: 0
-    bpm: 0
+  countdown: 
+  chartings: []
   checkChartings: []
   tutorial:
     lines:
@@ -564,7 +529,11 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     skipTutorial: []
+  tutorialCountdown: 
   endlessChartings: []
   events: []
   defaultCamera: {fileID: 1874314631}

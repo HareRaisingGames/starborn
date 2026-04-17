@@ -28,6 +28,8 @@ public class Countdown : MonoBehaviour
     static PauseToken pauseToken;
     public static PauseTokenSource pauseTokenSource;
 
+    public static bool paused;
+
     static CancellationTokenSource cancellationTokenSource;
     static CancellationToken cancellationToken;
 
@@ -37,7 +39,7 @@ public class Countdown : MonoBehaviour
     public string[] countdownList = new string[5];
     public string[] altCountdownList = new string[5];
 
-    static bool stop;
+    public static bool stop;
 
     public TMPro.TMP_Text countdownTxt;
 
@@ -47,7 +49,7 @@ public class Countdown : MonoBehaviour
         {
             if(_instance == null)
             {
-                if(FindObjectOfType<Countdown>() == null)
+                if (FindObjectOfType<Countdown>() == null)
                 {
                     GameObject countdown;
                     GameObject prefab = Resources.Load<GameObject>($"Prefabs/Countdowns/{prefabName}");
@@ -153,8 +155,28 @@ public class Countdown : MonoBehaviour
                 Resources.Load<AudioClip>($"Countdown/{foldername}/go");
         }
     }
-
-    public async static void StartCountdown(float time, Action callback = null, bool matchCamera = false)
+    public static void StartCountdown(float time, Action callback = null)
+    {
+        instance.Start();
+        switch (mode)
+        {
+            case CountdownMode.Camera:
+                Canvas canvas = instance.GetComponent<Canvas>();
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                canvas.worldCamera = cam != null ? cam : Camera.main;
+                break;
+            case CountdownMode.World:
+                Canvas canva = instance.GetComponent<Canvas>();
+                canva.renderMode = RenderMode.WorldSpace;
+                canva.worldCamera = cam != null ? cam : Camera.main;
+                break;
+        }
+        _activatedCountdown = true;
+        stop = false;
+        paused = false;
+        FindObjectOfType<MonoBehaviour>().StartCoroutine(WebGLCountdown(time, callback));
+    }
+    /*public async static void StartCountdown(float time, Action callback = null, bool matchCamera = false)
     {
         instance.Start();
 
@@ -183,7 +205,7 @@ public class Countdown : MonoBehaviour
         int milliseconds = (int)(time * 1000 / 2);
         await Task.Delay(milliseconds);
         i++;
-        StartCountdown(time, callback, i);*/
+        StartCountdown(time, callback, i);
 
         switch(mode)
         {
@@ -206,11 +228,9 @@ public class Countdown : MonoBehaviour
         cancellationTokenSource = new CancellationTokenSource();
         cancellationToken = cancellationTokenSource.Token;
         stop = false;
-
-
-
+        Debug.Log("Task");
         await CountdownTask(time, callback);
-    }
+    }*/
 
     static AudioSource SetAudioSource(string name, Transform parent)
     {
@@ -272,6 +292,58 @@ public class Countdown : MonoBehaviour
         await CountdownTask(time, callback, i);
 
     }
+    static IEnumerator WebGLCountdown(float time, Action callback = null, int i = 0)
+    {
+        yield return new WaitUntil(() => !paused);
+
+        if (stop) yield break;
+        switch (i)
+        {
+            case 0:
+                AddText(alt ? instance.altCountdownList[0] : instance.countdownList[0]);
+                instance.three.Play();
+                break;
+            case 2:
+                AddText(alt ? instance.altCountdownList[1] : instance.countdownList[1]);
+                instance.two.Play();
+                break;
+            case 4:
+                AddText(alt ? instance.altCountdownList[2] : instance.countdownList[2]);
+                instance.one.Play();
+                break;
+            case 5:
+                AddText(alt ? instance.altCountdownList[3] : instance.countdownList[3]);
+                instance.lets.Play();
+                break;
+            case 6:
+                AddText(alt ? instance.altCountdownList[4] : instance.countdownList[4], false);
+                instance.go.Play();
+                break;
+            case 7:
+                AddText("");
+                break;
+            case 8:
+                AddText("");
+                callback?.Invoke();
+                _activatedCountdown = false;
+                folder = defaultFolder;
+                prefabName = "";
+                mode = 0;
+                cam = null;
+                alt = false;
+                Destroy(_instance.gameObject);
+                _instance = null;
+                //FindObjectOfType<MonoBehaviour>().StopCoroutine(webCountdown);
+                //webCountdown = null;
+                yield break;
+        }
+
+            yield return new WaitForSecondsRealtime(time/2f);
+            i++;
+            FindObjectOfType<MonoBehaviour>().StartCoroutine(WebGLCountdown(time, callback, i));
+
+
+    }
 
     public static void ResetCountdown()
     {
@@ -290,22 +362,28 @@ public class Countdown : MonoBehaviour
 
     public static void PauseCountdown()
     {
-        pauseTokenSource.Pause();
+        if(pauseTokenSource != null)
+            pauseTokenSource.Pause();
         instance.three.Pause();
         instance.two.Pause();
         instance.one.Pause();
         instance.lets.Pause();
         instance.go.Pause();
+
+        paused = true;
     }
 
     public static void ResumeCountdown()
     {
-        pauseTokenSource.Resume();
+        if (pauseTokenSource != null)
+            pauseTokenSource.Resume();
         instance.three.UnPause();
         instance.two.UnPause();
         instance.one.UnPause();
         instance.lets.UnPause();
         instance.go.UnPause();
+
+        paused = false;
     }
 
     public static void CancelCountdown()
@@ -364,7 +442,7 @@ public class Countdown : MonoBehaviour
         }
     }
 
-    #region Editor Properties
+#region Editor Properties
 #if UNITY_EDITOR
     /// This method is called when the script is loaded or a recompile occurs
     [InitializeOnLoadMethod]
@@ -382,9 +460,9 @@ public class Countdown : MonoBehaviour
         // such as saving data, releasing resources, etc.
     }
 #endif
-    #endregion
+#endregion
 
-    #region Runtime Properties
+#region Runtime Properties
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void OnRuntimeInitialize()
     {
@@ -395,7 +473,7 @@ public class Countdown : MonoBehaviour
     {
         CancelCountdown();
     }
-    #endregion
+#endregion
 }
 
 public enum CountdownMode

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -37,18 +38,12 @@ public class AppStartup
         {
             //Debug.Log("Application is opening and ready to run!");
             TweenManager.instance.AddManager();
-            MetadataManager.Load();
+            if(Application.platform != RuntimePlatform.WebGLPlayer)
+                MetadataManager.Load();
             AssetsManager.Open();
             isOpen = true;
         }
     }
-
-    /*[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    static void OnLoadingCheck()
-    {
-        if (SceneManager.GetActiveScene().name != "LoadingState")
-            Debug.Log(LoadingManager.isLoading);
-    }*/
 }
 
 //Used for saving

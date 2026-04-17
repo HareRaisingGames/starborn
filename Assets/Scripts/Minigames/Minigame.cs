@@ -239,7 +239,7 @@ public abstract class Minigame : MonoBehaviour
     public bool setUpSong = false;
     public virtual void SetUpSong(string component = "")
     {
-        TweenManager.instance.AddManager();
+        //TweenManager.instance.AddManager();
         if (isTutorial)
         {
             MinigameManager.instance.StartTutorial();
@@ -260,7 +260,7 @@ public abstract class Minigame : MonoBehaviour
         Conductor.instance.SetUpBPM();
         inTutorial = false;
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
-        MinigameManager.SetCongratsAudio(caller);
+        //MinigameManager.SetCongratsAudio(caller);
         AdditionalSongSetup();
         OnCountdown();
         if (selectedCharting.skipCountdown)

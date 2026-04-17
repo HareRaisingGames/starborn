@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
+using UnityEngine.SceneManagement;
 
 public static class MiscUtils
 {
@@ -26,4 +28,32 @@ public static class MiscUtils
         return null;
     }
 #endif
+
+    public static void CameraFunction(Action<Camera> camFunction)
+    {
+        List<Camera> cameras = FindObjectsOfTypeInAllScenes<Camera>(true);
+        foreach (Camera camera in cameras)
+            camFunction?.Invoke(camera);
+
+    }
+
+    public static List<T> FindObjectsOfTypeInAllScenes<T>(bool includeInactive = true) where T : Component
+    {
+        List<T> results = new List<T>();
+        // Iterate through all loaded scenes in the SceneManager
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            Scene scene = SceneManager.GetSceneAt(i);
+            // Get all root game objects for the current scene
+            GameObject[] rootObjects = scene.GetRootGameObjects();
+
+            // Iterate through root objects and get all components of type T in children
+            foreach (GameObject rootObject in rootObjects)
+            {
+                // Use GetComponentsInChildren to find components including inactive ones
+                results.AddRange(rootObject.GetComponentsInChildren<T>(includeInactive));
+            }
+        }
+        return results;
+    }
 }

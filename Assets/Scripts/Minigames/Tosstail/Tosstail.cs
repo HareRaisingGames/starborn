@@ -32,7 +32,7 @@ namespace Starborn.Tosstail
             Resources.Load<AudioClip>("Audio/Tosstail/donut");
 
             base.Start();
-            TweenManager.instance.AddManager();
+            //TweenManager.instance.AddManager();
             TweenManager.XTween(shaker.gameObject, 
                 shaker.transform.position.x, 
                 shaker.transform.position.x, 0.01f, Eases.Linear);

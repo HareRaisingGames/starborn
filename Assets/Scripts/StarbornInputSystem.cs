@@ -131,6 +131,17 @@ namespace Starborn.InputSystem
                 },
                 {
                     ""name"": """",
+                    ""id"": ""5c7595d2-f14f-4ab9-9ff8-ee1b114baa0d"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""5ee4065c-c7de-4144-9e7c-c909bb1f8258"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
@@ -1227,6 +1238,17 @@ namespace Starborn.InputSystem
                     ""action"": ""Log"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""1859d20d-fff0-4ec3-ad14-4231a0901dc8"",
+                    ""path"": ""<Touchscreen>/Press"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -1531,6 +1553,17 @@ namespace Starborn.InputSystem
                     ""name"": """",
                     ""id"": ""d09f6be6-516f-4639-96f5-7219dcb199eb"",
                     ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Select"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c19b5f8c-a2a9-41a2-8173-85b692b3fe2c"",
+                    ""path"": ""<Touchscreen>/Press"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

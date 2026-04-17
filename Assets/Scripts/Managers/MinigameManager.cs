@@ -150,18 +150,21 @@ public class MinigameManager : MonoBehaviour
 
     private void Awake()
     {
-        minigame = FindObjectOfType<Minigame>();
-        conductor = FindObjectOfType<Conductor>();
-        if (conductor != null)
-            Conductor.instance = conductor;
-        Conductor.instance.SetUpBPM();
-
-        //text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();
         m_inputSystem = new StarbornInputSystem();
         m_inputSystem.Dialogue.Pause.performed += OnPause;
         m_inputSystem.Dialogue.A.performed += OnA;
         m_inputSystem.Dialogue.A.canceled += OnReleaseA;
         m_inputSystem.Dialogue.Skip.performed += OnSkip;
+
+        minigame = FindObjectOfType<Minigame>();
+        conductor = FindObjectOfType<Conductor>();
+        if (conductor != null)
+            Conductor.instance = conductor;
+        Conductor.instance.music.clip = null;
+        //Debug.Log("Maybe");
+        Conductor.instance.SetUpBPM();
+        //Debug.Log("Yes");
+        //text = GameObject.FindGameObjectWithTag("Tutorial").GetComponent<TMP_Text>();
 
         scene = SceneManager.GetActiveScene();
 
@@ -202,6 +205,8 @@ public class MinigameManager : MonoBehaviour
         MixerSettings.SetAudioGroup(pressSource, "SFX");
         if (press != null)
             pressSource.clip = press;
+
+        //Debug.Log("Minigame Manager");
 
         GameObject releaseObj = new GameObject("Release");
         releaseSource = releaseObj.AddComponent<AudioSource>();
@@ -496,7 +501,7 @@ public class MinigameManager : MonoBehaviour
                     else if (lines[t].section.skipCountdown)
                         Conductor.instance.PlayMusicWithoutCallback();
                     else
-                        Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusicWithoutCallback);
+                       Countdown.StartCountdown(Conductor.instance.crochet, Conductor.instance.PlayMusicWithoutCallback);
 
                     if (remainingText != null && minigame.amountJudger != null)
                         remainingText.text = $"{requiredAmount - minigame.amountJudger.Invoke()}\n<size=25>left</size>";

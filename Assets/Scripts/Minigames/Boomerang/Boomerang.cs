@@ -121,6 +121,38 @@ namespace Starborn.Boomerang
             }
         }
     }
+
+    /*public class StartInterval : SetInterval
+    {
+
+    }
+
+    public class Pass : PlaybackInterval
+    {
+
+    }
+
+    public class A : IntervalA
+    {
+        AudioSource sfx;
+        public override void SetUp()
+        {
+            base.SetUp();
+            GameObject sound = new GameObject("Boom");
+            sfx = sound.AddComponent<AudioSource>();
+            sfx.playOnAwake = false;
+            sfx.clip = Resources.Load<AudioClip>($"Audio/blip");
+            //sound.GetComponent<AudioSource>().Play();
+        }
+
+        public void PlaySound() => sfx.Play();
+
+        public A() : base(delegate () { /*PlaySound(); }, delegate() { })
+        {
+
+        }
+    }*/
+
     public class GreenBoomerang : Rang
     {
         public AudioSource greenSetup;
