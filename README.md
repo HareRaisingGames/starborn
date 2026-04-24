@@ -3,3 +3,4 @@ A rhythm visual novel following the adventures of the rabbitman Bugz and his rob
 
 ## Requirements
 - Unity 2022.3
+- Git (https://git-scm.com/install/windows)
