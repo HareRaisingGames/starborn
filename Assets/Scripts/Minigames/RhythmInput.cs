@@ -95,11 +95,14 @@ namespace Starborn.InputSystem
             id = (int)UnityEngine.Random.Range(1, 1000);
             MinigameManager.instance.inputs.Add(this);
             spb = Conductor.instance.crochet;
+            enabled = true;
             Generate();
         }
 
         public void onInputHit(InputAction.CallbackContext context)
         {
+            if(!enabled) return;
+
             float accurary = 0;
             if (checkForAccuracy && mustHit && !hasHit && !autoplay)
             {
@@ -236,12 +239,16 @@ namespace Starborn.InputSystem
         public void Enable()
         {
             InputAction.Enable();
+            enabled = true;
         }
 
         public void Disable()
         {
             InputAction.Disable();
+            enabled = false;
         }
+
+        bool enabled = false;
 
         bool found;
         public void Update(float time)

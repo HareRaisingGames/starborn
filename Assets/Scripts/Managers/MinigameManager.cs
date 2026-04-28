@@ -234,6 +234,16 @@ public class MinigameManager : MonoBehaviour
             _lives -= amount;
     }
 
+    public void AddALife(float amount = 1)
+    {
+        if (_consequences)
+        {
+            _lives += amount;
+            if(_lives > maxLives)
+                _lives = maxLives;
+        }
+    }
+
     [HideInInspector]
     public float displayAccuracy = 0;
 
@@ -766,6 +776,9 @@ public class MinigameManager : MonoBehaviour
             if (remainingText != null) remainingText.text = "";
             minigame.OnBeatTutorial = null;
             minigame.hasCompleted = delegate () { return false; };
+
+            foreach(RhythmInput input in inputs) input.Disable();
+
             Clear();
             NextLine();
         }

@@ -707,6 +707,8 @@ namespace Starborn.Trojan
             base.OnTutorialStop();
             foreach (Virus virus in existingViruses)
                 virus.Explode();
+
+            existingViruses.Clear();
         }
 
         public override void TutorialReset()
@@ -748,6 +750,8 @@ namespace Starborn.Trojan
 
                 TweenManager.YTween(downloadBar.gameObject, barPos.y + 2, barPos.y, 1.5f, Eases.EaseInOutQuad);
             }
+
+            //Debug.Log(Object.FindObjectsOfType<RhythmInput>().Length);
 
 
             base.StartSong();

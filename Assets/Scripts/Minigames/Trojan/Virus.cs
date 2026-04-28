@@ -89,7 +89,7 @@ namespace Starborn.Trojan
             });
         }
 
-        public virtual void Explode(float duration = 0, System.Action callback = null)
+        public virtual void Explode(float duration = 0, System.Action callback = null, bool healthBack = false)
         {
             if (attack != null)
             {

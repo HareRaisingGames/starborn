@@ -317,7 +317,6 @@ public abstract class Minigame : MonoBehaviour
 
     int _curStep = 0;
     int prevStep = 0;
-
     public int curStep => _curStep;
 
     // Update is called once per frame
@@ -391,11 +390,20 @@ public abstract class Minigame : MonoBehaviour
     public virtual void TutorialReset()
     {
         Countdown.ResetCountdown();
+        _curBeat = 0;
+        prevBeat = 0;
+        _curStep = 0;
+        prevStep = 0;
+
     }
 
     public virtual void TutorialOnComplete(int amount, string tag = "")
     {
         Countdown.ResetCountdown();
+        _curBeat = 0;
+        prevBeat = 0;
+        _curStep = 0;
+        prevStep = 0;
     }
 
     public virtual void TutorialCallback(string tag = "")
@@ -405,7 +413,10 @@ public abstract class Minigame : MonoBehaviour
 
     public virtual void OnTutorialStop()
     {
-
+        _curBeat = 0;
+        prevBeat = 0;
+        _curStep = 0;
+        prevStep = 0;
     }
 
     public virtual void onA(InputAction.CallbackContext context)

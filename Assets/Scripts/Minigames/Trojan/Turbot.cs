@@ -31,11 +31,11 @@ namespace Starborn.Trojan
             base.Attack(time);
         }
 
-        public override void Explode(float duration = 0, System.Action callback = null)
+        public override void Explode(float duration = 0, System.Action callback = null, bool returnHealth = false)
         {
             if (body != null)
                 ColorUtils.SetAlpha(body.gameObject, 0);
-            base.Explode(duration, callback);
+            base.Explode(duration, callback, returnHealth);
         }
     }
 }
