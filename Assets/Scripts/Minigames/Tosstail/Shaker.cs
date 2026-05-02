@@ -117,7 +117,7 @@ namespace Starborn.Tosstail
                     isTossed = false;
                 });*/
 
-                sfx.clip = longToss ? Resources.Load<AudioClip>("Audio/Tosstail/cake") : Resources.Load<AudioClip>("Audio/Tosstail/donut");
+                sfx.clip = longToss ? Resources.Load<AudioClip>("Audio/Tosstail/long_toss") : Resources.Load<AudioClip>("Audio/Tosstail/small_toss");
                 sfx.Play();
 
                 float sHeight = longToss ? longHeight : shortHeight;
