@@ -111,6 +111,8 @@ namespace Starborn.Trojan
                 LuaMethods.ShakeCamera(duration, 0.25f);
             }
 
+            if(healthBack) MinigameManager.instance.AddALife(1f);
+
             ColorUtils.SetAlpha(gameObject, 0);
             explosion.Play();
             explosion.gameObject.layer = gameObject.layer;

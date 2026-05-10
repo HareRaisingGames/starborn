@@ -302,6 +302,7 @@ public class MinigameManager : MonoBehaviour
         if (_lives <= 0 && !inTutorial && !_gameOver)
         {
             _gameOver = true;
+            if (minigame != null) minigame.OnPreGameOver?.Invoke();
             MusicUtils.SlowDownMusic(Conductor.instance.music, 2.5f, delegate () {
                 if (minigame != null) minigame.OnGameOver?.Invoke();
                 Conductor.instance.music.Stop();

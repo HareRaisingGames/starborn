@@ -346,6 +346,8 @@ public abstract class Minigame : MonoBehaviour
     public System.Action OnSongStart;
     public System.Action OnGameOver;
 
+    public System.Action OnPreGameOver;
+
     public void BeatUpdate()
     {
         if (prevBeat != _curBeat)

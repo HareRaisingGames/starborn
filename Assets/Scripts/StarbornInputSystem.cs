@@ -142,6 +142,17 @@ namespace Starborn.InputSystem
                 },
                 {
                     ""name"": """",
+                    ""id"": ""5b1b73cb-bba9-4895-824c-8339c426af60"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""A"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
                     ""id"": ""5ee4065c-c7de-4144-9e7c-c909bb1f8258"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
