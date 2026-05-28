@@ -8482,7 +8482,6 @@ MonoBehaviour:
   border: {fileID: 801389272}
   speed: 1
   virusParent: {fileID: 1677335544}
-  explosionPack: {fileID: 308244923}
   malwormKill: 0
   turbotKill: 0
   hairsplitterKill: 0
@@ -8495,6 +8494,7 @@ MonoBehaviour:
   rotateSpeed: 20
   rotateAxis: {x: 0, y: 1, z: 0}
   countdownCamera: {fileID: 263764550}
+  explosionPack: {fileID: 308244923}
   explosionSFX: {fileID: 8300000, guid: e31143da920d3ba49a29522510432eed, type: 3}
 --- !u!4 &853437803
 Transform:

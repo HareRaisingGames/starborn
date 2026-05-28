@@ -322,7 +322,7 @@ public abstract class Minigame : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        if (Conductor.instance.isPlaying)
+        if (Conductor.instance != null && Conductor.instance.isPlaying)
         {
             _curBeat = Conductor.instance.curBeat;
             _curStep = Conductor.instance.curStep;

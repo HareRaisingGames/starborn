@@ -81,6 +81,7 @@ namespace Starborn.InputSystem
         private RhythmInputs _action;
 
         private float spb;
+        public float secPerBeat => spb;
         public RhythmInputs action
         {
             get
@@ -257,6 +258,27 @@ namespace Starborn.InputSystem
             {
                 curHit = time;
                 checkForAccuracy = (curHit >= startPoint) && (curHit <= endPoint);
+
+                /*if(checkForAccuracy)
+                {
+                    //Debug.Log("Hit!");
+                    if(curHit >= startPoint && curHit < desHit)
+                    {
+                        if (MathUtils.Normalize(curHit, startPoint, desHit) >= 0.8)
+                        {
+                            Debug.Log("Good!");
+                        }
+                        //Debug.Log(id + ": " + MathUtils.Normalize(curHit, startPoint, desHit));
+                    }
+                    else if(curHit <= endPoint && curHit > desHit)
+                    {
+                        if (MathUtils.ReverseNormalize(curHit, desHit, endPoint) >= 0.8)
+                        {
+                            Debug.Log("Good!");
+                        }
+                        //Debug.Log(id + ": " + MathUtils.ReverseNormalize(curHit, desHit, endPoint));
+                    }
+                }*/
 
                 if(autoplay)
                 {
