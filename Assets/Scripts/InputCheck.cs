@@ -22,7 +22,10 @@ public class InputCheck : MonoBehaviour
         }
 
         DontDestroyOnLoad(this.gameObject);
+        instance = this;
     }
+
+    private static InputCheck instance;
 
     //List<string> pcDevices = new List<string>(){ "Keyboard", "Mouse", "Touchscreen", "Tablet Monitor" };
 
@@ -145,6 +148,22 @@ public class InputCheck : MonoBehaviour
             }
         }
         return "";
+    }
+
+    public static void ControllerVibration(float lowFrequency, float highFrequency, float duration)
+    {
+        Gamepad gamepad = Gamepad.current;
+        if(gamepad != null)
+        {
+            gamepad.SetMotorSpeeds(lowFrequency, highFrequency);
+            instance.StartCoroutine(StopVibration(gamepad, duration));
+        }
+    }
+
+    private static IEnumerator StopVibration(Gamepad gamepad, float duration)
+    {
+        yield return new WaitForSecondsRealtime(duration);
+        gamepad.SetMotorSpeeds(0,0);
     }
 
     void GetStartUpDevice()

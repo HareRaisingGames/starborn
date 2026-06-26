@@ -95,6 +95,50 @@ public class DialogueManager : MonoBehaviour
     public GameObject loadingIcon;
     public GameObject nextButton;
 
+    public RectTransform leftHalftone;
+    public RectTransform rightHalftone;
+
+    bool halftonesIn = false;
+
+    float leftTargetOffset
+    {
+        get
+        {
+            if(leftHalftone != null)
+            {
+                if(leftHalftone.anchoredPosition.x > 0)
+                {
+                    return Mathf.Abs(leftHalftone.anchoredPosition.x) * -1;
+                }
+                else if(leftHalftone.anchoredPosition.x < 0)
+                {
+                    return Mathf.Abs(leftHalftone.anchoredPosition.x);
+                }  
+            }
+
+            return 0;
+        }
+    }
+
+    float rightTargetOffset
+    {
+        get
+        {
+            if(rightHalftone != null)
+            {
+                if(rightHalftone.anchoredPosition.x > 0)
+                {
+                    return Mathf.Abs(rightHalftone.anchoredPosition.x) * -1;
+                }
+                else if(rightHalftone.anchoredPosition.x < 0)
+                {
+                    return Mathf.Abs(rightHalftone.anchoredPosition.x);
+                }
+            }
+            return 0;
+        }
+    }
+
     static TranscriptGroup transcript = new TranscriptGroup();
 
     UniversalAdditionalCameraData baseCameraData;
@@ -148,6 +192,15 @@ public class DialogueManager : MonoBehaviour
         baseCameraData = Camera.main.GetUniversalAdditionalCameraData();
         defaultBaseCameraData = baseCameraData;
         defaultMask = Camera.main.cullingMask;
+
+        if(leftHalftone != null) {
+            leftHalftone.anchoredPosition = new Vector2(leftTargetOffset, leftHalftone.anchoredPosition.y);
+            ColorUtils.SetAlpha(leftHalftone.gameObject, 0);
+        }
+        if(rightHalftone != null) {
+            rightHalftone.anchoredPosition = new Vector2(rightTargetOffset, rightHalftone.anchoredPosition.y);
+            ColorUtils.SetAlpha(rightHalftone.gameObject, 0);
+        }
 
         StartCoroutine(LoadStreamingAsset());
         IEnumerator LoadStreamingAsset()
@@ -492,6 +545,13 @@ public class DialogueManager : MonoBehaviour
             TweenManager.AlphaTween(baseBG, 0, 0.5f, 0.25f, Eases.EaseInOutCubic);
         }
 
+            if(leftHalftone != null) {
+                ColorUtils.SetAlpha(leftHalftone.gameObject, 0);
+            }
+            if(rightHalftone != null) {
+                ColorUtils.SetAlpha(rightHalftone.gameObject, 0);
+            }
+
         BoxTransition(true, GameOverDialogue);
 
     }
@@ -513,6 +573,17 @@ public class DialogueManager : MonoBehaviour
         }
         else
         {
+            halftonesIn = false;
+
+            if(leftHalftone != null) {
+                leftHalftone.anchoredPosition = new Vector2(leftTargetOffset, leftHalftone.anchoredPosition.y);
+                ColorUtils.SetAlpha(leftHalftone.gameObject, 0);
+            }
+            if(rightHalftone != null) {
+                rightHalftone.anchoredPosition = new Vector2(rightTargetOffset, rightHalftone.anchoredPosition.y);
+                ColorUtils.SetAlpha(rightHalftone.gameObject, 0);
+            }
+
             TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
             {
                 baseCameraData.cameraStack.Clear();
@@ -528,6 +599,7 @@ public class DialogueManager : MonoBehaviour
                     startWithName = lines[jumpToLine].name;
                 }
                 PutObjectInFront(backgrounds[lines[jumpToLine].background]);
+
                 TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate ()
                 {
                     BoxTransition(true, BackToDialogue);
@@ -674,6 +746,7 @@ public class DialogueManager : MonoBehaviour
         Vector2 bugzPos = dialogueBoxTransform.anchoredPosition;
         dialogueBoxTransform.anchoredPosition = new Vector2(bugzPos.x, on ? 25 : 75);
         TweenManager.YTween(dialogueBox.gameObject, on ? 25 : 75, on ? 75 : 25, 0.25f, Eases.EaseInOutCubic);
+
         foreach (Transform child in dialogueBox.transform)
         {
             if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<SpriteRenderer>())
@@ -1124,6 +1197,22 @@ public class DialogueManager : MonoBehaviour
 
 
         }
+
+        if(!halftonesIn)
+        {
+            TweenManager.AlphaTween(leftHalftone.gameObject, 0, 1, 1f, Eases.EaseInOutCubic, delegate ()
+            {
+                halftonesIn = true;
+            });
+
+            TweenManager.AlphaTween(rightHalftone.gameObject, 0, 1, 1f, Eases.EaseInOutCubic, delegate ()
+            {
+            });
+
+            TweenManager.XTween(leftHalftone.gameObject, leftHalftone.anchoredPosition.x, leftTargetOffset, 1f, Eases.EaseInOutCubic);
+            TweenManager.XTween(rightHalftone.gameObject, rightHalftone.anchoredPosition.x, rightTargetOffset, 1f, Eases.EaseInOutCubic);
+        }
+
 
         prevSprites.Clear();
         prevSprites.AddRange(curSprites);

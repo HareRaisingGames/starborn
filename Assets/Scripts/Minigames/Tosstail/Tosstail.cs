@@ -146,7 +146,12 @@ namespace Starborn.Tosstail
             RhythmInput input = new RhythmInput(shaker.direction ? RhythmInputs.Pad : RhythmInputs.A)
                 .SetDestination(beat)
                     .SetRange(0.5f, 0.5f)
-                        .SetOnHit(shaker.SuccessfulCatch)
+                        .SetOnHit(delegate() 
+                        { 
+                            shaker.SuccessfulCatch(); 
+                            if(!autoPlay)
+                                InputCheck.ControllerVibration(0.25f, 0.25f, Conductor.instance.crochet);
+                        })
                             .SetOnHalfHit(shaker.UnsuccessfulCatch)
                                 .SetOnMiss(shaker.MissedCatched);
             input.Enable();

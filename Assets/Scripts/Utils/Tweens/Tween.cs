@@ -247,6 +247,186 @@ public class Tween<T>: ITween
 
     #region Eases
 
+    public static float Ease(Eases type, float t)
+    {
+        switch(type)
+        {
+            case Eases.Linear:
+                return EaseFunctions.Linear(t);
+            case Eases.EaseInBack:
+                return EaseFunctions.InBack(t);
+            case Eases.EaseOutBack:
+                return EaseFunctions.OutBack(t);
+            case Eases.EaseInOutBack:
+                return EaseFunctions.InOutBack(t);
+            case Eases.EaseInBounce:
+                return EaseFunctions.InBounce(t);
+            case Eases.EaseOutBounce:
+                return EaseFunctions.OutBounce(t);
+            case Eases.EaseInOutBounce:
+                return EaseFunctions.InOutBounce(t);
+            case Eases.EaseInCirc:
+                return EaseFunctions.InCirc(t);
+            case Eases.EaseOutCirc:
+                return EaseFunctions.OutCirc(t);
+            case Eases.EaseInOutCirc:
+                return EaseFunctions.InOutCirc(t);
+            case Eases.EaseInCubic:
+                return EaseFunctions.InCubic(t);
+            case Eases.EaseOutCubic:
+                return EaseFunctions.OutCubic(t);
+            case Eases.EaseInOutCubic:
+                return EaseFunctions.InOutCubic(t);
+            case Eases.EaseInElastic:
+                return EaseFunctions.InElastic(t);
+            case Eases.EaseOutElastic:
+                return EaseFunctions.OutElastic(t);
+            case Eases.EaseInOutElastic:
+                return EaseFunctions.InOutElastic(t);
+            case Eases.EaseInExpo:
+                return EaseFunctions.InExpo(t);
+            case Eases.EaseOutExpo:
+                return EaseFunctions.OutExpo(t);
+            case Eases.EaseInOutExpo:
+                return EaseFunctions.InOutExpo(t);
+            case Eases.EaseInQuad:
+                return EaseFunctions.InQuad(t);
+            case Eases.EaseOutQuad:
+                return EaseFunctions.OutQuad(t);
+            case Eases.EaseInOutQuad:
+                return EaseFunctions.InOutQuad(t);
+            case Eases.EaseInQuart:
+                return EaseFunctions.InQuart(t);
+            case Eases.EaseOutQuart:
+                return EaseFunctions.OutQuart(t);
+            case Eases.EaseInOutQuart:
+                return EaseFunctions.InOutQuart(t);
+            case Eases.EaseInQuint:
+                return EaseFunctions.InQuint(t);
+            case Eases.EaseOutQuint:
+                return EaseFunctions.OutQuint(t);
+            case Eases.EaseInOutQuint:
+                return EaseFunctions.InOutQuint(t);
+            case Eases.EaseInSine:
+                return EaseFunctions.InSine(t);
+            case Eases.EaseOutSine:
+                return EaseFunctions.OutSine(t);
+            case Eases.EaseInOutSine:
+                return EaseFunctions.InOutSine(t);
+        }
+
+        return t;
+    }
+
+    static readonly Dictionary<string, Eases> easeType = new Dictionary<string, Eases>()
+    {
+        { "linear", Eases.Linear },
+        { "quadin", Eases.EaseInQuad },
+        { "quadout", Eases.EaseOutQuad },
+        { "quadinout", Eases.EaseInOutQuad },
+        { "quadoutin", Eases.EaseOutInQuad },
+        { "cubicin", Eases.EaseInCubic },
+        { "cubicout", Eases.EaseOutCubic },
+        { "cubicinout", Eases.EaseInOutCubic },
+        { "cubicoutin", Eases.EaseOutInCubic },
+        { "quartin", Eases.EaseInQuart },
+        { "quartout", Eases.EaseOutQuart },
+        { "quartinout", Eases.EaseInOutQuart },
+        { "quartoutin", Eases.EaseOutInQuart },
+        { "quintin", Eases.EaseInQuint },
+        { "quintout", Eases.EaseOutQuint },
+        { "quintinout", Eases.EaseInOutQuint },
+        { "quintoutin", Eases.EaseOutInQuint },
+        { "sinein", Eases.EaseInSine },
+        { "sineout", Eases.EaseOutSine },
+        { "sineinout", Eases.EaseInOutSine },
+        { "sineoutin", Eases.EaseOutInSine },
+        { "expoin", Eases.EaseInExpo },
+        { "expoout", Eases.EaseOutExpo },
+        { "expoinout", Eases.EaseInOutExpo },
+        { "expooutin", Eases.EaseOutInExpo },
+        { "circin", Eases.EaseInCirc },
+        { "circout", Eases.EaseOutCirc },
+        { "circinout", Eases.EaseInOutCirc },
+        { "circoutin", Eases.EaseOutInCirc },
+        { "bouncein", Eases.EaseInBounce },
+        { "bounceout", Eases.EaseOutBounce },
+        { "bounceinout", Eases.EaseInOutBounce },
+        { "bounceoutin", Eases.EaseOutInBounce },
+        { "backin", Eases.EaseInBack },
+        { "backout", Eases.EaseOutBack },
+        { "backinout", Eases.EaseInOutBack },
+        { "backoutin", Eases.EaseOutInBack },
+        { "elasticin", Eases.EaseInElastic },
+        { "elasticout", Eases.EaseOutElastic },
+        { "elasticinout", Eases.EaseInOutElastic },
+        { "elasticoutin", Eases.EaseOutInElastic }
+    };
+
+    public static Eases GetEaseFromString(string name)
+    {
+        if (easeType.ContainsKey(name.ToLower()))
+            return easeType[name.ToLower()];
+        return 0;
+    }
+
+    #endregion
+
+
+}
+
+public enum Eases
+{
+    Linear = 0,
+    EaseInQuad = 2,
+    EaseOutQuad = 3,
+    EaseInOutQuad = 4,
+    EaseOutInQuad = 33,
+    EaseInCubic = 5,
+    EaseOutCubic = 6,
+    EaseInOutCubic = 7,
+    EaseOutInCubic = 34,
+    EaseInQuart = 8,
+    EaseOutQuart = 9,
+    EaseInOutQuart = 10,
+    EaseOutInQuart = 35,
+    EaseInQuint = 11,
+    EaseOutQuint = 12,
+    EaseInOutQuint = 13,
+    EaseOutInQuint = 36,
+    EaseInSine = 14,
+    EaseOutSine = 15,
+    EaseInOutSine = 16,
+    EaseOutInSine = 37,
+    EaseInExpo = 17,
+    EaseOutExpo = 18,
+    EaseInOutExpo = 19,
+    EaseOutInExpo = 38,
+    EaseInCirc = 20,
+    EaseOutCirc = 21,
+    EaseInOutCirc = 22,
+    EaseOutInCirc = 39,
+    EaseInBounce = 23,
+    EaseOutBounce = 24,
+    EaseInOutBounce = 25,
+    EaseOutInBounce = 40,
+    EaseInBack = 26,
+    EaseOutBack = 27,
+    EaseInOutBack = 28,
+    EaseOutInBack = 41,
+    EaseInElastic = 29,
+    EaseOutElastic = 30,
+    EaseInOutElastic = 31,
+    EaseOutInElastic = 42,
+    Spring = 32,
+
+    //EaseOutInQuad,
+    //EaseOutInCubic,
+    //EaseOutInQua
+}
+
+public static class EaseFunctions
+{
     #region Tween Functions
     public static float Linear(float t) => t;
 
@@ -358,181 +538,4 @@ public class Tween<T>: ITween
         return 1 - InBounce((1 - t) * 2) / 2;
     }
     #endregion
-
-    public static float Ease(Eases type, float t)
-    {
-        switch(type)
-        {
-            case Eases.Linear:
-                return Linear(t);
-            case Eases.EaseInBack:
-                return InBack(t);
-            case Eases.EaseOutBack:
-                return OutBack(t);
-            case Eases.EaseInOutBack:
-                return InOutBack(t);
-            case Eases.EaseInBounce:
-                return InBounce(t);
-            case Eases.EaseOutBounce:
-                return OutBounce(t);
-            case Eases.EaseInOutBounce:
-                return InOutBounce(t);
-            case Eases.EaseInCirc:
-                return InCirc(t);
-            case Eases.EaseOutCirc:
-                return OutCirc(t);
-            case Eases.EaseInOutCirc:
-                return InOutCirc(t);
-            case Eases.EaseInCubic:
-                return InCubic(t);
-            case Eases.EaseOutCubic:
-                return OutCubic(t);
-            case Eases.EaseInOutCubic:
-                return InOutCubic(t);
-            case Eases.EaseInElastic:
-                return InElastic(t);
-            case Eases.EaseOutElastic:
-                return OutElastic(t);
-            case Eases.EaseInOutElastic:
-                return InOutElastic(t);
-            case Eases.EaseInExpo:
-                return InExpo(t);
-            case Eases.EaseOutExpo:
-                return OutExpo(t);
-            case Eases.EaseInOutExpo:
-                return InOutExpo(t);
-            case Eases.EaseInQuad:
-                return InQuad(t);
-            case Eases.EaseOutQuad:
-                return OutQuad(t);
-            case Eases.EaseInOutQuad:
-                return InOutQuad(t);
-            case Eases.EaseInQuart:
-                return InQuart(t);
-            case Eases.EaseOutQuart:
-                return OutQuart(t);
-            case Eases.EaseInOutQuart:
-                return InOutQuart(t);
-            case Eases.EaseInQuint:
-                return InQuint(t);
-            case Eases.EaseOutQuint:
-                return OutQuint(t);
-            case Eases.EaseInOutQuint:
-                return InOutQuint(t);
-            case Eases.EaseInSine:
-                return InSine(t);
-            case Eases.EaseOutSine:
-                return OutSine(t);
-            case Eases.EaseInOutSine:
-                return InOutSine(t);
-        }
-
-        return t;
-    }
-
-    static readonly Dictionary<string, Eases> easeType = new Dictionary<string, Eases>()
-    {
-        { "linear", Eases.Linear },
-        { "quadin", Eases.EaseInQuad },
-        { "quadout", Eases.EaseOutQuad },
-        { "quadinout", Eases.EaseInOutQuad },
-        { "quadoutin", Eases.EaseOutInQuad },
-        { "cubicin", Eases.EaseInCubic },
-        { "cubicout", Eases.EaseOutCubic },
-        { "cubicinout", Eases.EaseInOutCubic },
-        { "cubicoutin", Eases.EaseOutInCubic },
-        { "quartin", Eases.EaseInQuart },
-        { "quartout", Eases.EaseOutQuart },
-        { "quartinout", Eases.EaseInOutQuart },
-        { "quartoutin", Eases.EaseOutInQuart },
-        { "quintin", Eases.EaseInQuint },
-        { "quintout", Eases.EaseOutQuint },
-        { "quintinout", Eases.EaseInOutQuint },
-        { "quintoutin", Eases.EaseOutInQuint },
-        { "sinein", Eases.EaseInSine },
-        { "sineout", Eases.EaseOutSine },
-        { "sineinout", Eases.EaseInOutSine },
-        { "sineoutin", Eases.EaseOutInSine },
-        { "expoin", Eases.EaseInExpo },
-        { "expoout", Eases.EaseOutExpo },
-        { "expoinout", Eases.EaseInOutExpo },
-        { "expooutin", Eases.EaseOutInExpo },
-        { "circin", Eases.EaseInCirc },
-        { "circout", Eases.EaseOutCirc },
-        { "circinout", Eases.EaseInOutCirc },
-        { "circoutin", Eases.EaseOutInCirc },
-        { "bouncein", Eases.EaseInBounce },
-        { "bounceout", Eases.EaseOutBounce },
-        { "bounceinout", Eases.EaseInOutBounce },
-        { "bounceoutin", Eases.EaseOutInBounce },
-        { "backin", Eases.EaseInBack },
-        { "backout", Eases.EaseOutBack },
-        { "backinout", Eases.EaseInOutBack },
-        { "backoutin", Eases.EaseOutInBack },
-        { "elasticin", Eases.EaseInElastic },
-        { "elasticout", Eases.EaseOutElastic },
-        { "elasticinout", Eases.EaseInOutElastic },
-        { "elasticoutin", Eases.EaseOutInElastic }
-    };
-
-    public static Eases GetEaseFromString(string name)
-    {
-        if (easeType.ContainsKey(name.ToLower()))
-            return easeType[name.ToLower()];
-        return 0;
-    }
-
-    #endregion
-
-
-}
-
-public enum Eases
-{
-    Linear = 0,
-    EaseInQuad = 2,
-    EaseOutQuad = 3,
-    EaseInOutQuad = 4,
-    EaseOutInQuad = 33,
-    EaseInCubic = 5,
-    EaseOutCubic = 6,
-    EaseInOutCubic = 7,
-    EaseOutInCubic = 34,
-    EaseInQuart = 8,
-    EaseOutQuart = 9,
-    EaseInOutQuart = 10,
-    EaseOutInQuart = 35,
-    EaseInQuint = 11,
-    EaseOutQuint = 12,
-    EaseInOutQuint = 13,
-    EaseOutInQuint = 36,
-    EaseInSine = 14,
-    EaseOutSine = 15,
-    EaseInOutSine = 16,
-    EaseOutInSine = 37,
-    EaseInExpo = 17,
-    EaseOutExpo = 18,
-    EaseInOutExpo = 19,
-    EaseOutInExpo = 38,
-    EaseInCirc = 20,
-    EaseOutCirc = 21,
-    EaseInOutCirc = 22,
-    EaseOutInCirc = 39,
-    EaseInBounce = 23,
-    EaseOutBounce = 24,
-    EaseInOutBounce = 25,
-    EaseOutInBounce = 40,
-    EaseInBack = 26,
-    EaseOutBack = 27,
-    EaseInOutBack = 28,
-    EaseOutInBack = 41,
-    EaseInElastic = 29,
-    EaseOutElastic = 30,
-    EaseInOutElastic = 31,
-    EaseOutInElastic = 42,
-    Spring = 32,
-
-    //EaseOutInQuad,
-    //EaseOutInCubic,
-    //EaseOutInQua
 }

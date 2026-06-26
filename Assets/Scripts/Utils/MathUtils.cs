@@ -63,6 +63,26 @@ public static class MathUtils
         throw new Exception("The following list must contain at least one variable");
     }
 
+    public static Vector3 Clamp(this Vector3 value, Vector3 min, Vector3 max)
+    {
+        return new Vector3(
+            Mathf.Clamp(value.x, min.x, max.x),
+            Mathf.Clamp(value.y, min.y, max.y),
+            Mathf.Clamp(value.z, min.z, max.z)
+        );
+    }
+
+    public static Vector3 LerpClamp(this Vector3 value, Vector3 min, Vector3 max)
+    {
+        return new Vector3(
+            Mathf.Clamp(value.x, value.x < min.x ? min.x : Mathf.NegativeInfinity, value.x > max.x ? max.x : Mathf.Infinity),
+            Mathf.Clamp(value.y, value.y < min.y ? min.y : Mathf.NegativeInfinity, value.y > max.y ? max.y : Mathf.Infinity),
+            Mathf.Clamp(value.z, value.z < min.z ? min.z : Mathf.NegativeInfinity, value.z > max.z ? max.z : Mathf.Infinity)
+        );
+
+
+    }
+
     //Check if object is numeric
     static bool IsNumericType(this object o)
     {

@@ -201,7 +201,8 @@ public abstract class Minigame : MonoBehaviour
         m_inputSystem.Rhythm.Pad.performed += onPad;
         m_inputSystem.Rhythm.Pad.canceled += onReleasePad;
 
-        if (chartings.Count != 0) selectedCharting = chartings[Random.Range(0, chartings.Count - 1)];
+        // if (chartings.Count != 0) selectedCharting = chartings[Random.Range(0, chartings.Count - 1)];
+        if (chartings.Count != 0) selectedCharting = chartings[0];
 
         MinigameManager.managerType = "";
         Resources.Load<GameObject>($"Prefabs/Manager");
