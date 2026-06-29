@@ -150,6 +150,8 @@ public class DialogueManager : MonoBehaviour
     #region Audio
     public AudioSource musicSource;
     public AudioSource dialogueSource;
+    public Transform soundEffectsHolder;
+    public Dictionary<string, AudioSource> soundEffects = new Dictionary<string, AudioSource>();
     #endregion
 
     private StarbornInputSystem m_inputSystem;
@@ -390,6 +392,26 @@ public class DialogueManager : MonoBehaviour
             AudioClip clip = await AudioUtils.LoadMusic(dialogue.music);
             clip.name = dialogue.music.name;
             musicSource.clip = clip;
+        }
+
+        //Get Sound Effects
+        if(dialogue.GetSoundEffects().Count != 0)
+        {
+            foreach (KeyValuePair<string, AudioByte> sfx in dialogue.GetSoundEffects())
+            {
+                GameObject sfxObj = new GameObject(sfx.Key);
+                AudioSource sfxSource = sfxObj.AddComponent<AudioSource>();
+                sfxObj.transform.parent = soundEffectsHolder;
+                sfxSource.playOnAwake = false;
+
+                AudioClip sfxClip = await AudioUtils.LoadSFX(sfx.Value);
+                sfxClip.name = sfx.Value.name;
+                sfxSource.clip = sfxClip;
+
+                MixerSettings.SetAudioGroup(sfxSource, "SFX");
+
+                soundEffects.Add(sfx.Key, sfxSource);
+            }
         }
 
         //Get Lines
@@ -1507,7 +1529,8 @@ public class DialogueManager : MonoBehaviour
     {
         { "StopMusic", (Action)StopMusic },
         { "PauseMusic", (Action)PauseMusic },
-        { "FadeMusic", (Action<float, float>)FadeMusic }
+        { "FadeMusic", (Action<float, float>)FadeMusic },
+        { "PlaySFX", (Action<string>)PlaySFX}
     };
 
     static void PauseMusic()
@@ -1535,6 +1558,14 @@ public class DialogueManager : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             MusicUtils.MusicFadeIn(instance.musicSource, 0.5f);
+        }
+    }
+
+    static void PlaySFX(string name)
+    {
+        if(instance.soundEffects.ContainsKey(name))
+        {
+            instance.soundEffects[name].Play();
         }
     }
 
