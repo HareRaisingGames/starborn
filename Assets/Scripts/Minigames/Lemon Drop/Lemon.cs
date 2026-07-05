@@ -172,6 +172,14 @@ namespace Starborn.LemonDrop
                     break;
             }
         }
+
+        public void AddThrow(float beat, float x = 0.5f, float y = 0.5f)
+        {
+            RhythmInput input = new RhythmInput(RhythmInputs.A)
+                .SetDestination(beat)
+                    .SetRange(x, y);
+            input.Enable();
+        }
     }
 }
 

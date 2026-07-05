@@ -30,6 +30,11 @@ namespace Starborn
         private float dspStartTime => (float)dspStart;
         public double dspStartTimeAsDouble => dspStart;
         DateTime startTime;
+        private double startPos;
+        private double startBeat;
+        double dspMargin = 128 / 44100.0;
+        private double time;
+        double absTime, absTimeAdjust;
 
         public float songLength => (music != null && music.clip != null) ? music.clip.length : 0;
         bool _isFinished;
@@ -75,6 +80,8 @@ namespace Starborn
             AudioConfiguration config = AudioSettings.GetConfiguration();
             dspSizeSeconds = config.dspBufferSize / (double)config.sampleRate;
             MixerSettings.SetAudioGroup(music, "Song");
+
+            // Debug.Log(dspSizeSeconds);
         }
 
         public void SetUpBPM()
@@ -91,12 +98,15 @@ namespace Starborn
                 }
 
                 dspTime = (float)AudioSettings.dspTime;
+                startTime = DateTime.Now;
             }
         }
 
         public void ManualSetUpBPM(float bpm)
         {
             songBpm = bpm;
+            dspTime = (float)AudioSettings.dspTime;
+            startTime = DateTime.Now;
         }
 
         public void Play()
@@ -105,6 +115,7 @@ namespace Starborn
 
             double dspTime = AudioSettings.dspTime;
             dspStart = dspTime;
+            startTime = DateTime.Now;
             if(music != null)
             {
                 music.PlayScheduled(dspStart);
@@ -156,6 +167,22 @@ namespace Starborn
 
                 dspTime = dsp - dspStart;
 
+                // absTime = (DateTime.Now - startTime).TotalSeconds;
+
+                // if (Math.Abs(absTime + absTimeAdjust - dspTime) > dspMargin)
+                // {
+                //     int i = 0;
+                //     while (Math.Abs(absTime + absTimeAdjust - dspTime) > dspMargin)
+                //     {
+                //         i++;
+                //         absTimeAdjust = (dspTime - absTime + absTimeAdjust) * 0.5;
+                //         if (i > 8) break;
+                //     }
+                // }
+
+                // time = absTime + absTimeAdjust;
+
+                // songPos = startPos + time;
                 songPos = music.time;
 
                 float adjustedTime = music.time - offset;

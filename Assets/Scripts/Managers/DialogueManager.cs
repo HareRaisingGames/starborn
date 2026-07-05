@@ -1530,7 +1530,7 @@ public class DialogueManager : MonoBehaviour
         { "StopMusic", (Action)StopMusic },
         { "PauseMusic", (Action)PauseMusic },
         { "FadeMusic", (Action<float, float>)FadeMusic },
-        { "PlaySFX", (Action<string>)PlaySFX}
+        { "PlaySFX", (Action<string>)PlaySFX }
     };
 
     static void PauseMusic()
@@ -1561,11 +1561,11 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    static void PlaySFX(string name)
+    static void PlaySFX(string sound)
     {
-        if(instance.soundEffects.ContainsKey(name))
+        if(instance.soundEffects.ContainsKey(sound))
         {
-            instance.soundEffects[name].Play();
+            instance.soundEffects[sound].Play();
         }
     }
 

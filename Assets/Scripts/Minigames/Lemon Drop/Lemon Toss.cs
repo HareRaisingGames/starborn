@@ -23,18 +23,18 @@ namespace Starborn.LemonDrop
             new CallForAction(()=>{
                 //tick.Play();
                 sfx.Play();
-                lemon.transform.position = new Vector3(lemon.transform.position.x, -10, lemon.transform.position.z);
-                TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
+                // lemon.transform.position = new Vector3(lemon.transform.position.x, -10, lemon.transform.position.z);
+                // TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
                 }, 
                 1f),
             new CallForAction(()=>{
                 //sfx.Play();
-                TweenManager.YTween(lemon.gameObject, -4.5f, 1f, Conductor.instance.crochet * 0.5f, Eases.EaseOutSine);
+                // TweenManager.YTween(lemon.gameObject, -4.5f, 1f, Conductor.instance.crochet * 0.5f, Eases.EaseOutSine);
                 }, 
                 1.5f),
             new CallForAction(()=>{//sfx.Play();
                 //tick.Play();
-                TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
+                // TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
             }, 2f, RhythmInputs.A, 1f, 1f, () => { 
                 lemon.Cut(1); 
             }),
@@ -46,9 +46,9 @@ namespace Starborn.LemonDrop
             new CallForAction(()=>{
                 //sfx.Play();
                 //tick.Play();
-                TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
+                // TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
                     
-                }); 
+                // }); 
             }, 3f, RhythmInputs.A, 1f, 1f, () => { 
                 lemon.Cut(3); 
             }),
@@ -79,7 +79,7 @@ namespace Starborn.LemonDrop
             {
                 GameObject gameObject = new GameObject("Hai");
                 sfx = gameObject.AddComponent<AudioSource>();
-                sfx.clip = Resources.Load<AudioClip>("Audio/LemonDrop/hai");
+                sfx.clip = Resources.Load<AudioClip>("Audio/Tosstail/long_toss");
             }
             else
                 sfx = GameObject.Find("Hai").GetComponent<AudioSource>();
@@ -88,7 +88,7 @@ namespace Starborn.LemonDrop
             {
                 GameObject gameObject = new GameObject("Metronome");
                 tick = gameObject.AddComponent<AudioSource>();
-                tick.clip = Resources.Load<AudioClip>("Audio/blip");
+                tick.clip = Resources.Load<AudioClip>("Audio/Tosstail/catch_shaker");
             }
             else
                 tick = GameObject.Find("Metronome").GetComponent<AudioSource>();
@@ -97,69 +97,98 @@ namespace Starborn.LemonDrop
 
     public class LemonTossTutorial : LemonToss
     {
+        public override void SetUp()
+        {
+            base.SetUp();
+        }
         public LemonTossTutorial()
         {
-            actions = new List<CallForAction>()
-            {
-                new CallForAction(()=>{
-                    tick.Play();
-                    game.afterCut = false;
-                    game.cutCount = 0;
-                    game.canCheck = false;
-                },
-                1f),
-                new CallForAction(()=>{
-                    tick.Play();
-                },
-                2f),
-                new CallForAction(()=>{
-                    tick.Play();
-                },
-                3f),
-                new CallForAction(()=>{
-                    tick.Play();
-                },
-                4f),
-                new CallForAction(()=>{
-                    tick.Play();
-                    lemon.Reassemble();
-                },
-                5f),
-            new CallForAction(()=>{
-                    tick.Play();
-                sfx.Play();
-                TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
-                },
-                6f),
-            new CallForAction(()=>{
-                //sfx.Play();
-                TweenManager.YTween(lemon.gameObject, -4.5f, 1f, Conductor.instance.crochet * 0.5f, Eases.EaseOutSine);
-                },
-                6.5f),
-            new CallForAction(()=>{//sfx.Play();
-                    tick.Play();
-                TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
-            }, 7f, RhythmInputs.A, 1f, 1f, () => {
-                lemon.Cut(1);
-            }),
-            new CallForAction(()=>{
-                    tick.Play();
-            }, 7.5f, RhythmInputs.A, 0.5f, 0.5f, () => {
-                lemon.Cut(2);
-            }),
-            new CallForAction(()=>{
-                    tick.Play();
-                TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
+        //     actions = new List<CallForAction>()
+        //     {
+        //         new CallForAction(()=>{
+        //             // tick.Play();
+        //             game.afterCut = false;
+        //             game.cutCount = 0;
+        //             game.canCheck = false;
+        //         },
+        //         1f),
+        //         new CallForAction(()=>{
+        //             // tick.Play();
+        //         },
+        //         2f),
+        //         new CallForAction(()=>{
+        //             // tick.Play();
+        //         },
+        //         3f),
+        //         new CallForAction(()=>{
+        //             // tick.Play();
+        //         },
+        //         4f),
+        //         new CallForAction(()=>{
+        //             // tick.Play();
+        //             lemon.Reassemble();
+        //         },
+        //         5f),
+        //     new CallForAction(()=>{
+        //             // tick.Play();
+        //         sfx.Play();
+        //         // TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
+        //         },
+        //         6f),
+        //     new CallForAction(()=>{
+        //         //sfx.Play();
+        //         // TweenManager.YTween(lemon.gameObject, -4.5f, 1f, Conductor.instance.crochet * 0.5f, Eases.EaseOutSine);
+        //         },
+        //         6.5f),
+        //     new CallForAction(()=>{//sfx.Play();
+        //             tick.Play();
+        //         // TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
+        //     }, 7f, RhythmInputs.A, 0.5f, 0.5f, () => {
+        //         lemon.Cut(1);
+        //     }),
+        //     new CallForAction(()=>{
+        //             tick.Play();
+        //     }, 7.5f/*, RhythmInputs.A, 0.5f, 0.5f, () => {
+        //         lemon.Cut(2);
+        //     }*/),
+        //     new CallForAction(()=>{
+        //             tick.Play();
+        //         // TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
                     
-                });
-            }, 8f, RhythmInputs.A, 1f, 1f, () => {
-                lemon.Cut(3);
-            }),
+        //         // });
+        //     }, 8f, RhythmInputs.A, 0.5f, 0.5f, () => {
+        //         // lemon.Cut(3);
+        //     }),
+        //     new CallForAction(() =>
+        //     {
+        //         game.afterCut = true;
+        //     }, 8.5f),
+        //     };
+        CallForAction remon = new CallForAction(()=>{}, 2f);
+
+            remon.AddAction(() => {
+                sfx.Play();
+                float beat1 = startPoint + Conductor.instance.crochet * remon.beat;
+                float beat3 = startPoint + Conductor.instance.crochet * (remon.beat + 1);
+                Debug.Log(beat1);
+                Debug.Log(beat3);
+                lemon.AddThrow(beat1, 0.5f, 0.7f);
+                lemon.AddThrow(beat3, 0.5f, 0.7f);
+            });
+
+        actions = new List<CallForAction>()
+        {
             new CallForAction(() =>
             {
-                game.afterCut = true;
-            }, 8.5f),
-            };
+                tick.Play();
+            }, 1f),
+            remon,
+            new CallForAction(() =>
+            {
+                // sfx.Play();
+            }, 2.5f)
+        };
+
         }
     }
 }

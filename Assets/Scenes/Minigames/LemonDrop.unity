@@ -390,10 +390,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.LemonDrop
   conductor: {fileID: 1449119417}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 1
   song: {fileID: 8300000, guid: ace72309614a8114a93c8478ef3e7d85, type: 3}
-  tutorialSong: {fileID: 8300000, guid: db5518580593b8940bb497ae01867e10, type: 3}
+  tutorialSong: {fileID: 8300000, guid: eed1b2d9f284b774c8893b8e84542512, type: 3}
+  caller: bugz
   paused: 0
   eventsList:
   - LemonToss
@@ -424,6 +425,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: The garnish!
       section:
         skipCountdown: 0
@@ -431,6 +435,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: There's a special technique in order to make the drink really pop
       section:
         skipCountdown: 0
@@ -438,6 +445,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: And that's with a freshly cut lemon slice
       section:
         skipCountdown: 0
@@ -445,6 +455,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Two small slices should work nicely
       section:
         skipCountdown: 0
@@ -452,6 +465,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Press {a} to slice up the lemons
       section:
         skipCountdown: 0
@@ -459,6 +475,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: 
       section:
         skipCountdown: 1
@@ -472,8 +491,11 @@ MonoBehaviour:
           length: 8
           loops: 1
         setBPM: 1
-        bpm: 120.5
+        bpm: 120
       amount: 2
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Alright! It's time for the real deal!
       section:
         skipCountdown: 0
@@ -481,6 +503,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     skipTutorial:
     - dialogue: You know what to do?
       section:
@@ -489,6 +514,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
     - dialogue: Then here comes to ultimate test
       section:
         skipCountdown: 0
@@ -496,6 +524,9 @@ MonoBehaviour:
         setBPM: 0
         bpm: 0
       amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
   tutorialCountdown: 
   endlessChartings: []
   events: []

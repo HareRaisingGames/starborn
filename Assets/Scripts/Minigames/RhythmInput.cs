@@ -105,6 +105,7 @@ namespace Starborn.InputSystem
             if(!enabled) return;
 
             float accurary = 0;
+            Debug.Log(curHit);
             if (checkForAccuracy && mustHit && !hasHit && !autoplay)
             {
                 //TimeToAccuracy(curHit);

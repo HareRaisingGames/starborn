@@ -266,12 +266,14 @@ public abstract class Minigame : MonoBehaviour
         OnCountdown();
         if (selectedCharting.skipCountdown)
         {
+            // Conductor.instance.Play();
             Conductor.instance.PlayMusic();
             eligibleForClear = true;
         }
         else
             Countdown.StartCountdown(Conductor.instance.crochet, delegate()
             {
+                // Conductor.instance.Play();
                 Conductor.instance.PlayMusic();
                 eligibleForClear = true;
             });
