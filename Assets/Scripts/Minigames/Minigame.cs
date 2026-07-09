@@ -30,6 +30,7 @@ public abstract class Minigame : MonoBehaviour
             _startGame = value;
         }
     }
+    protected bool _startSong;
     protected bool completed
     {
         get
@@ -268,6 +269,7 @@ public abstract class Minigame : MonoBehaviour
         {
             // Conductor.instance.Play();
             Conductor.instance.PlayMusic();
+            _startSong = true;
             eligibleForClear = true;
         }
         else
@@ -275,6 +277,7 @@ public abstract class Minigame : MonoBehaviour
             {
                 // Conductor.instance.Play();
                 Conductor.instance.PlayMusic();
+                _startSong = true;
                 eligibleForClear = true;
             });
         if(!isTutorial && MinigameManager.instance.backdrop != null)
