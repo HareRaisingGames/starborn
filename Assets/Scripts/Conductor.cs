@@ -154,6 +154,7 @@ namespace Starborn
 
         int timeSamples;
 
+        private float[] sampleBuffer = new float[64];
         private void Update()
         {
             isPlaying = music != null && music.clip != null && music.isPlaying;
@@ -166,6 +167,16 @@ namespace Starborn
                 //songPosPerBeat = songPos / crochet;
 
                 dspTime = dsp - dspStart;
+
+                music.GetSpectrumData(sampleBuffer, 0, FFTWindow.BlackmanHarris);
+            
+                float totalVolume = 0f;
+                foreach (float sample in sampleBuffer)
+                {
+                    totalVolume += sample;
+                }
+
+                hasAudibleSound = totalVolume > 0.001f;
 
                 // absTime = (DateTime.Now - startTime).TotalSeconds;
 
@@ -199,6 +210,8 @@ namespace Starborn
             }
         }
 
+        protected static bool hasAudibleSound;
+        public static bool isPlayingSound => hasAudibleSound;
         private void LateUpdate()
         {
             

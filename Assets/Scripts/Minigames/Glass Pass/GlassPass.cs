@@ -50,7 +50,10 @@ namespace Starborn.GlassPass
             }
             else
                 _catchGlass = GameObject.Find("Catch").GetComponent<AudioSource>();
-            OnSongStart = ()=>{ Bounce(0); };
+            OnSongStart = ()=>{ 
+                bugz.PlayBody("idle", Conductor.instance.songBpm/120);
+                bugz.PlayHand("idle", Conductor.instance.songBpm/120);
+                };
             OnBeatChange = Bounce;
         }
 
@@ -71,6 +74,9 @@ namespace Starborn.GlassPass
 
         void Bounce(int i)
         {
+            if(!Conductor.isPlayingSound)
+                return;
+            
             if(!specialBody)
                 // if(i % 1 == 0 || i == 0)
                     bugz.PlayBody("idle", Conductor.instance.songBpm/120);
