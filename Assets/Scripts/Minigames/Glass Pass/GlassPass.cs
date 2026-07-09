@@ -14,6 +14,10 @@ namespace Starborn.GlassPass
         bool specialHand;
 
         bool specialBody;
+        protected AudioSource _tick;
+        protected AudioSource _catchGlass;
+        public AudioSource tick => _tick;
+        public AudioSource catchGlass => _catchGlass;
 
         // Start is called before the first frame update
         public override void Start()
@@ -28,6 +32,24 @@ namespace Starborn.GlassPass
             //         SetUpSong();
             //     }
             // }
+            
+            if (GameObject.Find("Pass") == null)
+            {
+                GameObject gameObject = new GameObject("Pass");
+                _tick = gameObject.AddComponent<AudioSource>();
+                _tick.clip = Resources.Load<AudioClip>("Audio/Tosstail/long_toss");
+            }
+            else
+                _tick = GameObject.Find("Pass").GetComponent<AudioSource>();
+
+            if (GameObject.Find("Catch") == null)
+            {
+                GameObject gameObject = new GameObject("Catch");
+                _catchGlass = gameObject.AddComponent<AudioSource>();
+                _catchGlass.clip = Resources.Load<AudioClip>("Audio/Tosstail/catch_shaker");
+            }
+            else
+                _catchGlass = GameObject.Find("Catch").GetComponent<AudioSource>();
             OnSongStart = ()=>{ Bounce(0); };
             OnBeatChange = Bounce;
         }
@@ -110,20 +132,11 @@ namespace Starborn.GlassPass
     public class Slide : RhythmEvent
     {
         public GlassPass game;
-        public AudioSource tick;
         public override void SetUp()
         {
             base.SetUp();
             game = Object.FindObjectOfType<GlassPass>();
 
-            if (GameObject.Find("Metronome") == null)
-            {
-                GameObject gameObject = new GameObject("Metronome");
-                tick = gameObject.AddComponent<AudioSource>();
-                tick.clip = Resources.Load<AudioClip>("Audio/Tosstail/long_toss");
-            }
-            else
-                tick = GameObject.Find("Metronome").GetComponent<AudioSource>();
         }
 
         public Slide()
@@ -132,7 +145,7 @@ namespace Starborn.GlassPass
             {
                 new CallForAction(() => { 
                     // game.testGlass.ResetPosition();
-                    tick.Play();
+                    game.tick.Play();
                 }, 1),
                 new CallForAction(() => { 
                     // tick.Play();
@@ -147,6 +160,7 @@ namespace Starborn.GlassPass
                 }, 3, RhythmInputs.A, 0.5f, 0.5f, ()=>{
                     // game.testGlass.Stop();
                     game.SuccessfulCatch();
+                    game.catchGlass.Play();
                 }, game.UnsuccessfulCatch)
             };
         }

@@ -822,7 +822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.GlassPass
   conductor: {fileID: 1217296895}
-  autoPlay: 0
+  autoPlay: 1
   isTutorial: 0
   song: {fileID: 8300000, guid: b4f20b80c8a56644eb856aa407bb2f0a, type: 3}
   tutorialSong: {fileID: 0}
