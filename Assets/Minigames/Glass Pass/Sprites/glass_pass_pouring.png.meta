@@ -1,0 +1,787 @@
+fileFormatVersion: 2
+guid: 6998ad1a29aa0bb4d84b477f6948e2e8
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 0
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: glass_pass_pouring_0
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 1613
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c3ba42e5cc337d478f4499ae6140aa6
+      internalID: 834607584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_1
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 1613
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 66a8148e0c763474f832713f432c6b36
+      internalID: 1390416497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_2
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 1613
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ffb0519405ef40344a0184286354c556
+      internalID: 2056173361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_3
+      rect:
+        serializedVersion: 2
+        x: 1531
+        y: 1613
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 60ea261ab9a325248b9b865ab7ce6ea2
+      internalID: -681115858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_4
+      rect:
+        serializedVersion: 2
+        x: 2039
+        y: 1613
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 13b1410046262ff4a9880a53a2e25ee7
+      internalID: 333413625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_5
+      rect:
+        serializedVersion: 2
+        x: 2547
+        y: 1613
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1949b554d51005147bb87cf4650e5fbb
+      internalID: 58110237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_6
+      rect:
+        serializedVersion: 2
+        x: 3055
+        y: 1613
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3580f2ceb3e7b24a89a9a9094b9be6c
+      internalID: 1098175171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_7
+      rect:
+        serializedVersion: 2
+        x: 3563
+        y: 1613
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c6febb7c76ddc3d40b907dcec0d1cb84
+      internalID: -1452804049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_8
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 1179
+        width: 502
+        height: 430
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1a5d1556ce11c84d86b7a816438e68a
+      internalID: -1485494176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_9
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 1179
+        width: 502
+        height: 430
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 73aab1d4edb337b40abaa118e7615290
+      internalID: -108409853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_10
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 1179
+        width: 502
+        height: 430
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2d5772fca390aff46bdba6e395c48291
+      internalID: 978488311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_11
+      rect:
+        serializedVersion: 2
+        x: 1531
+        y: 1179
+        width: 502
+        height: 430
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc6b4c4a3165b4a448ee2abeb9d8238a
+      internalID: 736628544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_12
+      rect:
+        serializedVersion: 2
+        x: 2039
+        y: 1179
+        width: 502
+        height: 430
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23bafed6bd642634281c9a18c8021c3e
+      internalID: -260954465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_13
+      rect:
+        serializedVersion: 2
+        x: 2547
+        y: 1179
+        width: 502
+        height: 430
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15b6b8d51a2706e47821796df154481e
+      internalID: 1127928208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_14
+      rect:
+        serializedVersion: 2
+        x: 3055
+        y: 1179
+        width: 502
+        height: 430
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 20b93a7ab1bcd7a41b83f3a6210ad21e
+      internalID: -268496098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_15
+      rect:
+        serializedVersion: 2
+        x: 3563
+        y: 1179
+        width: 502
+        height: 430
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f0bf1b162f57989469242595dfd34b84
+      internalID: 454784658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_16
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 747
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77e8fd3cc1cb09b42adba97c9f7716cf
+      internalID: 846896780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_17
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 747
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c2c481ece9346ec448ed82d2c5715eb4
+      internalID: 1762969082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_18
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 747
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d9b816405441592488b200ee5c8673ca
+      internalID: -1251199887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_19
+      rect:
+        serializedVersion: 2
+        x: 1531
+        y: 747
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 525abe7f1a4a75f43a3948d3cee5a1d5
+      internalID: 257170283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_20
+      rect:
+        serializedVersion: 2
+        x: 2039
+        y: 747
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1caedc70900bc654389a07cd36996fa3
+      internalID: 151041896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_21
+      rect:
+        serializedVersion: 2
+        x: 2547
+        y: 747
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 11d492e9ea40b8c4bb9a108064007cda
+      internalID: 1564399930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_22
+      rect:
+        serializedVersion: 2
+        x: 3055
+        y: 747
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f087f350a2e5d5d4ca7b0f726bce8a7b
+      internalID: 921562899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_23
+      rect:
+        serializedVersion: 2
+        x: 3563
+        y: 747
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b95ed3c07f6b1ca4d8d40967d8317d3c
+      internalID: -2089811380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_24
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 313
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 749a29f63c5b1d04bac3047ce01ea930
+      internalID: -365030983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_25
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 313
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 41dd8310217e7f1469d3ee1fd8f24fd9
+      internalID: 1126479205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_26
+      rect:
+        serializedVersion: 2
+        x: 1023
+        y: 313
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 377b17f640daae649a227d6efa5234c2
+      internalID: 1295359273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_27
+      rect:
+        serializedVersion: 2
+        x: 1531
+        y: 313
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d20dd7713928f364793239f7f3aab3f4
+      internalID: -1500482818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_28
+      rect:
+        serializedVersion: 2
+        x: 2039
+        y: 313
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88cc60256be010840964a216b0c10161
+      internalID: 3083349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: glass_pass_pouring_29
+      rect:
+        serializedVersion: 2
+        x: 2547
+        y: 313
+        width: 502
+        height: 428
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3267e0f47cac8e34d80b0eb746517da8
+      internalID: -1643276979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 81f69c273a9e5b44e919b514342fd6a4
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      glass_pass_pouring_0: 834607584
+      glass_pass_pouring_1: 1390416497
+      glass_pass_pouring_10: 978488311
+      glass_pass_pouring_11: 736628544
+      glass_pass_pouring_12: -260954465
+      glass_pass_pouring_13: 1127928208
+      glass_pass_pouring_14: -268496098
+      glass_pass_pouring_15: 454784658
+      glass_pass_pouring_16: 846896780
+      glass_pass_pouring_17: 1762969082
+      glass_pass_pouring_18: -1251199887
+      glass_pass_pouring_19: 257170283
+      glass_pass_pouring_2: 2056173361
+      glass_pass_pouring_20: 151041896
+      glass_pass_pouring_21: 1564399930
+      glass_pass_pouring_22: 921562899
+      glass_pass_pouring_23: -2089811380
+      glass_pass_pouring_24: -365030983
+      glass_pass_pouring_25: 1126479205
+      glass_pass_pouring_26: 1295359273
+      glass_pass_pouring_27: -1500482818
+      glass_pass_pouring_28: 3083349
+      glass_pass_pouring_29: -1643276979
+      glass_pass_pouring_3: -681115858
+      glass_pass_pouring_4: 333413625
+      glass_pass_pouring_5: 58110237
+      glass_pass_pouring_6: 1098175171
+      glass_pass_pouring_7: -1452804049
+      glass_pass_pouring_8: -1485494176
+      glass_pass_pouring_9: -108409853
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -15,7 +15,18 @@ public class ParallaxTest : MonoBehaviour
 
     protected bool zoomOut;
     private Vector3 clamp = Vector3.one * 0.001f;
-    public bool activatePerlin;
+    bool perlin = false;
+    public bool activatePerlin
+    {
+        set
+        {
+            if(value)
+                magnitude = idleMagnitude;
+            else
+                magnitude = 0;
+            perlin = value;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -33,7 +44,7 @@ public class ParallaxTest : MonoBehaviour
         if(Keyboard.current.enterKey.wasPressedThisFrame)
             zoomOut = !zoomOut;
 
-        if(activatePerlin)
+        if(perlin)
         {
             if(zoomOut)
             {
@@ -47,8 +58,8 @@ public class ParallaxTest : MonoBehaviour
             }
 
             // 1. Calculate standard smooth idle/handheld movement
-            float idleX = (Mathf.PerlinNoise(Time.time * idleSpeed + seedX, 0f) - 0.5f) * 2f * idleMagnitude;
-            float idleY = (Mathf.PerlinNoise(0f, Time.time * idleSpeed + seedY) - 0.5f) * 2f * idleMagnitude;
+            float idleX = (Mathf.PerlinNoise(Time.time * idleSpeed + seedX, 0f) - 0.5f) * 2f * magnitude;
+            float idleY = (Mathf.PerlinNoise(0f, Time.time * idleSpeed + seedY) - 0.5f) * 2f * magnitude;
             Vector3 finalOffset = new Vector3(idleX, idleY, 0f);
 
             // 2. Handle temporary impact shake (e.g., from explosions)
@@ -98,6 +109,7 @@ public class ParallaxTest : MonoBehaviour
     
     [Header("Idle Movement (Continuous)")]
     public float idleSpeed = 1f;
+    float magnitude = 0;
     public float idleMagnitude = 0.1f;
 
     [Header("Impact Shake settings")]
@@ -118,5 +130,25 @@ public class ParallaxTest : MonoBehaviour
         shakeDuration = duration;
         currentShakeTime = duration;
         shakeMagnitude = magnitude;
+    }
+
+    public void PerlinMagnitudeTransition(float time, bool on = true, float delay = 0)
+    {
+        if(on)
+        {
+            perlin = true;
+            TweenManager.NumTween(() => magnitude, (value) => { magnitude = value; }, idleMagnitude, time, Eases.EaseInOutSine, delegate ()
+            {
+
+            }).SetStartDelay(delay);
+        }
+        else
+        {
+            perlin = false;
+            TweenManager.NumTween(() => magnitude, (value) => { magnitude = value; }, 0, time, Eases.EaseInOutSine, delegate ()
+            {
+
+            }).SetStartDelay(delay);
+        }
     }
 }

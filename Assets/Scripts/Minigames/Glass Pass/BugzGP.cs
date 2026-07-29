@@ -31,10 +31,10 @@ namespace Starborn.GlassPass
                     bodyAnimator.Play("Idle_Animation", -1, 0f);
                     break;
                 case "catch":
-                    StartCoroutine(OnAnimationFinish(bodyAnimator, "Success_Body", onFinish));
+                    StartCoroutine(AnimationUtils.OnAnimationFinish(bodyAnimator, "Success_Body", onFinish));
                     break;
                 case "half":
-                    StartCoroutine(OnAnimationFinish(bodyAnimator, "HalfMiss", onFinish));
+                    StartCoroutine(AnimationUtils.OnAnimationFinish(bodyAnimator, "HalfMiss", onFinish));
                     break;
                 default:
                     break;
@@ -47,34 +47,15 @@ namespace Starborn.GlassPass
             switch(code)
             {
                 case "idle":
+                    if(handAnimator.gameObject.activeInHierarchy)
                     handAnimator.Play("Hand_Idle_Animation", -1, 0f);
                     break;
                 case "catch":
-                    StartCoroutine(OnAnimationFinish(handAnimator, "Grab", onFinish));
+                    StartCoroutine(AnimationUtils.OnAnimationFinish(handAnimator, "Grab", onFinish));
                     break;
                 default:
                     break;
             }
-        }
-
-        private IEnumerator OnAnimationFinish(Animator animator, string stateName, Action onFinish = null)
-        {
-            animator.Play(stateName, -1, 0f);
-            if(onFinish == null)
-                yield break;
-            
-            yield return null;
-
-            // 3. Keep looping as long as we are in the state and it hasn't reached 1.0 (100% completion)
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            while (stateInfo.IsName(stateName) && stateInfo.normalizedTime < 1.0f)
-            {
-                stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-                yield return null;
-            }
-
-            // 4. Animation is finished! Run your code here
-            onFinish?.Invoke();
         }
 
     }

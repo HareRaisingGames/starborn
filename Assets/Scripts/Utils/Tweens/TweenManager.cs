@@ -177,6 +177,41 @@ public class TweenManager : MonoBehaviour
 
     }
 
+        public static Tween<float> LocalXTween(GameObject gameObject, float startX, float endX, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
+    {
+        dynamic tranformation = null;
+        bool is2D = false;
+        if (gameObject.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObject.GetComponent<RectTransform>();
+            is2D = true;
+        }
+        else
+            tranformation = gameObject.GetComponent<Transform>();
+
+        float value = UnityEngine.Random.value;
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_X_{value}";
+
+        Tween<float> tween = new Tween<float>(gameObject, identifier, startX, endX, duration, value =>
+        {
+            if (is2D)
+            {
+                Vector2 position = tranformation.anchoredPosition;
+                position.x = value;
+                tranformation.anchoredPosition = position;
+            }
+            else
+            {
+                Vector3 position = tranformation.localPosition;
+                position.x = value;
+                tranformation.localPosition = position;
+            }
+        }, type, onComplete, lua);
+
+        return tween;
+
+    }
+
     public static Tween<float> YTween(GameObject gameObject, float startY, float endY, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic tranformation = null;
@@ -205,6 +240,41 @@ public class TweenManager : MonoBehaviour
                 Vector3 position = tranformation.position;
                 position.y = value;
                 tranformation.position = position;
+            }
+        }, type, onComplete, lua);
+
+        return tween;
+
+    }
+
+    public static Tween<float> LocalYTween(GameObject gameObject, float startY, float endY, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
+    {
+        dynamic tranformation = null;
+        bool is2D = false;
+        if (gameObject.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObject.GetComponent<RectTransform>();
+            is2D = true;
+        }
+        else
+            tranformation = gameObject.GetComponent<Transform>();
+
+        float value = UnityEngine.Random.value;
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_Y_{value}";
+
+        Tween<float> tween = new Tween<float>(gameObject, identifier, startY, endY, duration, value =>
+        {
+            if (is2D)
+            {
+                Vector2 position = tranformation.anchoredPosition;
+                position.y = value;
+                tranformation.anchoredPosition = position;
+            }
+            else
+            {
+                Vector3 position = tranformation.localPosition;
+                position.y = value;
+                tranformation.localPosition = position;
             }
         }, type, onComplete, lua);
 
@@ -242,7 +312,36 @@ public class TweenManager : MonoBehaviour
         return tween;
 
     }
+    public static Tween<Vector3> LocalPositionTween(GameObject gameObject, Vector3 start, Vector3 end, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
+        {
+        dynamic tranformation = null;
+        bool is2D = false;
+        if (gameObject.GetComponent<RectTransform>() != null)
+        {
+            tranformation = gameObject.GetComponent<RectTransform>();
+            is2D = true;
+        }
+        else
+            tranformation = gameObject.GetComponent<Transform>();
 
+        float value = UnityEngine.Random.value;
+        string identifier = id != "" ? id : $"{tranformation.GetInstanceID()}_Y_{value}";
+
+        Tween<Vector3> tween = new Tween<Vector3>(gameObject, identifier, start, end, duration, value =>
+        {
+            if (is2D)
+            {
+                tranformation.anchoredPosition = new Vector2(value.x, value.y);
+            }
+            else
+            {
+                tranformation.localPosition = new Vector3(value.x, value.y, value.z);
+            }
+        }, type, onComplete, lua);
+
+        return tween;
+
+    }
     public static Tween<Color> ColorTween(GameObject gameObject, Color startColor, Color endColor, float duration, Eases type = default(Eases), Action onComplete = default(Action), string id = "", bool lua = false)
     {
         dynamic spriteRenderer = null;
