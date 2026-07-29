@@ -54,6 +54,11 @@ namespace Starborn.GlassPass
             animator.SetLayerWeight(state, 1.0f);
         }
 
+        public void SetSpeed(float speed)
+        {
+            animator.speed = speed / 120f;
+        }
+
         public void SetGlassAlpha(float alpha)
         {
             ColorUtils.SetAlpha(_base, alpha);

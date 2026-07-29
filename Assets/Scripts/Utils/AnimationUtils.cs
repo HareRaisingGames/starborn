@@ -11,7 +11,6 @@ public static class AnimationUtils
 {
     public static IEnumerator OnAnimationFinish(Animator animator, string stateName, Action onFinish = null, int layer = -1)
     {
-        // Debug.Log("Yay!");
         animator.Play(stateName, layer, 0f);
         if(onFinish == null)
             yield break;

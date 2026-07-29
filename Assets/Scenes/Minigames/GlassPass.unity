@@ -822,7 +822,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.GlassPass
   conductor: {fileID: 1217296895}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 0
   song: {fileID: 8300000, guid: 663465a320650e4408d9574a5d700700, type: 3}
   tutorialSong: {fileID: 0}
@@ -836,7 +836,7 @@ MonoBehaviour:
   - skipCountdown: 0
     sections: []
     setBPM: 1
-    bpm: 120
+    bpm: 100
   checkChartings: []
   tutorial:
     lines: []
@@ -859,7 +859,7 @@ MonoBehaviour:
   volume: {fileID: 358107372}
   defaultFocalLength: 0
   defaultAperature: 0
-  tipsyTotal: 15
+  tipsyTotal: 5
 --- !u!1 &358107371
 GameObject:
   m_ObjectHideFlags: 0

@@ -43,17 +43,18 @@ namespace Starborn.GlassPass
         [Header("Numericals")]
         public int tipsyTotal = 0;
         int beerCount = 0;
-
-        protected bool isTispy
+        protected bool tipsy = false;
+        protected bool isTipsy
         {
             set
             {
+                tipsy = value;
                 if(value)
                 {
                     if(focalTween != null) focalTween.FullKill();
                     focalTween = TweenManager.NumTween(() => depthOfField.focalLength.value, (value) => { depthOfField.focalLength.value = value; }, 300, 2.5f, Eases.EaseInOutSine);
                     if(aperatureTween != null) aperatureTween.FullKill();
-                    aperatureTween = TweenManager.NumTween(() => depthOfField.aperture.value, (value) => { depthOfField.aperture.value = value; }, 32, 5f, Eases.EaseInOutSine).SetPingPong(1000);
+                    aperatureTween = TweenManager.NumTween(() => depthOfField.aperture.value, (value) => { depthOfField.aperture.value = value; }, 10, 5f, Eases.EaseInOutSine).SetPingPong(1000);
                     parallax.PerlinMagnitudeTransition(2.5f, true);
                 }
                 else
@@ -61,7 +62,7 @@ namespace Starborn.GlassPass
                     if(focalTween != null) focalTween.FullKill();
                     focalTween = TweenManager.NumTween(() => depthOfField.focalLength.value, (value) => { depthOfField.focalLength.value = value; }, defaultFocalLength, 2.5f, Eases.EaseInOutSine);
                     if(aperatureTween != null) aperatureTween.FullKill();
-                    TweenManager.NumTween(() => depthOfField.aperture.value, (value) => { depthOfField.aperture.value = value; }, defaultAperature, 5f, Eases.EaseInOutSine).SetPingPong(1000);
+                    aperatureTween = TweenManager.NumTween(() => depthOfField.aperture.value, (value) => { depthOfField.aperture.value = value; }, defaultAperature, 5f, Eases.EaseInOutSine);
                     parallax.PerlinMagnitudeTransition(2.5f, false);
                 }
             }
@@ -214,14 +215,15 @@ namespace Starborn.GlassPass
                     if(glass.type == DrinkType.Beer)
                     {
                         beerCount++;
-                        if(beerCount >= tipsyTotal)
+                        if(beerCount >= tipsyTotal && !tipsy)
                         {
-                            isTispy = true;
+                            Debug.Log("Tipsy!");
+                            isTipsy = true;
                         }
                     }
                     else if(glass.type == DrinkType.Coffee)
                     {
-                        isTispy = false;
+                        isTipsy = false;
                         beerCount = 0;
                     }
                 }
@@ -247,6 +249,15 @@ namespace Starborn.GlassPass
             if(glass != null)
             {
                 glass.Spill();
+                if(!isTutorial)
+                {
+                    StartCoroutine(Abrakaglassa());
+                    IEnumerator Abrakaglassa()
+                    {
+                        yield return new WaitForSeconds(Conductor.instance.crochet * 1.5f);
+                        glass.SetGlassAlpha(0);
+                    }
+                }
             }
         }
 
@@ -291,13 +302,11 @@ namespace Starborn.GlassPass
             base.SetUp();
             game = Object.FindObjectOfType<GlassPass>();
             preCallback = () => {
-            /*
-                Institate the drink orders for the minigame. Then push them onto the list
-            */
                 glass = GameObject.Instantiate(game.glassPrefab).GetComponent<ShotGlass>();
                 glass.transform.SetParent(game.glassParent);
                 glass.transform.localPosition = glass.startPoint;
                 glass.SetShotGlass(isCoffee ? DrinkType.Coffee : DrinkType.Beer);
+                glass.SetSpeed(Conductor.instance.songBpm * 1.5f);
                 game.AddDrinkOrder(glass);
                 glass.gameObject.name = glass.type.ToString();
             };
@@ -325,7 +334,7 @@ namespace Starborn.GlassPass
                 new CallForAction(() => { 
                     // game.waterGlass.DefaultSlide(Conductor.instance.crochet);
                     glass.Slide(Conductor.instance.crochet);
-                }, 2.5f),
+                }, 2.4f),
                 new CallForAction(()=>{
                     // tick.Play();
                 }, 3, RhythmInputs.A, 0.5f, 0.5f, ()=>{
