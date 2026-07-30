@@ -40,6 +40,9 @@ public class Tween<T>: ITween
     private float _percentThreshold = -1f;
     public float percentThreshold => _percentThreshold;
 
+    private float _time;
+    public float time => _time;
+
     private Action _onUpdate;
     private Action _onPercentCompleted;
 
@@ -103,6 +106,7 @@ public class Tween<T>: ITween
             _elapsedTime += IgnoreTimeScale ? Time.unscaledDeltaTime : Time.deltaTime;
             float t = _elapsedTime / _duration;
             float easedT = Ease(_easeType, t);
+            _time = t;
             T currentValue;
 
             currentValue = _reverse ? Interpolate(_endValue, _startValue, easedT) : Interpolate(_startValue, _endValue, easedT);

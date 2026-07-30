@@ -211,7 +211,7 @@ namespace Starborn.GlassPass
                 specialBody = false;
                 bugz.handAnimator.gameObject.SetActive(true);
 
-                if(curStep % 4 == 0)
+                if(curStep % 4 == 0 && !autoPlay)
                 {
                     bugz.PlayBody("idle", Conductor.instance.songBpm/120);
                     bugz.PlayHand("idle", Conductor.instance.songBpm/120);

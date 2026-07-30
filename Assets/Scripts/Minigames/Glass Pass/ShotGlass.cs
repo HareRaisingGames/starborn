@@ -144,7 +144,16 @@ namespace Starborn.GlassPass
             {
                 transform.localPosition = startPos;
                 TweenManager.LocalXTween(gameObject, startPos.x, endPos.x, 3f * time,Eases.EaseOutQuad);
-                TweenManager.LocalYTween(gameObject, startPos.y, endPos.y, 2f * time,Eases.EaseOutBounce);
+                //Tween<float> bounce = 
+                TweenManager.LocalYTween(gameObject, startPos.y, endPos.y, (2f + 0.37f) * time, Eases.EaseOutBounce);
+                // bounce.SetOnUpdate(() =>
+                // {
+                //     float rounded = Mathf.Round(transform.localPosition.y * 10f) / 10f;
+                //     if(rounded <= endPos.y)
+                //     {
+                //         Debug.Log(bounce.time);
+                //     }
+                // });
                 TweenManager.RollTween(gameObject, 0, -360, 2.25f * time);
                 hasTossed = true;
             }

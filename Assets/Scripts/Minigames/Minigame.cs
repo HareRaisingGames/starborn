@@ -80,6 +80,10 @@ public abstract class Minigame : MonoBehaviour
     public Color bgColor = new Color(0.19215686274f, 0.30196078431f, 0.47450980392f);
     public Vector3 camPosition = new Vector3(0,0,-10);
 
+    [Header("Debug")]
+    public bool metronome;
+    protected AudioSource metronomeAudio;
+
     [HideInInspector]
     public EventSystem eventSystem;
 
@@ -207,6 +211,17 @@ public abstract class Minigame : MonoBehaviour
 
         MinigameManager.managerType = "";
         Resources.Load<GameObject>($"Prefabs/Manager");
+
+        if(metronome)
+        {
+            if(metronomeAudio == null)
+            {
+                GameObject metronomeObj = new GameObject("Metronome");
+                metronomeAudio = metronomeObj.AddComponent<AudioSource>();
+                metronomeAudio.clip = Resources.Load<AudioClip>("Audio/metronome");
+                metronomeAudio.playOnAwake = false;
+            }
+        }
     }
 
     private void OnEnable()
@@ -356,10 +371,15 @@ public abstract class Minigame : MonoBehaviour
 
     public void BeatUpdate()
     {
+
         if (prevBeat != _curBeat)
         {
             OnBeatChange?.Invoke(_curBeat);
             OnBeatTutorial?.Invoke(_curBeat);
+            if(metronome && metronomeAudio != null)
+            {
+                metronomeAudio.Play();
+            }
         }
         prevBeat = _curBeat;
     }

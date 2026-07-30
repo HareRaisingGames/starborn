@@ -848,6 +848,7 @@ MonoBehaviour:
   zoom: 5
   bgColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 1}
   camPosition: {x: 0, y: 0, z: -10}
+  metronome: 0
   eventSystem: {fileID: 0}
   setUpSong: 0
   eligibleForClear: 0
@@ -859,7 +860,7 @@ MonoBehaviour:
   volume: {fileID: 358107372}
   defaultFocalLength: 0
   defaultAperature: 0
-  tipsyTotal: 5
+  tipsyTotal: 15
 --- !u!1 &358107371
 GameObject:
   m_ObjectHideFlags: 0
