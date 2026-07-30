@@ -22,7 +22,7 @@ namespace Starborn.GlassPass
         
         }
 
-        public void PlayBody(string code = "", float speed = 1, Action onFinish = null)
+        public void PlayBody(string code = "", float speed = 1, Action onFinish = null, Action<float> onUpdate = null, Action onRestart = null)
         {
             bodyAnimator.speed = speed;
             switch(code)
@@ -31,17 +31,17 @@ namespace Starborn.GlassPass
                     bodyAnimator.Play("Idle_Animation", -1, 0f);
                     break;
                 case "catch":
-                    StartCoroutine(AnimationUtils.OnAnimationFinish(bodyAnimator, "Success_Body", onFinish));
+                    StartCoroutine(AnimationUtils.OnAnimationFinish(bodyAnimator, "Success_Body", onFinish, -1, onUpdate, onRestart));
                     break;
                 case "half":
-                    StartCoroutine(AnimationUtils.OnAnimationFinish(bodyAnimator, "HalfMiss", onFinish));
+                    StartCoroutine(AnimationUtils.OnAnimationFinish(bodyAnimator, "HalfMiss", onFinish, -1, onUpdate, onRestart));
                     break;
                 default:
                     break;
             }
         }
 
-        public void PlayHand(string code = "", float speed = 1, Action onFinish = null)
+        public void PlayHand(string code = "", float speed = 1, Action onFinish = null, Action<float> onUpdate = null, Action onRestart = null)
         {
             handAnimator.speed = speed;
             switch(code)
@@ -51,7 +51,7 @@ namespace Starborn.GlassPass
                     handAnimator.Play("Hand_Idle_Animation", -1, 0f);
                     break;
                 case "catch":
-                    StartCoroutine(AnimationUtils.OnAnimationFinish(handAnimator, "Grab", onFinish));
+                    StartCoroutine(AnimationUtils.OnAnimationFinish(handAnimator, "Grab", onFinish, -1, onUpdate, onRestart));
                     break;
                 default:
                     break;

@@ -11,6 +11,7 @@ namespace Starborn.GlassPass
     public class GlassPass : Minigame
     {
         [Header("Elements")]
+        // public ShotGlass testGlass; //The glass that is passed around
         public ShotGlass waterGlass; //The tutorial glass
         public BugzGP bugz;
         public Animator indicator;
@@ -69,9 +70,12 @@ namespace Starborn.GlassPass
         }
 
         protected List<ShotGlass> drinkOrders = new List<ShotGlass>();
+        protected List<ShotGlass> passedOrders = new List<ShotGlass>();
         public void AddDrinkOrder(ShotGlass glass) =>
             drinkOrders.Add(glass);
         public DrinkType currentDrink => drinkOrders.Count > 0 ? drinkOrders[0].type : DrinkType.None;
+
+        protected List<ShotGlass> emptyGlasses = new List<ShotGlass>();
 
         // Start is called before the first frame update
         public override void Start()
@@ -89,6 +93,14 @@ namespace Starborn.GlassPass
             parallax = FindObjectOfType<ParallaxTest>();
 
             if(waterGlass != null) waterGlass.SetShotGlass(DrinkType.Water);
+
+            // if(testGlass != null) {
+            //     testGlass.SetShotGlass(DrinkType.Beer);
+            //     ColorUtils.SetAlpha(testGlass.transform.Find("Shadow").gameObject, 0);
+            //     TweenManager.XTween(testGlass.gameObject, testGlass.transform.position.x, 10f, 3f,Eases.EaseOutQuad);
+            //     TweenManager.YTween(testGlass.gameObject, testGlass.transform.position.y, -3f, 2f,Eases.EaseOutBounce);
+            //     TweenManager.RollTween(testGlass.gameObject, 0, -360, 2.25f);
+            // }
 
             if (GameObject.Find("Pass") == null)
             {
@@ -189,10 +201,11 @@ namespace Starborn.GlassPass
             });
         }
 
-        public void SuccessfulCatch(ShotGlass glass = null, bool isTutorial = false)
+        public void SuccessfulCatch(ShotGlass glass = null, bool isTutorial = false, float time = 1)
         {
             specialBody = true;
             bugz.handAnimator.gameObject.SetActive(false);
+            // bool hasTossed = false;
             bugz.PlayBody("catch", Conductor.instance.songBpm/120, () =>
             {
                 specialBody = false;
@@ -204,12 +217,46 @@ namespace Starborn.GlassPass
                     bugz.PlayHand("idle", Conductor.instance.songBpm/120);
                 }
 
+            },(value) =>
+            {
+                if(value >= 0.9f)
+                {
+                    if(glass != null && !isTutorial)
+                    {
+                        #if NET_4_6
+                        glass.Toss(time, new Vector2(MiscUtils.Random(3f,3.5f,4f),3f), new Vector2(11f,-3f));
+                        #else
+                        glass.Toss(time, new Vector2(3.5f,3f), new Vector2(11f,-3f));
+                        #endif
+                    }
+                }
+            }, () =>
+            {
+                if(passedOrders.Contains(glass))
+                {
+                    if(passedOrders.IndexOf(glass) - 1 >= 0)
+                    {
+                        ShotGlass previousGlass = passedOrders[passedOrders.IndexOf(glass) - 1];
+                        if(previousGlass != null)
+                        {
+                            if(previousGlass.successful && !previousGlass.tossed)
+                            {
+                                #if NET_4_6
+                                previousGlass.Toss(time, new Vector2(MiscUtils.Random(3f,3.5f,4f),3f), new Vector2(11f,-3f));
+                                #else
+                                previousGlass.Toss(time, new Vector2(3.5f,3f), new Vector2(11f,-3f));
+                                #endif
+                            }
+                        }
+                    }
+                }
             });
 
             if(glass != null)
             {
                 glass.Stop();
                 glass.SetGlassAlpha(0);
+                glass.successful = true;
                 if(!isTutorial)
                 {
                     if(glass.type == DrinkType.Beer)
@@ -217,7 +264,6 @@ namespace Starborn.GlassPass
                         beerCount++;
                         if(beerCount >= tipsyTotal && !tipsy)
                         {
-                            Debug.Log("Tipsy!");
                             isTipsy = true;
                         }
                     }
@@ -230,7 +276,7 @@ namespace Starborn.GlassPass
             }
         }
 
-        public void UnsuccessfulCatch(ShotGlass glass = null, bool isTutorial = false)
+        public void UnsuccessfulCatch(ShotGlass glass = null, bool isTutorial = false, float time = 1)
         {
             specialBody = true;
             bugz.PlayBody("half", Conductor.instance.songBpm/120, () =>
@@ -243,6 +289,26 @@ namespace Starborn.GlassPass
                     bugz.PlayHand("idle", Conductor.instance.songBpm/120);
                 }
 
+            },(value) =>{},() =>
+            {
+                if(passedOrders.Contains(glass))
+                {
+                    if(passedOrders.IndexOf(glass) - 1 >= 0)
+                    {
+                        ShotGlass previousGlass = passedOrders[passedOrders.IndexOf(glass) - 1];
+                        if(previousGlass != null)
+                        {
+                            if(previousGlass.successful && !previousGlass.tossed)
+                            {
+                                #if NET_4_6
+                                previousGlass.Toss(time, new Vector2(MiscUtils.Random(3f,3.5f,4f),3f), new Vector2(11f,-3f));
+                                #else
+                                previousGlass.Toss(time, new Vector2(3.5f,3f), new Vector2(11f,-3f));
+                                #endif
+                            }
+                        }
+                    }
+                }
             });
 
 
@@ -282,6 +348,8 @@ namespace Starborn.GlassPass
 
             string drinkName = type.ToString();
             StartCoroutine(AnimationUtils.OnAnimationFinish(indicator, $"{drinkName} Pass", () => {
+                ShotGlass glass = drinkOrders[0];
+                passedOrders.Add(glass);
                 drinkOrders.RemoveAt(0);
                 if(drinkOrders.Count > 0)
                 {
@@ -339,11 +407,11 @@ namespace Starborn.GlassPass
                     // tick.Play();
                 }, 3, RhythmInputs.A, 0.5f, 0.5f, ()=>{
                     // game.testGlass.Stop();
-                    game.SuccessfulCatch(glass);
+                    game.SuccessfulCatch(glass, false, Conductor.instance.crochet);
                     game.catchGlass.Play();
                 }, (value) =>
                 {
-                    game.UnsuccessfulCatch(glass);
+                    game.UnsuccessfulCatch(glass, false, Conductor.instance.crochet);
                     game.spill.Play();
                 })
             };
@@ -386,7 +454,7 @@ namespace Starborn.GlassPass
                     // tick.Play();
                 }, 6, RhythmInputs.A, 0.5f, 0.5f, ()=>{
                     // game.testGlass.Stop();
-                    game.SuccessfulCatch(game.waterGlass);
+                    game.SuccessfulCatch(game.waterGlass, true);
                     game.catchGlass.Play();
 
                 }, (value) =>

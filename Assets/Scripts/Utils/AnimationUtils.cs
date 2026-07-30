@@ -9,8 +9,12 @@ using UnityEditor.Animations;
 
 public static class AnimationUtils
 {
-    public static IEnumerator OnAnimationFinish(Animator animator, string stateName, Action onFinish = null, int layer = -1)
+    public static IEnumerator OnAnimationFinish(Animator animator, string stateName, Action onFinish = null, int layer = -1, Action<float> onUpdate = null, Action onRestart = null)
     {
+        AnimatorStateInfo prevStateInfo = animator.GetCurrentAnimatorStateInfo(layer >= 0 ? layer : 0);
+        // if(prevStateInfo.IsName(stateName) && prevStateInfo.normalizedTime < 1.0f) onRestart?.Invoke();
+        if(prevStateInfo.normalizedTime < 1.0f) onRestart?.Invoke();
+
         animator.Play(stateName, layer, 0f);
         if(onFinish == null)
             yield break;
@@ -21,6 +25,7 @@ public static class AnimationUtils
         while (stateInfo.IsName(stateName) && stateInfo.normalizedTime < 1.0f)
         {
             stateInfo = animator.GetCurrentAnimatorStateInfo(layer >= 0 ? layer : 0);
+            onUpdate?.Invoke(stateInfo.normalizedTime);
             yield return null;
         }
 

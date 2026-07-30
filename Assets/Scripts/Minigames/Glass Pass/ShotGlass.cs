@@ -17,6 +17,23 @@ namespace Starborn.GlassPass
         public DrinkType type => _type;
         protected GameObject _base;
         protected GameObject _shadow;
+        [HideInInspector]
+        public bool successful = false;
+        public struct GlassBounds
+        {
+            Vector2 offset;
+            Vector2 size;
+            public GlassBounds(Vector2 offset, Vector2 size)
+            {
+                this.offset = offset;
+                this.size = size;
+            }
+            public Vector2 GetOffset() => offset;
+            public Vector2 GetSize() => size;
+        }
+        public GlassBounds glassScale => new GlassBounds(Vector2.zero, new Vector2(0.85f, 1.2f));
+        public GlassBounds cupScale => new GlassBounds(new Vector2(0.076f, -0.1375f), new Vector2(1.525f, 0.8f));
+        protected BoxCollider2D _collider;
         protected float shadowAlpha
         {
             get
@@ -32,11 +49,12 @@ namespace Starborn.GlassPass
             animator = GetComponentInChildren<Animator>();
             _base = transform.Find("Base").gameObject;
             _shadow = transform.Find("Shadow").gameObject;
+            _collider = GetComponent<BoxCollider2D>();
         }
         // Start is called before the first frame update
         void Start()
         {
-            // SetShotGlass(DrinkType.Coffee);
+            
         }
 
         // Update is called once per frame
@@ -52,6 +70,18 @@ namespace Starborn.GlassPass
             _type = type;
             layer = state;
             animator.SetLayerWeight(state, 1.0f);
+            // Adjust collider based on the type of drink
+            if(_collider == null) return;
+            if(type == DrinkType.Coffee)
+            {
+                _collider.offset = cupScale.GetOffset();
+                _collider.size = cupScale.GetSize();
+            }
+            else if(type != DrinkType.None)
+            {
+                _collider.offset = glassScale.GetOffset();
+                _collider.size = glassScale.GetSize();
+            }
         }
 
         public void SetSpeed(float speed)
@@ -102,6 +132,23 @@ namespace Starborn.GlassPass
         {
             if(xTween != null) xTween.FullKill();
             animator.Play("Spilt", layer);
+        }
+
+        bool hasTossed = false;
+        public bool tossed => hasTossed;
+        public void Toss(float time = 1, Vector2 startPos = default(Vector2), Vector2 endPos = default(Vector2))
+        {
+            animator.Play("Empty", layer);
+            ColorUtils.SetAlpha(transform.Find("Shadow").gameObject, 0);
+            if(!hasTossed)
+            {
+                transform.localPosition = startPos;
+                TweenManager.LocalXTween(gameObject, startPos.x, endPos.x, 3f * time,Eases.EaseOutQuad);
+                TweenManager.LocalYTween(gameObject, startPos.y, endPos.y, 2f * time,Eases.EaseOutBounce);
+                TweenManager.RollTween(gameObject, 0, -360, 2.25f * time);
+                hasTossed = true;
+            }
+            SetGlassAlpha(1);
         }
 
         public void ResetPosition()
