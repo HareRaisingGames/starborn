@@ -135,7 +135,11 @@ namespace Starborn.GlassPass
         }
 
         bool hasTossed = false;
-        public bool tossed => hasTossed;
+        public bool tossed
+        {
+            get => hasTossed;
+            set => hasTossed = value;
+        }
         public void Toss(float time = 1, Vector2 startPos = default(Vector2), Vector2 endPos = default(Vector2))
         {
             animator.Play("Empty", layer);
@@ -154,7 +158,8 @@ namespace Starborn.GlassPass
                 //         Debug.Log(bounce.time);
                 //     }
                 // });
-                TweenManager.RollTween(gameObject, 0, -360, 2.25f * time);
+                int random = Random.Range(-15, 15);
+                TweenManager.RollTween(gameObject, random, -360 + random, 2.25f * time);
                 hasTossed = true;
             }
             SetGlassAlpha(1);
@@ -163,6 +168,7 @@ namespace Starborn.GlassPass
         public void ResetPosition()
         {
             transform.localPosition = new Vector3(startPoint.x, startPoint.y, transform.localPosition.z);
+            transform.localRotation = Quaternion.identity;
             SetGlassAlpha(1);
             animator.Play("Static", layer);
         }

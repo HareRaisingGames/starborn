@@ -24,8 +24,10 @@ public static class Progress
     {
         "Tosstail",
         "Trojan",
-        "Boomerang"
     };
+
+    public static Dictionary<string, float> minigameAccuracies = new Dictionary<string, float>();
+    public static Dictionary<string, float> chapterAccuracies = new Dictionary<string, float>();
 }
 
 public class AppStartup

@@ -834,7 +834,17 @@ MonoBehaviour:
   countdown: 
   chartings:
   - skipCountdown: 0
-    sections: []
+    sections:
+    - inputList:
+      - events:
+        - Slide
+        - TutorialSlide
+        Event: TutorialSlide
+        displayParameters: []
+        mark: 0
+      startLength: 0
+      length: 8
+      loops: 30
     setBPM: 1
     bpm: 120
   checkChartings: []
@@ -2963,7 +2973,7 @@ GameObject:
   - component: {fileID: 2708896546889375558}
   - component: {fileID: 7478375575201852398}
   m_Layer: 0
-  m_Name: Glass
+  m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

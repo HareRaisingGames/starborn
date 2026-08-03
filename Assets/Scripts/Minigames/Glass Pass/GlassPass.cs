@@ -221,7 +221,7 @@ namespace Starborn.GlassPass
             {
                 if(value >= 0.9f)
                 {
-                    if(glass != null && !isTutorial)
+                    if(glass != null)
                     {
                         #if NET_4_6
                         glass.Toss(time, new Vector2(MiscUtils.Random(3f,3.5f,4f),3f), new Vector2(11f,-3f));
@@ -373,6 +373,7 @@ namespace Starborn.GlassPass
                 glass = GameObject.Instantiate(game.glassPrefab).GetComponent<ShotGlass>();
                 glass.transform.SetParent(game.glassParent);
                 glass.transform.localPosition = glass.startPoint;
+                glass.transform.localRotation = Quaternion.identity;
                 glass.SetShotGlass(isCoffee ? DrinkType.Coffee : DrinkType.Beer);
                 glass.SetSpeed(Conductor.instance.songBpm * 1.5f);
                 game.AddDrinkOrder(glass);
@@ -433,9 +434,12 @@ namespace Starborn.GlassPass
             actions = new List<CallForAction>()
             {
                 new CallForAction(() => { 
-                    game.waterGlass.ResetPosition();
                     game.Pour(DrinkType.Water);
                 }, 1),
+                new CallForAction(() => { 
+                    game.waterGlass.ResetPosition();
+                    game.waterGlass.tossed = false;
+                }, 3),
                 new CallForAction(() => { 
                     // tick.Play();
                     game.tick.Play();
@@ -449,17 +453,17 @@ namespace Starborn.GlassPass
                 new CallForAction(() => { 
                     // game.waterGlass.DefaultSlide(Conductor.instance.crochet);
                     game.waterGlass.Slide(Conductor.instance.crochet);
-                }, 5.5f),
+                }, 5.4f),
                 new CallForAction(()=>{
                     // tick.Play();
                 }, 6, RhythmInputs.A, 0.5f, 0.5f, ()=>{
                     // game.testGlass.Stop();
-                    game.SuccessfulCatch(game.waterGlass, true);
+                    game.SuccessfulCatch(game.waterGlass, true, Conductor.instance.crochet);
                     game.catchGlass.Play();
 
                 }, (value) =>
                 {
-                    game.UnsuccessfulCatch(game.waterGlass);
+                    game.UnsuccessfulCatch(game.waterGlass, true, Conductor.instance.crochet);
                     game.spill.Play();
                 })
             };
