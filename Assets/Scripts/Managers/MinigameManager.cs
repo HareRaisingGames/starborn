@@ -36,6 +36,7 @@ public class MinigameManager : MonoBehaviour
     bool _canPlay = true;
     bool finishedGame = false;
     bool inTutorialMinigame = false;
+    DialogueManager cachedDialogueManager;
 
     public bool canPlay
     {
@@ -401,17 +402,18 @@ public class MinigameManager : MonoBehaviour
 
     public void CheckForAdditionalAssets()
     {
-        if (FindObjectOfType<DialogueManager>(true) != null)
+        if (cachedDialogueManager == null)
+            cachedDialogueManager = FindObjectOfType<DialogueManager>(true);
+
+        if (cachedDialogueManager != null)
         {
-            DialogueManager manager = FindObjectOfType<DialogueManager>(true);
             GameObject[] rootObjects = scene.GetRootGameObjects();
 
             foreach (GameObject obj in rootObjects)
             {
-                if (!manager.sceneVisibilities[scene.name].ContainsKey(obj))
-                    manager.sceneVisibilities[scene.name].Add(obj, obj.activeInHierarchy);
+                if (!cachedDialogueManager.sceneVisibilities[scene.name].ContainsKey(obj))
+                    cachedDialogueManager.sceneVisibilities[scene.name].Add(obj, obj.activeInHierarchy);
             }
-
         }
     }
 
@@ -640,6 +642,7 @@ public class MinigameManager : MonoBehaviour
         }
         else
         {
+            Clear();
             LoadingManager.LoadScene(SceneManager.GetActiveScene().path.Replace(".unity","").Replace("Assets/",""), delegate()
             {
                 StaticProperties.canPause = true;
@@ -648,7 +651,7 @@ public class MinigameManager : MonoBehaviour
                     LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
                     Countdown.ResetCountdown();
                 };
-            }, 0.25f, delegate () { Time.timeScale = 1; });
+            }, 0.25f, delegate () { Time.timeScale = 1; }, true, false);
         }
         if(PauseMenu.instance != null)
             PauseMenu.instance.gameObject.SetActive(false);
@@ -721,6 +724,7 @@ public class MinigameManager : MonoBehaviour
         }
     }
     bool hasPressed;
+    bool recordedAccuracy;
     public void OnReleaseA(InputAction.CallbackContext context)
     {
         if(hasPressed)
@@ -731,15 +735,22 @@ public class MinigameManager : MonoBehaviour
             }
             else if (finishedGame)
             {
-                if (FindObjectOfType<DialogueManager>(true) != null)
+                if (!recordedAccuracy)
                 {
                     totalAccuracies.Add(totalAccuracy);
-                    minigameAccuracies.Add(SceneManager.GetActiveScene().name, totalAccuracy);
-                    Clear();
+                    minigameAccuracies[SceneManager.GetActiveScene().name] = totalAccuracy;
+                    recordedAccuracy = true;
+                }
+
+                Clear();
+
+                if (FindObjectOfType<DialogueManager>(true) != null)
+                {
                     //FindObjectOfType<DialogueManager>(true).FromGame();
                 }
                 returnCallback?.Invoke();
                 returnCallback = null;
+                hasPressed = false;
             }
             hasPressed = false;
             releaseSource.Play();
@@ -802,9 +813,17 @@ public class MinigameManager : MonoBehaviour
 
     public static void Clear()
     {
+        foreach (RhythmInput input in instance.inputs)
+        {
+            input?.Dispose();
+        }
+
         instance.events.Clear();
         instance.inputs.Clear();
         instance.accuracies.Clear();
+
+        if (Minigame.instance != null)
+            Minigame.instance.events.Clear();
     }
 
     public static void EndChapter()

@@ -142,6 +142,9 @@ namespace Starborn.Tosstail
 
             public void Update()
             {
+                if(sprite == null || sprite.sprite == null)
+                    return;
+
                 if(spriteToPositions.ContainsKey(sprite.sprite))
                     sprite.transform.localPosition = spriteToPositions[sprite.sprite];
             }

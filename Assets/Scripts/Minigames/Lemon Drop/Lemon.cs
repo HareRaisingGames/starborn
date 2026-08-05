@@ -136,11 +136,12 @@ namespace Starborn.LemonDrop
             }
             if (state >= 2)
             {
-                slice1.isKinematic = false;
-                slice1.transform.parent = null;
+                
             }
             if (state >= 3)
             {
+                slice1.transform.parent = null;
+                slice1.isKinematic = false;
                 slice2.isKinematic = false;
                 back.isKinematic = false;
                 slice2.transform.parent = null;
@@ -162,15 +163,20 @@ namespace Starborn.LemonDrop
                 case 3:
                     Destroy(sliceToBack);
                     slice2.AddForce(-transform.forward * 100);
-                    //back.AddForce(transform.forward * 100);
 
                     slice2.AddForce(transform.up * 10);
-                    //back.AddForce(transform.up * 10);
 
-                    //if (GetComponent<Outline>() != null)
-                    //GetComponent<Outline>().enabled = false;
                     break;
             }
+        }
+
+        public void Fall()
+        {
+            skin.isKinematic = false;
+            front.isKinematic = false;
+            slice1.isKinematic = false;
+            slice2.isKinematic = false;
+            back.isKinematic = false;
         }
 
         public void AddThrow(float beat, float x = 0.5f, float y = 0.5f)

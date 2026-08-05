@@ -80,10 +80,6 @@ public abstract class Minigame : MonoBehaviour
     public Color bgColor = new Color(0.19215686274f, 0.30196078431f, 0.47450980392f);
     public Vector3 camPosition = new Vector3(0,0,-10);
 
-    [Header("Debug")]
-    public bool metronome;
-    protected AudioSource metronomeAudio;
-
     [HideInInspector]
     public EventSystem eventSystem;
 
@@ -211,17 +207,6 @@ public abstract class Minigame : MonoBehaviour
 
         MinigameManager.managerType = "";
         Resources.Load<GameObject>($"Prefabs/Manager");
-
-        if(metronome)
-        {
-            if(metronomeAudio == null)
-            {
-                GameObject metronomeObj = new GameObject("Metronome");
-                metronomeAudio = metronomeObj.AddComponent<AudioSource>();
-                metronomeAudio.clip = Resources.Load<AudioClip>("Audio/metronome");
-                metronomeAudio.playOnAwake = false;
-            }
-        }
     }
 
     private void OnEnable()
@@ -269,6 +254,7 @@ public abstract class Minigame : MonoBehaviour
     }
     [HideInInspector]
     public bool eligibleForClear = false;
+    bool _turnOn = false;
     public virtual void StartSong()
     {
         if (song != null) Conductor.instance.music.clip = song;
@@ -297,25 +283,31 @@ public abstract class Minigame : MonoBehaviour
             });
         if(!isTutorial && MinigameManager.instance.backdrop != null)
             MinigameManager.instance.backdrop.SetActive(false);
-        //MinigameManager.instance.hearts.gameObject.SetActive(true);
+
+        _turnOn = MinigameManager.instance.hearts.gameObject.activeInHierarchy;
         MinigameManager.instance.hearts.gameObject.SetActive(true);
-        foreach (Transform child in MinigameManager.instance.hearts.gameObject.transform)
-        {
-            if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<SpriteRenderer>())
-            {
-                ColorUtils.SetAlpha(child.gameObject, 0);
-                TweenManager.AlphaTween(child.gameObject, 0, 1, 1f, Eases.EaseInOutCubic).SetStartDelay(0.25f);
-            }
-        }
         MinigameManager.instance.accuracyObj.SetActive(true);
-        foreach (Transform child in MinigameManager.instance.accuracyObj.transform)
+        if(!_turnOn)
         {
-            if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<TMP_Text>())
+            foreach (Transform child in MinigameManager.instance.hearts.gameObject.transform)
             {
-                ColorUtils.SetAlpha(child.gameObject, 0);
-                TweenManager.AlphaTween(child.gameObject, 0, 1, 1f, Eases.EaseInOutCubic).SetStartDelay(0.25f);
+                if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<SpriteRenderer>())
+                {
+                    ColorUtils.SetAlpha(child.gameObject, 0);
+                    TweenManager.AlphaTween(child.gameObject, 0, 1, 1f, Eases.EaseInOutCubic).SetStartDelay(0.25f);
+                }
+            }
+
+            foreach (Transform child in MinigameManager.instance.accuracyObj.transform)
+            {
+                if (child.gameObject.GetComponent<Image>() || child.gameObject.GetComponent<TMP_Text>())
+                {
+                    ColorUtils.SetAlpha(child.gameObject, 0);
+                    TweenManager.AlphaTween(child.gameObject, 0, 1, 1f, Eases.EaseInOutCubic).SetStartDelay(0.25f);
+                }
             }
         }
+
 
         _startGame = true;
 
@@ -371,15 +363,10 @@ public abstract class Minigame : MonoBehaviour
 
     public void BeatUpdate()
     {
-
         if (prevBeat != _curBeat)
         {
             OnBeatChange?.Invoke(_curBeat);
             OnBeatTutorial?.Invoke(_curBeat);
-            if(metronome && metronomeAudio != null)
-            {
-                metronomeAudio.Play();
-            }
         }
         prevBeat = _curBeat;
     }
@@ -509,6 +496,7 @@ public class ParamAttribute : PropertyAttribute
 [CustomPropertyDrawer(typeof(GamePopupAttribute))]
 public class MinigameDrawer : PropertyDrawer
 {
+    // public bool onFirstLoad = false;
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
         List<string> events = null;
@@ -532,9 +520,26 @@ public class MinigameDrawer : PropertyDrawer
 
             if(events != null && events.Count != 0)
             {
+                // if(!onFirstLoad)
+                // {
+                //     Debug.Log($"Events for {property.name}: {events.Count}");
+                //     onFirstLoad = true;
+                // }
+                EditorGUI.BeginChangeCheck();
                 int selectedIndex = Mathf.Max(events.IndexOf(property.stringValue), 0);
                 selectedIndex = EditorGUI.Popup(position, property.name, selectedIndex, events.ToArray());
                 property.stringValue = events[selectedIndex];
+                if (EditorGUI.EndChangeCheck())
+                {
+                    // System.Type eventType = System.Type.GetType($"{t.Namespace}.{property.stringValue}", false, false);
+                    // if(eventType != null)
+                    // {
+                    //     PropertyInfo parameterProperty = eventType.GetProperty("parameters", typeof(List<Parameter>));
+                    //     // Debug.Log(parameterProperty.GetValue(System.Activator.CreateInstance(eventType)));
+                    // }
+                    // Debug.Log(t.Namespace);
+            
+                }
             }
             else
                 EditorGUI.PropertyField(position, property, label);
@@ -544,7 +549,7 @@ public class MinigameDrawer : PropertyDrawer
     }
 }
 
-/*[CustomPropertyDrawer(typeof(ParamAttribute))]
+[CustomPropertyDrawer(typeof(ParamAttribute))]
 public class ParameterArea : PropertyDrawer
 {
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -569,6 +574,8 @@ public class ParameterArea : PropertyDrawer
                             FieldInfo parameterProperty = classType.GetField("parameters");
                             object instance = System.Activator.CreateInstance(classType);
                             parameters = (List<Parameter>)parameterProperty.GetValue(instance);
+
+                            Debug.Log($"Parameters for {input.Event}: {parameters.Count}");
                         }
                     }
                 }
@@ -597,5 +604,5 @@ public class ParameterArea : PropertyDrawer
         else
             EditorGUI.PropertyField(position, property, label);
     }
-}*/
+}
 #endif

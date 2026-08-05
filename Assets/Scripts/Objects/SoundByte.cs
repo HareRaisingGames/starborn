@@ -19,15 +19,20 @@ public class SoundByte : MonoBehaviour
         type = "SFX";
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(GetComponent<AudioSource>().isPlaying)
+        AudioSource src = GetComponent<AudioSource>();
+        if (src.isPlaying)
         {
-            timeSamples = GetComponent<AudioSource>().timeSamples;
+            timeSamples = src.timeSamples;
+        }
+        else if (timeSamples > 0 && !src.loop)
+        {
+            Destroy(gameObject);
+            return;
         }
 
-        if (GetComponent<AudioSource>().timeSamples < timeSamples && timeSamples > 0)
+        if (src.timeSamples < timeSamples && timeSamples > 0)
         {
             Destroy(gameObject);
         }

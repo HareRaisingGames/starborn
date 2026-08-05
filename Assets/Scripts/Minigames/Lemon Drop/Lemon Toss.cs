@@ -13,6 +13,9 @@ namespace Starborn.LemonDrop
         public LemonToss()
         {
             //lemon = Object.FindObjectOfType<Lemon>();
+
+            CallForAction setUp = new CallForAction(() => { }, 1f);
+
             actions = new List<CallForAction>() {
             new CallForAction(()=>{//sfx.Play(); 
 
@@ -24,34 +27,31 @@ namespace Starborn.LemonDrop
                 //tick.Play();
                 sfx.Play();
                 // lemon.transform.position = new Vector3(lemon.transform.position.x, -10, lemon.transform.position.z);
-                // TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
+                TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
                 }, 
                 1f),
             new CallForAction(()=>{
                 //sfx.Play();
-                // TweenManager.YTween(lemon.gameObject, -4.5f, 1f, Conductor.instance.crochet * 0.5f, Eases.EaseOutSine);
+                TweenManager.YTween(lemon.gameObject, -4.5f, 1f, Conductor.instance.crochet * 0.5f, Eases.EaseOutSine);
                 }, 
                 1.5f),
-            new CallForAction(()=>{//sfx.Play();
+            new CallForAction(()=>{
+                // sfx.Play();
                 //tick.Play();
-                // TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
+                TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
             }, 2f, RhythmInputs.A, 1f, 1f, () => { 
                 lemon.Cut(1); 
             }),
             new CallForAction(()=>{
-                //sfx.Play();  
-            }, 2.5f, RhythmInputs.A, 0.5f, 0.5f, () => { 
-                lemon.Cut(2); 
-            }),
-            new CallForAction(()=>{
-                //sfx.Play();
+                // sfx.Play();
                 //tick.Play();
-                // TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
+                TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
                     
-                // }); 
+                }); 
             }, 3f, RhythmInputs.A, 1f, 1f, () => { 
                 lemon.Cut(3); 
             }),
+            // setUp,
             new CallForAction(() =>
             {
                 game.afterCut = true;

@@ -17,6 +17,14 @@ public class InputSprite : MonoBehaviour
     private bool isImage => image != null;
     private bool isRender => render != null;
 
+    private static Sprite[] cachedSprites;
+
+    void Awake()
+    {
+        if (cachedSprites == null)
+            cachedSprites = Resources.LoadAll<Sprite>("Sprites/Icons/game_icons_assets");
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -79,8 +87,10 @@ public class InputSprite : MonoBehaviour
     {
         string inputType = InputCheck.GetBindFromAction(action);
 
-        Sprite[] sprites = Resources.LoadAll<Sprite>("Sprites/Icons/game_icons_assets");
-        foreach(Sprite sprite in sprites)
+        if (cachedSprites == null)
+            return;
+
+        foreach(Sprite sprite in cachedSprites)
         {
             if(sprite.name == inputType)
             {
@@ -88,6 +98,7 @@ public class InputSprite : MonoBehaviour
                     image.sprite = sprite;
                 else if (isRender)
                     render.sprite = sprite;
+                break;
             }
         }
     }

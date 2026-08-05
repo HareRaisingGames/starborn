@@ -56,10 +56,17 @@ public class InputCheck : MonoBehaviour
             mousePosition = Mouse.current.position.ReadValue();
         }
 
+        CheckForDeviceChange();
+        InputSystem.onDeviceChange += OnDeviceChange;
     }
 
-    // Update is called once per frame
-    void Update()
+    void OnDeviceChange(InputDevice device, InputDeviceChange change)
+    {
+        if (change == InputDeviceChange.Added || change == InputDeviceChange.Reconnected)
+            CheckForDeviceChange();
+    }
+
+    void CheckForDeviceChange()
     {
         foreach(Gamepad controllerType in Gamepad.all)
         {
@@ -103,6 +110,11 @@ public class InputCheck : MonoBehaviour
                 }
             }
         }
+    }
+
+    void Update()
+    {
+        
     }
 
     public static string GetBindFromAction(InputAction action)

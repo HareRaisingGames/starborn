@@ -19,6 +19,7 @@ public class LoadingManager : MonoBehaviour
     public static Action afterloadCallback;
     public static Action callback;
     public static bool unloadAllScenes;
+    public static bool unloadUnusedAssets = true;
     readonly static float defaultTime = 0.25f;
     static float waitTime = 0.25f;
     public static bool isLoading = false;
@@ -77,7 +78,7 @@ public class LoadingManager : MonoBehaviour
         
     }
 
-    public static void LoadScene(string scene, Action cback = null, float t = 0.25f, Action unloadcback = null, bool unloadScenes = true)
+    public static void LoadScene(string scene, Action cback = null, float t = 0.25f, Action unloadcback = null, bool unloadScenes = true, bool unloadAssets = true)
     {
         callback = cback;
         afterloadCallback = unloadcback;
@@ -87,6 +88,7 @@ public class LoadingManager : MonoBehaviour
         isLoading = true;
         waitTime = t;
         unloadAllScenes = unloadScenes;
+        unloadUnusedAssets = unloadAssets;
     }
 
     public static void FadeOut(Action callback = null)
@@ -142,8 +144,8 @@ public class LoadingManager : MonoBehaviour
                 }
             }
         }
-        // Optional: Call Resources.UnloadUnusedAssets to free up memory from assets no longer referenced.
-        yield return Resources.UnloadUnusedAssets();
+        if (unloadUnusedAssets)
+            yield return Resources.UnloadUnusedAssets();
     }
 
     /*

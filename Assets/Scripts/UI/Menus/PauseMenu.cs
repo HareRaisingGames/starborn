@@ -57,6 +57,7 @@ public class PauseMenu : OptionMenu
     }
     public static void Open(Action enter = null, Action exit = null, Action transition = null, Action onBack = null, Action restart = null)
     {
+        if(instance == null) return;
         pauseTrans = true;
         instance.gameObject.SetActive(true);
         instance.exitCallback = exit;

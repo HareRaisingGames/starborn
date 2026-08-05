@@ -64,8 +64,7 @@ namespace Starborn.Trojan
             audio = null;
             if (game.existingViruses.Count >= 6) return null;
 
-            System.Random random = new System.Random();
-            float degree = random.Next(0, 361);
+            float degree = Random.Range(0f, 360f);
 
             Vector3 spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
             Vector3 startPosition = PositionFromRadius(game.center, game.revRadius, degree);
@@ -83,7 +82,7 @@ namespace Starborn.Trojan
 
             while(inBound)
             {
-                degree = random.Next(0, 361);
+                degree = Random.Range(0f, 360f);
                 spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
                 startPosition = PositionFromRadius(game.center, game.revRadius, degree);
                 foreach (Virus v in game.existingViruses)
@@ -104,7 +103,7 @@ namespace Starborn.Trojan
                     Vector3 malSpawn = PositionFromRadius(game.center, game.spawnRadius + 3, degree);
                     while(!InCameraBound(malSpawn))
                     {
-                        degree = random.Next(0, 361);
+                        degree = Random.Range(0f, 360f);
                         spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
                         startPosition = PositionFromRadius(game.center, game.revRadius, degree);
                         malSpawn = PositionFromRadius(game.center, game.spawnRadius + 3, degree);
@@ -142,13 +141,13 @@ namespace Starborn.Trojan
                     //This might still be a little risky
                     while (inBound)
                     {
-                        degree = new System.Random().Next(0, 361);
+                        degree = Random.Range(0f, 360f);
                         spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
                         startPosition = PositionFromRadius(game.center, game.revRadius, degree);
                         malSpawn = PositionFromRadius(game.center, game.spawnRadius + 3, degree);
                         while (!InCameraBound(malSpawn))
                         {
-                            degree = random.Next(0, 361);
+                            degree = Random.Range(0f, 360f);
                             spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
                             startPosition = PositionFromRadius(game.center, game.revRadius, degree);
                             malSpawn = PositionFromRadius(game.center, game.spawnRadius + 3, degree);
@@ -218,7 +217,7 @@ namespace Starborn.Trojan
 
                     while (inBound)
                     {
-                        degree = new System.Random().Next(0, 361);
+                        degree = Random.Range(0f, 360f);
                         spawnPosition = PositionFromRadius(game.center, game.spawnRadius, degree);
                         startPosition = PositionFromRadius(game.center, game.revRadius, degree);
                         virus.SetVirus(virus.virusName, game.center, spawnPosition, startPosition, degree);
@@ -329,7 +328,7 @@ namespace Starborn.Trojan
                 border.transform.Rotate(Vector3.forward * speed * 10 * Time.deltaTime);
             }
 
-            existingViruses = new List<Virus>(FindObjectsOfType<Virus>());
+            existingViruses.RemoveAll(virus => virus == null);
             /*foreach (Virus v in existingViruses)
             {
                 bool inBound = false;
@@ -450,6 +449,16 @@ namespace Starborn.Trojan
             Resources.Load<AudioClip>($"Audio/Trojan/burst");
 
             Resources.LoadAll<AudioClip>("Audio/Trojan/death");
+
+            AudioClip[] deathClips = Resources.LoadAll<AudioClip>("Audio/Trojan/death");
+            foreach (AudioClip clip in deathClips)
+            {
+                if (clip != null)
+                    clip.LoadAudioData();
+            }
+
+            if (explosionSFX != null)
+                explosionSFX.LoadAudioData();
 
             base.Start();
             OnSongStart = () => {
@@ -1015,7 +1024,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(game.autoPlay) game.ActivateForceField();
-                }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
+                }, 4f, RhythmInputs.A, 0.5f, 0.5f, ()=>{
                     if(virus != null) virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.malwormKill++; }, true);
                 }, (value) => { if(virus != null) virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
@@ -1053,7 +1062,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(game.autoPlay) game.ActivateForceField();
-                }, 2f, RhythmInputs.A, 1f, 1f, ()=>{
+                }, 2f, RhythmInputs.A, 0.5f, 0.5f, ()=>{
                     if(virus != null) virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.turbotKill++; }, true);
                 }, (value) => { if(virus != null) virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
@@ -1099,7 +1108,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay && game.forcefield != null) game.forcefield.Play();
                     if(split2 != null)
                         split2.Rev(Conductor.instance.crochet * 0.5f);
-                }, 3f, RhythmInputs.A, 1f, 1f, ()=>{
+                }, 3f, RhythmInputs.A, 0.5f, 0.5f, ()=>{
                     if(split1 != null) split1.Explode(Conductor.instance.crochet * 0.125f, delegate(){ count++; }, true);
                 }, (value) => { if(split1 != null) split1.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
@@ -1112,7 +1121,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(game.autoPlay) game.ActivateForceField();
-                }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
+                }, 4f, RhythmInputs.A, 0.5f, 0.5f, ()=>{
                     if(split2 != null) split2.Explode(Conductor.instance.crochet * 0.125f, delegate(){
                         count++;
                     if(count >= 2) game.hairsplitterKill++; }, true);

@@ -36,6 +36,13 @@ namespace Starborn.GlassPass
 
         public AudioSource spill => _spill;
 
+        [Header("Tutorial")]
+        public AudioSource one;
+        public AudioSource two;
+        public AudioSource go;
+
+        int catchCount = 0;
+
         #region Tweens
         Tween<float> focalTween;
         Tween<float> aperatureTween;
@@ -76,6 +83,8 @@ namespace Starborn.GlassPass
         public DrinkType currentDrink => drinkOrders.Count > 0 ? drinkOrders[0].type : DrinkType.None;
 
         protected List<ShotGlass> emptyGlasses = new List<ShotGlass>();
+
+        bool isCounting = false;
 
         // Start is called before the first frame update
         public override void Start()
@@ -145,6 +154,7 @@ namespace Starborn.GlassPass
                 depthOfField.focalLength.value = defaultFocalLength;
                 depthOfField.aperture.value = defaultAperature;
             }
+            amountJudger = () => catchCount;
 
         }
 
@@ -164,6 +174,46 @@ namespace Starborn.GlassPass
             {
                 if(drinkOrders.Count > 0)
                     Pour(drinkOrders[0].type);
+            }
+        }
+
+        public override void TutorialOnComplete(int amount, string tag = "")
+        {
+            hasCompleted = null;
+            _turnOnGuide = false;
+            catchCount = 0;
+            base.TutorialOnComplete(amount, tag);
+            hasCompleted = delegate ()
+            {
+                return catchCount >= amount;
+            };
+
+            if(tag == "guide")
+            {
+                _turnOnGuide = true;
+            }
+        }
+        bool _turnOnGuide = false;
+        public bool turnOnGuide => _turnOnGuide;
+
+        public override void OnTutorialStop()
+        {
+            base.OnTutorialStop();
+            AnimatorStateInfo indicatorInfo = indicator.GetCurrentAnimatorStateInfo(0);
+            if(indicatorInfo.IsName("Water Pour"))
+            {
+                StartCoroutine(WaitForIndicator());
+                IEnumerator WaitForIndicator()
+                {
+                    yield return null;
+                    while(indicatorInfo.normalizedTime < 1f)
+                    {
+                        yield return null;
+                        indicatorInfo = indicator.GetCurrentAnimatorStateInfo(0);
+                    }
+
+                    indicator.Play("Skip", 0, 0);
+                }
             }
         }
 
@@ -205,6 +255,7 @@ namespace Starborn.GlassPass
         {
             specialBody = true;
             bugz.handAnimator.gameObject.SetActive(false);
+            catchCount++;
             // bool hasTossed = false;
             bugz.PlayBody("catch", Conductor.instance.songBpm/120, () =>
             {
@@ -279,6 +330,7 @@ namespace Starborn.GlassPass
         public void UnsuccessfulCatch(ShotGlass glass = null, bool isTutorial = false, float time = 1)
         {
             specialBody = true;
+            MinigameManager.instance.LoseALife(0.5f);
             bugz.PlayBody("half", Conductor.instance.songBpm/120, () =>
             {
                 specialBody = false;
@@ -365,6 +417,12 @@ namespace Starborn.GlassPass
         public GlassPass game;
         bool isCoffee = false;
         public ShotGlass glass;
+
+        public override List<Parameter> parameters { get; set; } = new List<Parameter>()
+        {
+            new Parameter("isCoffee", false, "Coffee")
+        };
+
         public override void SetUp()
         {
             base.SetUp();
@@ -382,13 +440,9 @@ namespace Starborn.GlassPass
 
         }
 
-        public Slide()
+        public Slide(bool isCoffee = false)
         {
-            parameters = new List<Parameter>()
-            {
-                new Parameter("isCoffee", false, "Coffee")
-            };
-
+            this.isCoffee = isCoffee;
             actions = new List<CallForAction>()
             {
                 new CallForAction(() => { 
@@ -414,11 +468,21 @@ namespace Starborn.GlassPass
                 {
                     game.UnsuccessfulCatch(glass, false, Conductor.instance.crochet);
                     game.spill.Play();
+                },
+                () => {
+                    MinigameManager.instance.LoseALife(1f);
                 })
             };
         }
     }
 
+    public class Coffee : Slide
+    {
+        public Coffee() : base(true)
+        {
+            
+        }
+    }
     public class TutorialSlide : RhythmEvent
     {
         public GlassPass game;
@@ -435,7 +499,7 @@ namespace Starborn.GlassPass
             {
                 new CallForAction(() => { 
                     game.Pour(DrinkType.Water);
-                }, 1),
+                }, 2),
                 new CallForAction(() => { 
                     game.waterGlass.ResetPosition();
                     game.waterGlass.tossed = false;
@@ -444,9 +508,13 @@ namespace Starborn.GlassPass
                     // tick.Play();
                     game.tick.Play();
                     game.Pass(DrinkType.Water);
+                    if(game.turnOnGuide)
+                        game.one.Play();
                     // game.testGlass.Slide(Conductor.instance.crochet);
                 }, 4),
                 new CallForAction(() => { 
+                    if(game.turnOnGuide)
+                        game.two.Play();
                     // tick.Play();
                     // game.waterGlass.Slide(Conductor.instance.crochet);
                 }, 5),
@@ -460,6 +528,8 @@ namespace Starborn.GlassPass
                     // game.testGlass.Stop();
                     game.SuccessfulCatch(game.waterGlass, true, Conductor.instance.crochet);
                     game.catchGlass.Play();
+                    if(game.turnOnGuide)
+                        game.go.Play();
 
                 }, (value) =>
                 {

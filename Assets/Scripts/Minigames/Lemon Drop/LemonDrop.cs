@@ -50,9 +50,25 @@ namespace Starborn.LemonDrop
         {
             hasCompleted = delegate ()
             {
-                return cutCount >= 3 && afterCut;
+                return cutCount >= 2 && afterCut && Conductor.instance.isFinished;
             };
             base.StartSong();
+            Conductor.instance.onSongFinished += delegate ()
+            {
+                if (!hasCompleted.Invoke())
+                {
+                    Debug.Log("Failed");
+                    MinigameManager.instance.LoseALife(1f);
+                    StartCoroutine(PlayMusic());
+                    IEnumerator PlayMusic()
+                    {
+                        yield return new WaitForSeconds(1);
+                        StartSong();
+                    }
+
+                }
+
+            };
         }
 
         public override void TutorialAdditionals()
@@ -60,7 +76,7 @@ namespace Starborn.LemonDrop
             base.TutorialAdditionals();
             if(!canCheck)
             {
-                if(cutCount >= 3 && afterCut)
+                if(cutCount >= 2 && afterCut)
                 {
                     successTotal++;
                     canCheck = true;
