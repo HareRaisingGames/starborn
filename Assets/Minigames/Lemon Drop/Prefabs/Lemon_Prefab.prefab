@@ -635,6 +635,8 @@ MonoBehaviour:
   slice1: {fileID: 508643669414881139}
   slice2: {fileID: 5167338287024581343}
   back: {fileID: 8070402256546235980}
+  lemonTexture: {fileID: 2800000, guid: ecaa6cb1805fbea4aaa991447eccf3dc, type: 3}
+  limeTexture: {fileID: 2800000, guid: e55ea5df2dc2fa444801258e852dca5b, type: 3}
 --- !u!1 &8240913429194367434
 GameObject:
   m_ObjectHideFlags: 0

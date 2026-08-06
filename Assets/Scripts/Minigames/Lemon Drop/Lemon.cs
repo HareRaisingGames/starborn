@@ -34,6 +34,14 @@ namespace Starborn.LemonDrop
 
         LemonDrop game;
 
+        bool isLime = false;
+        public bool lime => isLime;
+        [Header("Lemon Type")]
+        public Texture2D lemonTexture;
+        public Texture2D limeTexture;
+        protected readonly Color lemonColor = Color.yellow;
+        protected readonly Color limeColor = Color.green;
+
         // Start is called before the first frame update
         void Start()
         {
@@ -74,6 +82,16 @@ namespace Starborn.LemonDrop
 
             xRotating = TweenManager.PitchTween(gameObject, -15, 15, 3.5f, Eases.EaseInOutQuad).SetPingPong(1000);
             yRotating = TweenManager.YawTween(gameObject, 60, 120, 3, Eases.EaseInOutQuad).SetPingPong(1000);
+
+            // foreach(Material material in slice1.GetComponent<MeshRenderer>().materials)
+            // {
+            //     Debug.Log(material.name);
+            // }
+            // ChangeType(skin.gameObject, true);
+            // ChangeType(front.gameObject, true);
+            // ChangeType(slice1.gameObject, true);
+            // ChangeType(slice2.gameObject, true);
+            // ChangeType(back.gameObject, true);
         }
         public void Reassemble()
         {
@@ -185,6 +203,23 @@ namespace Starborn.LemonDrop
                 .SetDestination(beat)
                     .SetRange(x, y);
             input.Enable();
+        }
+
+        public void ChangeType(GameObject lemonObject, bool isLime)
+        {
+            this.isLime = isLime;
+            Material[] materials = lemonObject.GetComponent<MeshRenderer>().materials;
+            foreach (Material material in materials)
+            {
+                if(material.name.Contains("Inner"))
+                {
+                    material.mainTexture = isLime ? limeTexture : lemonTexture;
+                }
+                else if(material.name.Contains("Cut_Skin") || material.name.Contains("Skin"))
+                {
+                    material.color = isLime ? limeColor : lemonColor;
+                }
+            }
         }
     }
 }

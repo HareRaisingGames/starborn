@@ -20,6 +20,9 @@ namespace Starborn.LemonDrop
         [HideInInspector]
         public bool canCheck;
 
+        public Knife knife;
+        bool canClick = false;
+
         // Start is called before the first frame update
         public override void Start()
         {
@@ -44,10 +47,16 @@ namespace Starborn.LemonDrop
         public override void onA(InputAction.CallbackContext context)
         {
             base.onA(context);
+
+            if(!canClick) return;
+
+            if(knife != null)
+                knife.Slice();
         }
 
         public override void StartSong()
         {
+            canClick = true;
             hasCompleted = delegate ()
             {
                 return cutCount >= 2 && afterCut && Conductor.instance.isFinished;
