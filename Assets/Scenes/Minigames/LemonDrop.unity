@@ -757,7 +757,7 @@ MonoBehaviour:
       tag: 
       noMusic: 0
       noApplause: 0
-    - dialogue: You only get three chances so make it count!
+    - dialogue: One lemon slice coming right up!
       section:
         skipCountdown: 0
         sections: []
@@ -778,7 +778,7 @@ MonoBehaviour:
       tag: 
       noMusic: 0
       noApplause: 0
-    - dialogue: Then here comes to ultimate test
+    - dialogue: Then one lemon slice coming right up!
       section:
         skipCountdown: 0
         sections: []

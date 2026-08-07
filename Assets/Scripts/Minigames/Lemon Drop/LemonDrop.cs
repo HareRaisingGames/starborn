@@ -22,7 +22,6 @@ namespace Starborn.LemonDrop
 
         AudioSource _bonk;
         public AudioSource bonk => _bonk;
-
         public Knife knife;
         bool canClick = false;
         int swings = 0;
@@ -41,6 +40,7 @@ namespace Starborn.LemonDrop
             }
             else
                 _bonk = GameObject.Find("Bonk").GetComponent<AudioSource>();
+                
 
             base.Start();
             StartCoroutine(PlayMusic());
@@ -81,7 +81,9 @@ namespace Starborn.LemonDrop
                 if (!hasCompleted.Invoke())
                 {
                     Debug.Log("Failed");
-                    MinigameManager.instance.LoseALife(1f);
+                    //Rare occurance
+                    if(lemon.lime && cutCount >= 1) MinigameManager.instance.AddALife(1f);
+                    else MinigameManager.instance.LoseALife(1f);
                     StartCoroutine(PlayMusic());
                     IEnumerator PlayMusic()
                     {
