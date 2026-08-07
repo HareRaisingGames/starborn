@@ -45,7 +45,7 @@ public abstract class Minigame : MonoBehaviour
     public AudioClip tutorialSong;
     public string caller = "bugz";
     protected bool inTutorial;
-
+    protected string tagName = "";
     [HideInInspector]
     public bool paused;
 

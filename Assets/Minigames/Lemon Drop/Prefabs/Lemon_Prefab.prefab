@@ -548,7 +548,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7627668131594789941}
-  - component: {fileID: 7265779390603280779}
   - component: {fileID: 2168768794481110407}
   - component: {fileID: 207773038859575846}
   m_Layer: 0
@@ -578,28 +577,6 @@ Transform:
   - {fileID: 6338093168566271624}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!64 &7265779390603280779
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7886987621521735152}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 3232333533059926000, guid: 9d5fa09be521c1143b3c81aa4028f380, type: 3}
 --- !u!114 &2168768794481110407
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -637,6 +614,9 @@ MonoBehaviour:
   back: {fileID: 8070402256546235980}
   lemonTexture: {fileID: 2800000, guid: ecaa6cb1805fbea4aaa991447eccf3dc, type: 3}
   limeTexture: {fileID: 2800000, guid: e55ea5df2dc2fa444801258e852dca5b, type: 3}
+  torqueAxis: {x: 1, y: 1, z: 0.5}
+  inertiaTensor: 0
+  angularDrag: 0.5
 --- !u!1 &8240913429194367434
 GameObject:
   m_ObjectHideFlags: 0

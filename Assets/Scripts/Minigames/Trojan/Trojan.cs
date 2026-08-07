@@ -43,7 +43,6 @@ namespace Starborn.Trojan
 
         int clicks = 0;
         bool canClick = false;
-        string tagName = "";
 
         [Header("Additional Assets")]
         public ProgressBar downloadBar;

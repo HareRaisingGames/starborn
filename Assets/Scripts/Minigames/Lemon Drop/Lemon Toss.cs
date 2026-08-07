@@ -39,8 +39,12 @@ namespace Starborn.LemonDrop
                 // sfx.Play();
                 //tick.Play();
                 TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
-            }, 2f, RhythmInputs.A, 1f, 1f, () => { 
+            }, 2f, RhythmInputs.A, 1f, 1f, () => {
+                if(game.autoPlay) game.knife.Slice();
                 lemon.Cut(1); 
+            }, (bool halfHit) => {
+                lemon.Missed();
+                game.bonk.Play();
             }),
             new CallForAction(()=>{
                 // sfx.Play();
@@ -48,8 +52,12 @@ namespace Starborn.LemonDrop
                 TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
                     
                 }); 
-            }, 3f, RhythmInputs.A, 1f, 1f, () => { 
+            }, 3f, RhythmInputs.A, 1f, 1f, () => {
+                if(game.autoPlay) game.knife.Slice();
                 lemon.Cut(3); 
+            }, (bool halfHit) => {
+                lemon.Missed();
+                game.bonk.Play();
             }),
             // setUp,
             new CallForAction(() =>
@@ -84,14 +92,15 @@ namespace Starborn.LemonDrop
             else
                 sfx = GameObject.Find("Hai").GetComponent<AudioSource>();
 
-            if (GameObject.Find("Metronome") == null)
-            {
-                GameObject gameObject = new GameObject("Metronome");
-                tick = gameObject.AddComponent<AudioSource>();
-                tick.clip = Resources.Load<AudioClip>("Audio/Tosstail/catch_shaker");
-            }
-            else
-                tick = GameObject.Find("Metronome").GetComponent<AudioSource>();
+            // Debug.Log(UnityEngine.Random.Range(0f,1f));
+            // if (GameObject.Find("Metronome") == null)
+            // {
+            //     GameObject gameObject = new GameObject("Metronome");
+            //     tick = gameObject.AddComponent<AudioSource>();
+            //     tick.clip = Resources.Load<AudioClip>("Audio/Tosstail/catch_shaker");
+            // }
+            // else
+            //     tick = GameObject.Find("Metronome").GetComponent<AudioSource>();
         }
     }
 
