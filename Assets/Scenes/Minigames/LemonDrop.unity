@@ -601,7 +601,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.LemonDrop
   conductor: {fileID: 1449119417}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 1
   song: {fileID: 8300000, guid: ace72309614a8114a93c8478ef3e7d85, type: 3}
   tutorialSong: {fileID: 8300000, guid: db5518580593b8940bb497ae01867e10, type: 3}
