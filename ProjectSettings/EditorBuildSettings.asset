@@ -24,9 +24,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Minigames/Tosstail.unity
     guid: f7809f0719954054d91665a3d5da25b2
   - enabled: 1
+    path: Assets/Scenes/Minigames/LemonDrop.unity
+    guid: 938d3733688e03248bfdc2b847e2884f
+  - enabled: 1
     path: Assets/Scenes/Minigames/Trojan.unity
     guid: 37f63a4975b834c40bfa176519c8f4ff
-  - enabled: 0
-    path: Assets/Scenes/Minigames/Boomerang.unity
-    guid: 2d85c140320a1b74382834b23b562d2a
   m_configObjects: {}

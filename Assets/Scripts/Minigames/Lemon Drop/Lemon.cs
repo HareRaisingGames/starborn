@@ -266,8 +266,9 @@ namespace Starborn.LemonDrop
             {
                 case 1:
                     Destroy(frontToSlice);
-                    front.AddForce(transform.up * 10);
+                    front.AddForce(transform.up * 100);
                     front.AddForce(-transform.forward * 100);
+                    front.AddTorque(transform.up * 10);
                     if (splash1 != null)
                         splash1.Play();
                     break;
@@ -283,6 +284,7 @@ namespace Starborn.LemonDrop
                     slice2.AddForce(transform.up * 10);
 
                     back.AddForce(transform.forward * 100);
+                    back.AddTorque(-transform.up * 10);
                     if (splash2 != null)
                         splash2.Play();
                     break;
