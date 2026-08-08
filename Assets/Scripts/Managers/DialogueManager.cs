@@ -186,7 +186,7 @@ public class DialogueManager : MonoBehaviour
         if (flash != null)
             flash.SetActive(false);
 
-        filename = "dialogue_test";
+        filename = "minigame_test";
 
         MixerSettings.SetAudioGroup(musicSource, "Music");
         MixerSettings.SetAudioGroup(dialogueSource, "Dialogue");
@@ -529,22 +529,37 @@ public class DialogueManager : MonoBehaviour
         if (loadingIcon != null) TweenManager.AlphaTween(loadingIcon, 1, 0, 0.5f, Eases.EaseInOutQuad);
         Time.timeScale = 1;
         if (LoadingManager.instance != null)
-            LoadingManager.FadeOut(delegate ()
+        // LoadingManager.FadeOut(delegate ()
+        // {
+        //     if (!isGameOver)
+        //         StaticProperties.canPause = true;
+        //     dialogueBox.gameObject.SetActive(true);
+        //     BoxTransition(true, StartDialogue);
+        // });
+        {
+            // A way to just see progression until this loading screen bug is
+            StartCoroutine(TempIEnumerator());
+            IEnumerator TempIEnumerator()
             {
+                yield return new WaitForSeconds(1f);
                 if (!isGameOver)
                     StaticProperties.canPause = true;
                 dialogueBox.gameObject.SetActive(true);
                 BoxTransition(true, StartDialogue);
-            });
+            }
+            
+        }
         else
+        {
             TweenManager.AlphaTween(fade, 1, 0, 2, Eases.Linear, delegate ()
             {
-
                 if (!isGameOver)
                     StaticProperties.canPause = true;
                 dialogueBox.gameObject.SetActive(true);
                 BoxTransition(true, StartDialogue);
             }).SetStartDelay(1f);
+        }
+
     }
 
     public void GameOver()
@@ -666,6 +681,7 @@ public class DialogueManager : MonoBehaviour
 
     void GameOut(string name, bool trans = true)
     {
+        MinigameManager.ResetManager();
         if (SceneManager.GetActiveScene().name != sceneName)
         {
             HideEverythingInScene(SceneManager.GetActiveScene().name);
@@ -1433,6 +1449,9 @@ public class DialogueManager : MonoBehaviour
             Countdown.folder = "base";
             Countdown.mode = CountdownMode.Default;
             Countdown.cam = null;
+
+            foreach(KeyValuePair<string, float> score in MinigameManager.minigameAccuracies)
+                Debug.Log($"{score.Key}: {Mathf.Round(score.Value * Mathf.Pow(10, 4)) / 100f}%");
             LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
             isExiting = true;
 

@@ -123,6 +123,8 @@ public class LoadingManager : MonoBehaviour
     private IEnumerator UnloadAllScenesCoroutine()
     {
         int sceneCount = SceneManager.sceneCount;
+
+        // Debug.Log(sceneCount);
         // Iterate from the last scene (excluding the active scene if desired, or all)
         for (int i = sceneCount - 1; i >= 0; i--)
         {
@@ -133,6 +135,7 @@ public class LoadingManager : MonoBehaviour
 
             // You might want to add logic here to avoid unloading the 'main' or active scene
             // if it's not intended to be unloaded.
+            // Debug.Log($"{sceneToUnload.name}: Unloaded {sceneToUnload.isLoaded}");
             if (sceneToUnload.isLoaded)
             {
                 AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(sceneToUnload);

@@ -140,6 +140,7 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    public static void ResetManager() => _instance = null;
     public static Dictionary<string, float> minigameAccuracies = new Dictionary<string, float>();
 
     public static List<float> totalAccuracies = new List<float>();
@@ -345,6 +346,7 @@ public class MinigameManager : MonoBehaviour
                 {
                     finishedGame = true;
                     Debug.Log($"{Mathf.Round(totalAccuracy * Mathf.Pow(10, 4)) / 100f}%");
+
                     if (cleared != null)
                         cleared.SetActive(true);
                     if (congratulations != null) congratulations.Play();

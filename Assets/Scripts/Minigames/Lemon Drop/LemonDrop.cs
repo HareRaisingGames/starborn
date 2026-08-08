@@ -43,19 +43,20 @@ namespace Starborn.LemonDrop
                 
 
             base.Start();
-            StartCoroutine(PlayMusic());
-            IEnumerator PlayMusic()
-            {
-                yield return new WaitForSeconds(1);
-                //Debug.Log("Go!");
-                SetUpSong();
-            }
+            // StartCoroutine(PlayMusic());
+            // IEnumerator PlayMusic()
+            // {
+            //     yield return new WaitForSeconds(1);
+            //     //Debug.Log("Go!");
+            //     SetUpSong();
+            // }
         }
         //int i = 0;
         public override void onA(InputAction.CallbackContext context)
         {
             base.onA(context);
 
+            if(hasCompleted != null && hasCompleted.Invoke()) return;
             if(autoPlay && Conductor.instance.isPlaying) return;
             if(!canClick) return;
 
