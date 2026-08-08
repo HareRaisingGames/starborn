@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TitleState : MonoBehaviour
 {
@@ -22,7 +23,10 @@ public class TitleState : MonoBehaviour
     private void Awake()
     {
         //instance = this;
-
+        foreach(Button button in FindObjectsOfType<Button>(true))
+        {
+            button.enabled = false;
+        }
     }
 
     void Start()
@@ -46,7 +50,7 @@ public class TitleState : MonoBehaviour
     {
         //if (FindObjectOfType<LoadingManager>(true) != null)
         //Destroy(FindObjectOfType<LoadingManager>(true).gameObject);
-        LoadingManager.LoadScene("Scenes/Main/DialogueState");
+        LoadingManager.LoadScene("Scenes/Main/DialogueState", null, 0.1f, false);
     }
 
     public void ChangeMenu(string menu) => ChangeState(menu, true);

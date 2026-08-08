@@ -43,6 +43,7 @@ public class DialogueManager : MonoBehaviour
 
     public static string curMinigame;
 
+    public static bool onFinishedLoading = false;
 
     #endregion
 
@@ -92,7 +93,6 @@ public class DialogueManager : MonoBehaviour
     public GameObject transition;
     public GameObject fade;
     public GameObject flash;
-    public GameObject loadingIcon;
     public GameObject nextButton;
 
     public RectTransform leftHalftone;
@@ -520,35 +520,22 @@ public class DialogueManager : MonoBehaviour
         {
             loadedMinigames = true;
             Debug.Log("Loaded!");
+            onFinishedLoading = true;
             SceneFadeOut();
         }
     }
 
     void SceneFadeOut()
     {
-        if (loadingIcon != null) TweenManager.AlphaTween(loadingIcon, 1, 0, 0.5f, Eases.EaseInOutQuad);
         Time.timeScale = 1;
         if (LoadingManager.instance != null)
-        // LoadingManager.FadeOut(delegate ()
-        // {
-        //     if (!isGameOver)
-        //         StaticProperties.canPause = true;
-        //     dialogueBox.gameObject.SetActive(true);
-        //     BoxTransition(true, StartDialogue);
-        // });
+        LoadingManager.FadeOut(delegate ()
         {
-            // A way to just see progression until this loading screen bug is
-            StartCoroutine(TempIEnumerator());
-            IEnumerator TempIEnumerator()
-            {
-                yield return new WaitForSeconds(1f);
-                if (!isGameOver)
-                    StaticProperties.canPause = true;
-                dialogueBox.gameObject.SetActive(true);
-                BoxTransition(true, StartDialogue);
-            }
-            
-        }
+            if (!isGameOver)
+                StaticProperties.canPause = true;
+            dialogueBox.gameObject.SetActive(true);
+            BoxTransition(true, StartDialogue);
+        });
         else
         {
             TweenManager.AlphaTween(fade, 1, 0, 2, Eases.Linear, delegate ()
@@ -917,7 +904,7 @@ public class DialogueManager : MonoBehaviour
                 },
                 delegate ()
                 {
-                    LoadingManager.LoadScene(SceneManager.GetActiveScene().name);
+                    LoadingManager.LoadScene(SceneManager.GetActiveScene().name, null, 0.1f, false);
                     Destroy(PauseMenu.instance.gameObject);
                     Conductor.startSong = false;
                     //PauseMenu.instance.hasSelected = false;
@@ -1452,7 +1439,11 @@ public class DialogueManager : MonoBehaviour
 
             foreach(KeyValuePair<string, float> score in MinigameManager.minigameAccuracies)
                 Debug.Log($"{score.Key}: {Mathf.Round(score.Value * Mathf.Pow(10, 4)) / 100f}%");
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { 
+                Time.timeScale = 1; 
+                foreach(Button button in FindObjectsOfType<Button>(true))
+                    button.enabled = true;
+                }, 0.1f);
             isExiting = true;
 
             /*TweenManager.AlphaTween(fade, 0, 1, 1, Eases.EaseInOutCubic, delegate() {
@@ -1845,4 +1836,10 @@ public class DialogueManager : MonoBehaviour
         }
     }
     #endregion
+
+
+    public void OnDestroy()
+    {
+        onFinishedLoading = false;
+    }
 }

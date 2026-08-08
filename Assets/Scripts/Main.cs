@@ -3,18 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
+using UnityEditor;
+using UnityEngine.UI;
 
 public class Main : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
     {
+        // Preload dialogue state
         //Resources.Load<GameObject>("Prefabs/Transition");
         StartCoroutine(LoadSceneMode());
         IEnumerator LoadSceneMode()
         {
             yield return new WaitForSeconds(0.5f);
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { 
+                Time.timeScale = 1; 
+                foreach(Button button in FindObjectsOfType<Button>(true))
+                    button.enabled = true;
+                }, 0.1f);
         }
         
     }

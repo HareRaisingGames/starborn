@@ -653,7 +653,7 @@ public class MinigameManager : MonoBehaviour
                     LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
                     Countdown.ResetCountdown();
                 };
-            }, 0.25f, delegate () { Time.timeScale = 1; }, true, false);
+            }, 0.25f, true, delegate () { Time.timeScale = 1; }, true, false);
         }
         if(PauseMenu.instance != null)
             PauseMenu.instance.gameObject.SetActive(false);
