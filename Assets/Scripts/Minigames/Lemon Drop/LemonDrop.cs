@@ -32,6 +32,19 @@ namespace Starborn.LemonDrop
             lemon = FindObjectOfType<Lemon>();
             // amountJudger = () => successTotal;
 
+            Resources.Load<AudioClip>("Audio/Tosstail/long_toss");
+            Resources.Load<AudioClip>("Audio/LemonDrop/cut_1");
+            Resources.Load<AudioClip>("Audio/LemonDrop/cut_2");
+
+            AudioClip toss = Resources.Load<AudioClip>("Audio/Tosstail/long_toss");
+            toss.LoadAudioData();
+            AudioClip cut1 = Resources.Load<AudioClip>("Audio/LemonDrop/cut_1");
+            cut1.LoadAudioData();
+            AudioClip cut2 = Resources.Load<AudioClip>("Audio/LemonDrop/cut_2");
+            cut2.LoadAudioData();
+            AudioClip bonk = Resources.Load<AudioClip>("Audio/Tosstail/miss");
+            bonk.LoadAudioData();
+
             if (GameObject.Find("Bonk") == null)
             {
                 GameObject gameObject = new GameObject("Bonk");

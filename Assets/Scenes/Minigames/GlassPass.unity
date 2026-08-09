@@ -950,14 +950,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.GlassPass
   conductor: {fileID: 1217296895}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 1
   song: {fileID: 8300000, guid: 663465a320650e4408d9574a5d700700, type: 3}
   tutorialSong: {fileID: 8300000, guid: 199f4453681e51547b81f9450d1b717a, type: 3}
   caller: bugz
   paused: 0
   eventsList:
-  - Slide
+  - Beer
   - Coffee
   - TutorialSlide
   countdown: 
@@ -966,15 +966,307 @@ MonoBehaviour:
     sections:
     - inputList:
       - events:
-        - Slide
+        - Beer
         - Coffee
         - TutorialSlide
-        Event: Slide
+        Event: Beer
+        parameters: []
+        mark: 4
+      startLength: 0
+      length: 8
+      loops: 2
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 5
+      startLength: 0
+      length: 8
+      loops: 2
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
         parameters: []
         mark: 0
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 8
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 9
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 12
       startLength: 0
-      length: 0
-      loops: 0
+      length: 16
+      loops: 2
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 1
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 5
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 1
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4.5
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 5
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 1
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 5
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 1
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 5.5
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 0
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4.5
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 5
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 1
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4.5
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 5
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 0
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 1
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4.5
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 5
+      startLength: 0
+      length: 8
+      loops: 1
+    - inputList:
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 0
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 1
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Beer
+        parameters: []
+        mark: 4.5
+      - events:
+        - Beer
+        - Coffee
+        - TutorialSlide
+        Event: Coffee
+        parameters: []
+        mark: 5
+      startLength: 0
+      length: 8
+      loops: 1
     setBPM: 1
     bpm: 120
   checkChartings: []
@@ -1033,7 +1325,7 @@ MonoBehaviour:
           length: 8
           loops: 2
         setBPM: 1
-        bpm: 120
+        bpm: 120.5
       amount: 3
       tag: guide
       noMusic: 0
@@ -1071,7 +1363,7 @@ MonoBehaviour:
           length: 8
           loops: 2
         setBPM: 1
-        bpm: 120
+        bpm: 120.5
       amount: 3
       tag: 
       noMusic: 0
@@ -1123,8 +1415,8 @@ MonoBehaviour:
   glassParent: {fileID: 1215665845}
   glassPrefab: {fileID: 6232484914785813661, guid: 3f9b120cf07f58e41ae86a9428791168, type: 3}
   volume: {fileID: 358107372}
-  defaultFocalLength: 0
-  defaultAperature: 0
+  defaultFocalLength: 50
+  defaultAperature: 5.6
   one: {fileID: 800825044}
   two: {fileID: 70405571}
   go: {fileID: 1868475682}

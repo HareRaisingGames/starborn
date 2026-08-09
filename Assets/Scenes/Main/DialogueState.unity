@@ -1086,7 +1086,6 @@ MonoBehaviour:
   transition: {fileID: 344707759}
   fade: {fileID: 293836762}
   flash: {fileID: 1037096117}
-  loadingIcon: {fileID: 1460767119}
   nextButton: {fileID: 1408359980}
   leftHalftone: {fileID: 677325154}
   rightHalftone: {fileID: 1107423639}
@@ -1142,8 +1141,8 @@ Canvas:
   m_GameObject: {fileID: 678567190}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 2056396494}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2474,11 +2473,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1408359980}
   m_CullTransparentMesh: 1
---- !u!1 &1460767119 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1746650611848205918, guid: 77634916b071ff04fbe3b4ef95a109d2, type: 3}
-  m_PrefabInstance: {fileID: 1113388928}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1560819402
 GameObject:
   m_ObjectHideFlags: 0

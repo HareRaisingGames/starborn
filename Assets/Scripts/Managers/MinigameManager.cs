@@ -147,6 +147,7 @@ public class MinigameManager : MonoBehaviour
     public static void ClearAccuracies() => totalAccuracies.Clear();
     public static void ClearMinigameAccuracies() => minigameAccuracies.Clear();
     public static void AverageAccuracies(List<float> game) => totalAccuracies.Add(MathUtils.ListAverage(game));
+    public static float FinalAccuracy() => MathUtils.ListAverage(totalAccuracies);
 
     StarbornInputSystem m_inputSystem;
 
@@ -331,7 +332,14 @@ public class MinigameManager : MonoBehaviour
         if (hearts != null)
             hearts.SetLives(lives);
 
-        displayAccuracy = Mathf.Lerp(displayAccuracy, totalAccuracy, Time.deltaTime * 10);
+        if(minigame.hasCompleted != null)
+        {
+            if(!minigame.hasCompleted.Invoke())
+                displayAccuracy = Mathf.Lerp(displayAccuracy, totalAccuracy, Time.deltaTime * 10);
+        }
+        else
+            displayAccuracy = Mathf.Lerp(displayAccuracy, totalAccuracy, Time.deltaTime * 10);
+
 
         foreach (RhythmInput input in inputs) input.canPlay = _canPlay;
 

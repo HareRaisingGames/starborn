@@ -26,6 +26,33 @@ public static class ColorUtils
         }
     }
 
+    public static void SetAlpha(Image obj, float value)
+    {
+        if(obj.GetComponent<Image>() != null)
+        {
+            Color color = obj.GetComponent<Image>().color;
+            obj.GetComponent<Image>().color = new Color(color.r, color.g, color.b, value);
+        }
+    }
+
+    public static void SetAlpha(TMP_Text obj, float value)
+    {
+        if(obj.GetComponent<TMP_Text>() != null)
+        {
+            Color color = obj.GetComponent<TMP_Text>().color;
+            obj.GetComponent<TMP_Text>().color = new Color(color.r, color.g, color.b, value);
+        }
+    }
+
+    public static void SetAlpha(SpriteRenderer obj, float value)
+    {
+        if(obj.GetComponent<SpriteRenderer>() != null)
+        {
+            Color color = obj.GetComponent<SpriteRenderer>().color;
+            obj.GetComponent<SpriteRenderer>().color = new Color(color.r, color.g, color.b, value);
+        }
+    }
+
     public static void SetColorByString(GameObject obj, string color)
     {
         Color selectedColor;

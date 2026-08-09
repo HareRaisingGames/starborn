@@ -156,6 +156,7 @@ public class DialogueManager : MonoBehaviour
 
     private StarbornInputSystem m_inputSystem;
 
+    private RankingState rankingState;
     private void Awake()
     {
         instance = this;
@@ -857,6 +858,14 @@ public class DialogueManager : MonoBehaviour
 
     public void onA(InputAction.CallbackContext context)
     {
+        if(rankingState != null)
+        {
+            if(!rankingState.canInteract) return;
+            
+            rankingState.Continue();
+            if (dialogueBox.click != null) dialogueBox.click.Play();
+        }
+
         if (paused)
         {
 
@@ -1436,14 +1445,21 @@ public class DialogueManager : MonoBehaviour
             Countdown.folder = "base";
             Countdown.mode = CountdownMode.Default;
             Countdown.cam = null;
+            // Save accuracies
 
-            foreach(KeyValuePair<string, float> score in MinigameManager.minigameAccuracies)
-                Debug.Log($"{score.Key}: {Mathf.Round(score.Value * Mathf.Pow(10, 4)) / 100f}%");
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { 
-                Time.timeScale = 1; 
-                foreach(Button button in FindObjectsOfType<Button>(true))
-                    button.enabled = true;
-                }, 0.1f);
+            StaticProperties.canPause = false;
+            if(minigameCount != 0)
+                rankingState = RankingState.OpenRanking();
+            else
+            {
+                LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () {
+                    Time.timeScale = 1; 
+                    foreach(Button button in FindObjectsOfType<Button>(true))
+                        button.enabled = true;
+                    }, 0.1f);
+            }
+            // foreach(KeyValuePair<string, float> score in MinigameManager.minigameAccuracies)
+            //     Debug.Log($"{score.Key}: {Mathf.Round(score.Value * Mathf.Pow(10, 4)) / 100f}%");
             isExiting = true;
 
             /*TweenManager.AlphaTween(fade, 0, 1, 1, Eases.EaseInOutCubic, delegate() {
