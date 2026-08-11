@@ -11,6 +11,7 @@ public class Main : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        // Do all preloading here
         // Preload dialogue state
         //Resources.Load<GameObject>("Prefabs/Transition");
         StartCoroutine(LoadSceneMode());

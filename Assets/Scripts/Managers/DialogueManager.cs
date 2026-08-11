@@ -1183,21 +1183,21 @@ public class DialogueManager : MonoBehaviour
                 {
                     if (character.charName == pack.character)
                     {
-                        character.offsetX = pack.offset;
                         Alignment align = pack.alignment;
                         float xPos = 0;
                         switch (align)
                         {
                             case Alignment.left:
-                                xPos = -325;
+                                xPos = -250;
                                 break;
                             case Alignment.right:
-                                xPos = 325;
+                                xPos = 250;
                                 break;
                             default:
                                 xPos = 0;
                                 break;
                         }
+                        character.offsetX = align == Alignment.right ? -pack.offset : pack.offset;
                         character.position = new Vector2(xPos, -50);
                         TweenManager.NumTween(() => character.position.y, (value) => { character.position = new Vector2(xPos, value); }, 0, 0.25f, Eases.EaseInOutCubic);
                         ColorUtils.SetAlpha(character.gameObject, 0);
@@ -1275,10 +1275,10 @@ public class DialogueManager : MonoBehaviour
         switch (align)
         {
             case Alignment.left:
-                xPos = -325;
+                xPos = -250;
                 break;
             case Alignment.right:
-                xPos = 325;
+                xPos = 250;
                 break;
             default:
                 xPos = 0;
@@ -1363,10 +1363,10 @@ public class DialogueManager : MonoBehaviour
         switch (align)
         {
             case Alignment.left:
-                xPos = -325;
+                xPos = -250;
                 break;
             case Alignment.right:
-                xPos = 325;
+                xPos = 250;
                 break;
             default:
                 xPos = 0;
