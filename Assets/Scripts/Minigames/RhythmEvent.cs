@@ -27,7 +27,7 @@ namespace Starborn.InputSystem
 
         //Where to start the event
         [HideInInspector] protected float startPoint;
-        public List<Parameter> parameters = new List<Parameter>();
+        public virtual List<Parameter> parameters { get; set; } = new List<Parameter>();
         /*public List<Attribute> attributes;
         public void AddAttribute(string name, Func<dynamic> property, Type type, dynamic value = null)
         {
@@ -117,23 +117,31 @@ namespace Starborn.InputSystem
 
         public RhythmEvent()
         {
-            SetUp();
+            if(Application.isPlaying)
+            {
+                SetUp();
 
-            if (Minigame.instance != null)
-                Minigame.instance.events.Add(this);
+                if (Minigame.instance != null)
+                    Minigame.instance.events.Add(this);
 
-            MinigameManager.instance.events.Add(this);
+                MinigameManager.instance.events.Add(this);                
+            }
+
         }
 
         public RhythmEvent(RhythmEvent copy)
         {
-            actions = copy.actions;
-            SetUp();
+            if(Application.isPlaying)
+            {
+                actions = copy.actions;
+                SetUp();
 
-            if (Minigame.instance != null)
-                Minigame.instance.events.Add(this);
+                if (Minigame.instance != null)
+                    Minigame.instance.events.Add(this);
 
-            MinigameManager.instance.events.Add(this);
+                MinigameManager.instance.events.Add(this);
+            }
+
         }
 
         //A callback event for pre charting setup
@@ -148,7 +156,7 @@ namespace Starborn.InputSystem
                 CallForAction newCFA = new CallForAction(action.action, startPoint + Conductor.instance.crochet * (action.beat - 1), action.inputMarker, action.startPoint, action.endPoint, action.onHit, action.onHalfHit, action.onMiss);
                 if (action.hasInput)
                 {
-                    newCFA = newCFA.AddInput(crochet, true);
+                    newCFA = newCFA.AddInput(crochet, false);
                     inputs.Add(newCFA.input);
                 }
                 actions_in_chart.Add(newCFA);
@@ -160,13 +168,13 @@ namespace Starborn.InputSystem
         //Call if the time of the song has been played for each event
         public void CheckForInvoke(float time)
         {
-            for(int i = actions_in_chart.Count - 1; i > -1; i--)
+            for(int i = 0; i < actions_in_chart.Count; i++)
             {
                 if(time >= actions_in_chart[i].beat)
                 {
                     actions_in_chart[i].action?.Invoke();
-                    actions_in_chart[i] = null;
                     actions_in_chart.RemoveAt(i);
+                    i--;
                 }
             }
 

@@ -31,6 +31,20 @@ namespace Starborn.Tosstail
             Resources.Load<AudioClip>("Audio/Tosstail/cake");
             Resources.Load<AudioClip>("Audio/Tosstail/donut");
 
+            AudioClip blip = Resources.Load<AudioClip>("Audio/blip");
+            if (blip != null)
+            {
+                blip.LoadAudioData();
+                AudioClip cake = Resources.Load<AudioClip>("Audio/Tosstail/cake");
+                if (cake != null) cake.LoadAudioData();
+                AudioClip donut = Resources.Load<AudioClip>("Audio/Tosstail/donut");
+                if (donut != null) donut.LoadAudioData();
+                AudioClip longToss = Resources.Load<AudioClip>("Audio/Tosstail/long_toss");
+                if (longToss != null) longToss.LoadAudioData();
+                AudioClip smallToss = Resources.Load<AudioClip>("Audio/Tosstail/small_toss");
+                if (smallToss != null) smallToss.LoadAudioData();
+            }
+
             base.Start();
             //TweenManager.instance.AddManager();
             TweenManager.XTween(shaker.gameObject, 
@@ -73,6 +87,7 @@ namespace Starborn.Tosstail
         }
         [HideInInspector]
         public int r = 0;
+        string cachedControllerType;
         void CheckForActivity(int i)
         {
             if(i % 4 == r || i == 0)
@@ -100,6 +115,7 @@ namespace Starborn.Tosstail
                 return Conductor.instance.isFinished;
             };
             base.StartSong();
+
         }
 
         public override void TutorialAdditionals()
@@ -150,7 +166,7 @@ namespace Starborn.Tosstail
                         { 
                             shaker.SuccessfulCatch(); 
                             if(!autoPlay)
-                                InputCheck.ControllerVibration(0.25f, 0.25f, Conductor.instance.crochet);
+                                InputCheck.ControllerVibration(0.05f, 0.05f, Conductor.instance.crochet * 0.5f);
                         })
                             .SetOnHalfHit(shaker.UnsuccessfulCatch)
                                 .SetOnMiss(shaker.MissedCatched);
@@ -220,8 +236,13 @@ namespace Starborn.Tosstail
             base.Update();
             niko.leftArm.Update();
             niko.rightArm.Update();
-            rightCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(a)}\"> to do a right catch";
-            leftCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(pad)}\"> to do a left catch";
+
+            if (cachedControllerType != InputCheck.controller)
+            {
+                cachedControllerType = InputCheck.controller;
+                rightCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(a)}\"> to do a right catch";
+                leftCatch = $"Press <sprite=\"game_icons_white\" name=\"{InputCheck.GetBindFromAction(pad)}\"> to do a left catch";
+            }
 
             niko.handSetter = _startGame;
         }
@@ -246,10 +267,6 @@ namespace Starborn.Tosstail
     {
         public LongToss()
         {
-            parameters = new List<Parameter>()
-            {
-                new Parameter("toggle", true, "Bounce")
-            };
             CallForAction toss = new CallForAction(() => { }, 1);
             toss.AddAction(() => {
                 float beat = startPoint + Conductor.instance.crochet * (toss.beat + 1);

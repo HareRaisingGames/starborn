@@ -328,8 +328,6 @@ namespace Starborn.Tosstail
             if(!_canPlay)
             {
                 MinigameManager.instance.LoseALife(1f);
-                MinigameManager.instance.accuracies.Add(-0.1f);
-                MinigameManager.instance.displayAccuracy = 0;
             }
 
             catchLeft = catchRight = false;

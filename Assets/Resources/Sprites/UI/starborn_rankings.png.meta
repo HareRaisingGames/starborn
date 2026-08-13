@@ -241,12 +241,12 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Starborn_FC_1
+      name: Starborn_FC
       rect:
         serializedVersion: 2
         x: 190
         y: 454
-        width: 155
+        width: 327
         height: 262
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -257,27 +257,6 @@ TextureImporter:
       bones: []
       spriteID: 2faf070efe194144d9d0ffc6740ffc67
       internalID: -864050677
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Starborn_FC_2
-      rect:
-        serializedVersion: 2
-        x: 348
-        y: 458
-        width: 169
-        height: 251
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4aa5ecb48b2d12b41b7a0980b12611ca
-      internalID: -1230359182
       vertices: []
       indices: 
       edges: []
@@ -340,7 +319,7 @@ TextureImporter:
       Starborn_C: -1197194251
       Starborn_D: 1063691404
       Starborn_F: -1275143227
-      Starborn_FC_1: -864050677
+      Starborn_FC: -864050677
       Starborn_FC_2: -1230359182
       Starborn_P: -528306611
       Starborn_S: -96341787

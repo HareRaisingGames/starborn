@@ -31,6 +31,12 @@ namespace Starborn.InputSystem
                     foreach(Inputs input in section.inputList)
                     {
                         string className = (namespaceName != "" ? namespaceName + "." : "") + input.Event;
+                        if (string.IsNullOrWhiteSpace(input.Event))
+                        {
+                            Debug.LogWarning("Charting found an empty event name and skipped it.");
+                            continue;
+                        }
+
                         Type eventType = Type.GetType(className, false, false);
                         if (eventType != null)
                         {
@@ -45,6 +51,14 @@ namespace Starborn.InputSystem
                                 var parameters = new object[] { beat * (start + input.mark), beat };
                                 var result = method.Invoke(newObject, parameters);
                             }
+                            else
+                            {
+                                Debug.LogWarning($"Charting could not find AddToChart on event type {className}.");
+                            }
+                        }
+                        else
+                        {
+                            Debug.LogWarning($"Charting could not resolve event type {className}.");
                         }
                     }
                     //Generate an event from string
@@ -135,9 +149,9 @@ namespace Starborn.InputSystem
                 return new List<Parameter>();
             }
         }*/
-        //[Parameter]
+        [Param]
         [HideInInspector]
-        public List<Parameter> displayParameters;
+        public List<Parameter> parameters;
         public float mark;
     }
 }
@@ -156,5 +170,4 @@ namespace Starborn.InputSystem
         return new List<Parameter>();
     }
 }*/
-
 

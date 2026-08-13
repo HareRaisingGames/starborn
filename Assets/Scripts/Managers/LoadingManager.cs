@@ -15,10 +15,11 @@ public class LoadingManager : MonoBehaviour
 
     public static string sceneToLoad;
     public static Scene currentScene;
-
+    public static bool autoFadeOut = true;
     public static Action afterloadCallback;
     public static Action callback;
     public static bool unloadAllScenes;
+    public static bool unloadUnusedAssets = true;
     readonly static float defaultTime = 0.25f;
     static float waitTime = 0.25f;
     public static bool isLoading = false;
@@ -59,7 +60,8 @@ public class LoadingManager : MonoBehaviour
             {
                 Camera.main.gameObject.SetActive(false);
                 SceneManager.UnloadSceneAsync(currentScene);
-                FadeOut(callback);
+                if(autoFadeOut)
+                    FadeOut(callback);
                 callback = null;
             };
 
@@ -77,7 +79,7 @@ public class LoadingManager : MonoBehaviour
         
     }
 
-    public static void LoadScene(string scene, Action cback = null, float t = 0.25f, Action unloadcback = null, bool unloadScenes = true)
+    public static void LoadScene(string scene, Action cback = null, float t = 0.25f, bool autoFade = true, Action unloadcback = null, bool unloadScenes = true, bool unloadAssets = true)
     {
         callback = cback;
         afterloadCallback = unloadcback;
@@ -85,8 +87,10 @@ public class LoadingManager : MonoBehaviour
         currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene("Scenes/LoadingScreen", LoadSceneMode.Additive);
         isLoading = true;
+        autoFadeOut = autoFade;
         waitTime = t;
         unloadAllScenes = unloadScenes;
+        unloadUnusedAssets = unloadAssets;
     }
 
     public static void FadeOut(Action callback = null)
@@ -121,6 +125,8 @@ public class LoadingManager : MonoBehaviour
     private IEnumerator UnloadAllScenesCoroutine()
     {
         int sceneCount = SceneManager.sceneCount;
+        List<AsyncOperation> operations = new List<AsyncOperation>();
+        // Debug.Log(sceneCount);
         // Iterate from the last scene (excluding the active scene if desired, or all)
         for (int i = sceneCount - 1; i >= 0; i--)
         {
@@ -128,22 +134,37 @@ public class LoadingManager : MonoBehaviour
 
             //if (sceneToUnload == SceneManager.GetSceneByName(sceneToLoad))
                 //continue;
+            if (sceneToUnload.IsValid() && sceneToUnload.isLoaded)
+            {
+                operations.Add(SceneManager.UnloadSceneAsync(sceneToUnload));
+            }
 
             // You might want to add logic here to avoid unloading the 'main' or active scene
             // if it's not intended to be unloaded.
-            if (sceneToUnload.isLoaded)
+            // Debug.Log($"{sceneToUnload.name}: Unloaded {sceneToUnload.isLoaded}");
+            // if (sceneToUnload.isLoaded)
+            // {
+            //     AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(sceneToUnload);
+            //     if (asyncUnload == null)
+            //         continue;
+            //     while (!asyncUnload.isDone)
+            //     {
+            //         yield return null;
+            //     }
+            // }
+        }
+
+        foreach (AsyncOperation op in operations)
+        {
+            if(op == null) continue;
+            while (!op.isDone)
             {
-                AsyncOperation asyncUnload = SceneManager.UnloadSceneAsync(sceneToUnload);
-                if (asyncUnload == null)
-                    continue;
-                while (!asyncUnload.isDone)
-                {
-                    yield return null;
-                }
+                yield return null;
             }
         }
-        // Optional: Call Resources.UnloadUnusedAssets to free up memory from assets no longer referenced.
-        yield return Resources.UnloadUnusedAssets();
+
+        if (unloadUnusedAssets)
+            yield return Resources.UnloadUnusedAssets();
     }
 
     /*

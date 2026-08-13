@@ -43,6 +43,7 @@ public class DialogueManager : MonoBehaviour
 
     public static string curMinigame;
 
+    public static bool onFinishedLoading = false;
 
     #endregion
 
@@ -92,7 +93,6 @@ public class DialogueManager : MonoBehaviour
     public GameObject transition;
     public GameObject fade;
     public GameObject flash;
-    public GameObject loadingIcon;
     public GameObject nextButton;
 
     public RectTransform leftHalftone;
@@ -156,6 +156,7 @@ public class DialogueManager : MonoBehaviour
 
     private StarbornInputSystem m_inputSystem;
 
+    private RankingState rankingState;
     private void Awake()
     {
         instance = this;
@@ -186,7 +187,7 @@ public class DialogueManager : MonoBehaviour
         if (flash != null)
             flash.SetActive(false);
 
-        filename = "dialogue_test";
+        filename = "minigame_test";
 
         MixerSettings.SetAudioGroup(musicSource, "Music");
         MixerSettings.SetAudioGroup(dialogueSource, "Dialogue");
@@ -520,31 +521,33 @@ public class DialogueManager : MonoBehaviour
         {
             loadedMinigames = true;
             Debug.Log("Loaded!");
+            onFinishedLoading = true;
             SceneFadeOut();
         }
     }
 
     void SceneFadeOut()
     {
-        if (loadingIcon != null) TweenManager.AlphaTween(loadingIcon, 1, 0, 0.5f, Eases.EaseInOutQuad);
         Time.timeScale = 1;
         if (LoadingManager.instance != null)
-            LoadingManager.FadeOut(delegate ()
-            {
-                if (!isGameOver)
-                    StaticProperties.canPause = true;
-                dialogueBox.gameObject.SetActive(true);
-                BoxTransition(true, StartDialogue);
-            });
+        LoadingManager.FadeOut(delegate ()
+        {
+            if (!isGameOver)
+                StaticProperties.canPause = true;
+            dialogueBox.gameObject.SetActive(true);
+            BoxTransition(true, StartDialogue);
+        });
         else
+        {
             TweenManager.AlphaTween(fade, 1, 0, 2, Eases.Linear, delegate ()
             {
-
                 if (!isGameOver)
                     StaticProperties.canPause = true;
                 dialogueBox.gameObject.SetActive(true);
                 BoxTransition(true, StartDialogue);
             }).SetStartDelay(1f);
+        }
+
     }
 
     public void GameOver()
@@ -666,6 +669,7 @@ public class DialogueManager : MonoBehaviour
 
     void GameOut(string name, bool trans = true)
     {
+        MinigameManager.ResetManager();
         if (SceneManager.GetActiveScene().name != sceneName)
         {
             HideEverythingInScene(SceneManager.GetActiveScene().name);
@@ -854,6 +858,14 @@ public class DialogueManager : MonoBehaviour
 
     public void onA(InputAction.CallbackContext context)
     {
+        if(rankingState != null)
+        {
+            if(!rankingState.canInteract) return;
+            
+            rankingState.Continue();
+            if (dialogueBox.click != null) dialogueBox.click.Play();
+        }
+
         if (paused)
         {
 
@@ -901,7 +913,7 @@ public class DialogueManager : MonoBehaviour
                 },
                 delegate ()
                 {
-                    LoadingManager.LoadScene(SceneManager.GetActiveScene().name);
+                    LoadingManager.LoadScene(SceneManager.GetActiveScene().name, null, 0.1f, false);
                     Destroy(PauseMenu.instance.gameObject);
                     Conductor.startSong = false;
                     //PauseMenu.instance.hasSelected = false;
@@ -1171,21 +1183,21 @@ public class DialogueManager : MonoBehaviour
                 {
                     if (character.charName == pack.character)
                     {
-                        character.offsetX = pack.offset;
                         Alignment align = pack.alignment;
                         float xPos = 0;
                         switch (align)
                         {
                             case Alignment.left:
-                                xPos = -325;
+                                xPos = -250;
                                 break;
                             case Alignment.right:
-                                xPos = 325;
+                                xPos = 250;
                                 break;
                             default:
                                 xPos = 0;
                                 break;
                         }
+                        character.offsetX = align == Alignment.right ? -pack.offset : pack.offset;
                         character.position = new Vector2(xPos, -50);
                         TweenManager.NumTween(() => character.position.y, (value) => { character.position = new Vector2(xPos, value); }, 0, 0.25f, Eases.EaseInOutCubic);
                         ColorUtils.SetAlpha(character.gameObject, 0);
@@ -1263,10 +1275,10 @@ public class DialogueManager : MonoBehaviour
         switch (align)
         {
             case Alignment.left:
-                xPos = -325;
+                xPos = -250;
                 break;
             case Alignment.right:
-                xPos = 325;
+                xPos = 250;
                 break;
             default:
                 xPos = 0;
@@ -1351,10 +1363,10 @@ public class DialogueManager : MonoBehaviour
         switch (align)
         {
             case Alignment.left:
-                xPos = -325;
+                xPos = -250;
                 break;
             case Alignment.right:
-                xPos = 325;
+                xPos = 250;
                 break;
             default:
                 xPos = 0;
@@ -1433,7 +1445,21 @@ public class DialogueManager : MonoBehaviour
             Countdown.folder = "base";
             Countdown.mode = CountdownMode.Default;
             Countdown.cam = null;
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+            // Save accuracies
+
+            StaticProperties.canPause = false;
+            if(minigameCount != 0)
+                rankingState = RankingState.OpenRanking();
+            else
+            {
+                LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () {
+                    Time.timeScale = 1; 
+                    foreach(Button button in FindObjectsOfType<Button>(true))
+                        button.enabled = true;
+                    }, 0.1f);
+            }
+            // foreach(KeyValuePair<string, float> score in MinigameManager.minigameAccuracies)
+            //     Debug.Log($"{score.Key}: {Mathf.Round(score.Value * Mathf.Pow(10, 4)) / 100f}%");
             isExiting = true;
 
             /*TweenManager.AlphaTween(fade, 0, 1, 1, Eases.EaseInOutCubic, delegate() {
@@ -1826,4 +1852,10 @@ public class DialogueManager : MonoBehaviour
         }
     }
     #endregion
+
+
+    public void OnDestroy()
+    {
+        onFinishedLoading = false;
+    }
 }

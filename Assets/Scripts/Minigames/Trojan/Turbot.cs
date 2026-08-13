@@ -34,7 +34,7 @@ namespace Starborn.Trojan
         public override void Explode(float duration = 0, System.Action callback = null, bool returnHealth = false)
         {
             if (body != null)
-                ColorUtils.SetAlpha(body.gameObject, 0);
+                ColorUtils.SetAlpha(body, 0);
             base.Explode(duration, callback, returnHealth);
         }
     }

@@ -140,6 +140,8 @@ public class Outline : MonoBehaviour {
   void OnDisable() {
     foreach (var renderer in renderers) {
 
+      // Debug.Log(renderer);
+      if(renderer == null) continue;
       // Remove outline shaders
       var materials = renderer.sharedMaterials.ToList();
 

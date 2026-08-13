@@ -21,13 +21,18 @@ namespace Starborn.Tosstail {
 
         public void UpdateHand()
         {
+            if(niko == null)
+                return;
+
             if(rightHand)
             {
-                niko.rightArm.Update();
+                if(niko.rightArm != null)
+                    niko.rightArm.Update();
             }
             else
             {
-                niko.leftArm.Update();
+                if(niko.leftArm != null)
+                    niko.leftArm.Update();
             }
         }
     }

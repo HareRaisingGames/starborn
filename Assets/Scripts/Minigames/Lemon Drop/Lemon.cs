@@ -7,6 +7,7 @@ namespace Starborn.LemonDrop
 {
     public class Lemon : MonoBehaviour
     {
+        public Transform lemonParent;
         public Rigidbody skin;
         public Rigidbody front;
         public Rigidbody slice1;
@@ -34,9 +35,72 @@ namespace Starborn.LemonDrop
 
         LemonDrop game;
 
+        bool isLime = false;
+        public bool lime => isLime;
+        [Header("Lemon Type")]
+        public Texture2D lemonTexture;
+        public Texture2D limeTexture;
+        protected readonly Color lemonColor = Color.yellow;
+        protected readonly Color limeColor = Color.green;
+
+        protected readonly Color lemonCitrusColor = new Color(255,237,86);
+        protected readonly Color limeCitrusColor = new Color(174,255,86);
+
+        protected Gradient lemonGradient = new Gradient();
+        protected Gradient limeGradient = new Gradient();
+
+        protected Quaternion defaultRotation;
+
+        [Header("Physics Settings")]
+        public Vector3 torqueAxis = Vector3.up; 
+        public float inertiaTensor = 1.0f;     // Simulates the object's resistance to rotation
+        public float angularDrag = 0.5f;
+        private Vector3 angularVelocity = Vector3.zero;
+        bool missed = false;
+
+        AudioSource _squeeze;
+
+        [Header("Particles")]
+        public ParticleSystem splash1;
+        public ParticleSystem splash2;
+        void Awake()
+        {
+            // Seeds the generator using the current time so it is completely unique every play
+            int dynamicSeed = (int)System.DateTime.Now.Ticks;
+            Random.InitState(dynamicSeed);
+
+            lemonGradient.SetKeys(
+                new GradientColorKey[]{
+                    new GradientColorKey(lemonCitrusColor, 0.0f), new GradientColorKey(lemonCitrusColor,1.0f)},
+                new GradientAlphaKey[]
+                {
+                    new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(0.0f, 0.5f)
+                }
+            );
+
+            limeGradient.SetKeys(
+                new GradientColorKey[]{
+                    new GradientColorKey(limeCitrusColor, 0.0f), new GradientColorKey(limeCitrusColor, 1.0f)},
+                new GradientAlphaKey[]
+                {
+                    new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(0.0f, 0.5f)
+                }
+            );
+        }
+
+        // protected float minX = -15f;
+        // protected float maxX = 15f;
+        // protected float middleX = Mathf.Lerp(-15f, 15f, 0.5f);
+        // protected float minY = 60f;
+        // protected float maxY = 120f;
+        // protected float middleY = Mathf.Lerp(60f, 120f, 0.5f);
+        // protected bool reverseX = false;
+        // protected bool reverseY = false;
+
         // Start is called before the first frame update
         void Start()
         {
+            defaultRotation = transform.rotation;
             if (front.gameObject.GetComponent<FixedJoint>() == null)
                 front.gameObject.AddComponent<FixedJoint>();
             if (slice1.gameObject.GetComponent<FixedJoint>() == null)
@@ -72,18 +136,25 @@ namespace Starborn.LemonDrop
             sliceToSlice.connectedBody = slice2;
             sliceToBack.connectedBody = back;
 
-            xRotating = TweenManager.PitchTween(gameObject, -15, 15, 3.5f, Eases.EaseInOutQuad).SetPingPong(1000);
-            yRotating = TweenManager.YawTween(gameObject, 60, 120, 3, Eases.EaseInOutQuad).SetPingPong(1000);
+            if (GameObject.Find("Squeeze") == null)
+            {
+                GameObject gameObject = new GameObject("Squeeze");
+                _squeeze = gameObject.AddComponent<AudioSource>();
+                _squeeze.clip = Resources.Load<AudioClip>("Audio/LemonDrop/squeeze");
+            }
+            else
+                _squeeze = GameObject.Find("Squeeze").GetComponent<AudioSource>();
+
         }
         public void Reassemble()
         {
             skin.gameObject.SetActive(true);
 
-            skin.transform.parent = transform;
-            front.transform.parent = transform;
-            slice1.transform.parent = transform;
-            slice2.transform.parent = transform;
-            back.transform.parent = transform;
+            skin.transform.parent = lemonParent;
+            front.transform.parent = lemonParent;
+            slice1.transform.parent = lemonParent;
+            slice2.transform.parent = lemonParent;
+            back.transform.parent = lemonParent;
 
             skin.transform.localPosition = skinPos;
             front.transform.localPosition = frontPos;
@@ -113,12 +184,53 @@ namespace Starborn.LemonDrop
             frontToSlice = front.gameObject.GetComponent<FixedJoint>();
             sliceToSlice = slice1.gameObject.GetComponent<FixedJoint>();
             sliceToBack = slice2.gameObject.GetComponent<FixedJoint>();
-        }
 
+            // Random.InitState(42);
+            float random = Random.Range(0f, 1f);
+            bool lime = random <= 0.1f;
+            ChangeType(skin.gameObject, lime);
+            ChangeType(front.gameObject, lime);
+            ChangeType(slice1.gameObject, lime);
+            ChangeType(slice2.gameObject, lime);
+            ChangeType(back.gameObject, lime);
+
+            missed = false;
+            transform.rotation = defaultRotation;
+
+            if(game != null)
+                game.cutCount = 0;
+
+            // if(splash1 != null)
+                // splash1.colorOverLifetime.
+        }
+        protected float xTime = 3.5f;
+        protected float yTime = 3f;
         // Update is called once per frame
         void Update()
         {
-            transform.Rotate(Vector3.forward * 100 * Time.deltaTime);
+            if(!missed)
+            {
+                //Created a swing motion for the lemon, using PingPong to oscillate between two values over time. 
+                // The rotation is applied to the transform of the lemon object.
+                // The absolute value of the PingPong is to make sure it forms a penduilum motion.
+                float x = Mathf.Abs(Mathf.PingPong(Time.time / xTime, 2) - 1)/5f;
+                float y = Mathf.Abs(Mathf.PingPong(Time.time / yTime, 2) - 1)/5f;
+                transform.Rotate(new Vector3(x,y,1) * 100 * Time.deltaTime);
+
+            }
+            else
+            {
+                angularVelocity -= angularVelocity * angularDrag * Time.deltaTime;
+                if (angularVelocity != Vector3.zero)
+                {
+                    // Convert angular velocity vector to a rotation step
+                    float angle = angularVelocity.magnitude * Time.deltaTime * Mathf.Rad2Deg;
+                    Vector3 axis = angularVelocity.normalized;
+
+                    transform.Rotate(axis, angle, Space.World);
+                }
+            }
+            
         }
 
         public void Cut(float state)
@@ -129,6 +241,8 @@ namespace Starborn.LemonDrop
             if(game != null)
                 game.cutCount++;
 
+            _squeeze.Play();
+
             if (state >= 1)
             {
                 front.isKinematic = false;
@@ -136,11 +250,12 @@ namespace Starborn.LemonDrop
             }
             if (state >= 2)
             {
-                slice1.isKinematic = false;
-                slice1.transform.parent = null;
+                
             }
             if (state >= 3)
             {
+                slice1.transform.parent = null;
+                slice1.isKinematic = false;
                 slice2.isKinematic = false;
                 back.isKinematic = false;
                 slice2.transform.parent = null;
@@ -151,8 +266,11 @@ namespace Starborn.LemonDrop
             {
                 case 1:
                     Destroy(frontToSlice);
-                    front.AddForce(transform.up * 10);
+                    front.AddForce(transform.up * 100);
                     front.AddForce(-transform.forward * 100);
+                    front.AddTorque(transform.up * 10);
+                    if (splash1 != null)
+                        splash1.Play();
                     break;
                 case 2:
                     Destroy(sliceToSlice);
@@ -162,15 +280,31 @@ namespace Starborn.LemonDrop
                 case 3:
                     Destroy(sliceToBack);
                     slice2.AddForce(-transform.forward * 100);
-                    //back.AddForce(transform.forward * 100);
 
                     slice2.AddForce(transform.up * 10);
-                    //back.AddForce(transform.up * 10);
 
-                    //if (GetComponent<Outline>() != null)
-                    //GetComponent<Outline>().enabled = false;
+                    back.AddForce(transform.forward * 100);
+                    back.AddTorque(-transform.up * 10);
+                    if (splash2 != null)
+                        splash2.Play();
                     break;
             }
+        }
+
+        public void Missed()
+        {
+            missed = true;
+            Debug.Log("Whamp");
+            AddTorqueCustom(torqueAxis * 10f);
+        }
+
+        public void Fall()
+        {
+            skin.isKinematic = false;
+            front.isKinematic = false;
+            slice1.isKinematic = false;
+            slice2.isKinematic = false;
+            back.isKinematic = false;
         }
 
         public void AddThrow(float beat, float x = 0.5f, float y = 0.5f)
@@ -179,6 +313,44 @@ namespace Starborn.LemonDrop
                 .SetDestination(beat)
                     .SetRange(x, y);
             input.Enable();
+        }
+
+        public void ChangeType(GameObject lemonObject, bool isLime)
+        {
+            this.isLime = isLime;
+            Material[] materials = lemonObject.GetComponent<MeshRenderer>().materials;
+            foreach (Material material in materials)
+            {
+                if(material.name.Contains("Inner"))
+                {
+                    material.mainTexture = isLime ? limeTexture : lemonTexture;
+                }
+                else if(material.name.Contains("Cut_Skin") || material.name.Contains("Skin"))
+                {
+                    material.color = isLime ? limeColor : lemonColor;
+                }
+                else if(material.name.Contains("OutlineFill"))
+                {
+                    material.SetColor("_OutlineColor", Color.black);
+                    material.SetFloat("_OutlineWidth", 10f);
+                    material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);
+                }
+            }
+            var col1 = splash1.colorOverLifetime;
+            col1.color = isLime ? limeGradient : lemonGradient;
+
+            var col2 = splash2.colorOverLifetime;
+            col2.color = isLime ? limeGradient : lemonGradient;
+        }
+
+        public void AddTorqueCustom(Vector3 torque)
+        {
+            // Physics formula: Torque = Inertia * Angular Acceleration
+            // Therefore: Angular Acceleration = Torque / Inertia
+            Vector3 angularAcceleration = torque / Mathf.Max(0.01f, inertiaTensor);
+
+            // Accumulate acceleration into velocity
+            angularVelocity += angularAcceleration * Time.deltaTime;
         }
     }
 }

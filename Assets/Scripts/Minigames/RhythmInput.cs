@@ -16,6 +16,8 @@ namespace Starborn.InputSystem
     {
         public delegate void EventCallback(RhythmInput call);
 
+        const float inputEnableBuffer = 0.05f;
+
         public Action onHit;
         public Action onMiss;
         public Action<bool> onHalfHit;
@@ -42,10 +44,7 @@ namespace Starborn.InputSystem
             set
             {
                 autoplay = value;
-                if(autoplay)
-                    InputAction.performed -= onInputHit;
-                else
-                    InputAction.performed += onInputHit;
+                UpdateInputCallbacks();
             }
         }
 
@@ -81,6 +80,8 @@ namespace Starborn.InputSystem
         private RhythmInputs _action;
 
         private float spb;
+        bool callbacksRegistered;
+        bool disposed;
         public float secPerBeat => spb;
         public RhythmInputs action
         {
@@ -96,7 +97,7 @@ namespace Starborn.InputSystem
             id = (int)UnityEngine.Random.Range(1, 1000);
             MinigameManager.instance.inputs.Add(this);
             spb = Conductor.instance.crochet;
-            enabled = true;
+            enabled = false;
             Generate();
         }
 
@@ -104,48 +105,58 @@ namespace Starborn.InputSystem
         {
             if(!enabled) return;
 
+            curHit = Conductor.instance.songPosition;
+            checkForAccuracy = (curHit >= startPoint) && (curHit <= endPoint);
+
             float accurary = 0;
-            // Debug.Log(curHit);
             if (checkForAccuracy && mustHit && !hasHit && !autoplay)
             {
-                //TimeToAccuracy(curHit);
                 bool early = false;
                 if(curHit == desHit)
                 {
-                    Debug.Log(id + ": " + 1.0f);
                     accurary = 1.0f;
                 }
                 else if(curHit >= startPoint && curHit < desHit)
                 {
-                    Debug.Log(id + ": " + MathUtils.Normalize(curHit, startPoint, desHit));
                     accurary = MathUtils.Normalize(curHit, startPoint, desHit);
+                    Debug.Log(accurary);
                     early = true;
                 }
                 else if(curHit <= endPoint && curHit > desHit)
                 {
-                    Debug.Log(id + ": " + MathUtils.ReverseNormalize(curHit, desHit, endPoint));
                     accurary = MathUtils.ReverseNormalize(curHit, desHit, endPoint);
+                    Debug.Log(accurary);
                 }
 
                 if (accurary >= 0.8)
                 {
                     onHit?.Invoke();
-                    if (accurary >= 0.95) //Super close means it's a perfect hit
+                    if (accurary >= 0.95)
                         accurary = 1;
+                    MinigameManager.instance.accuracies.Add(accurary);
                     success = true;
+                    hasHit = true;
+                    Disable();
                 }
                 else if(accurary < 0.8 && accurary >= 0.6)
                 {
                     onHalfHit?.Invoke(early);
+                    MinigameManager.instance.accuracies.Add(accurary);
                     success = true;
+                    hasHit = true;
+                    Disable();
+                }
+                else
+                {
+                    onMiss?.Invoke();
+                    MinigameManager.instance.accuracies.Add(0f);
+                    success = true;
+                    hasHit = true;
+                    Disable();
                 }
 
-                MinigameManager.instance.accuracies.Add(accurary);
                 MinigameManager.instance.displayAccuracy = 0;
-
-                hasHit = true;
             }
-
 
         }
 
@@ -196,14 +207,42 @@ namespace Starborn.InputSystem
             }
 
             mustHit = _action != RhythmInputs.None;
-            if (mustHit && !autoplay)
+            UpdateInputCallbacks();
+                 
+
+            //desHit = destination;
+        }
+
+        void UpdateInputCallbacks()
+        {
+            if (disposed || InputAction == null || !mustHit)
+            {
+                RemoveInputCallbacks();
+                return;
+            }
+
+            if (autoplay)
+            {
+                RemoveInputCallbacks();
+                return;
+            }
+
+            if (!callbacksRegistered)
             {
                 InputAction.performed += onInputHit;
                 InputAction.canceled += onInputRelease;
+                callbacksRegistered = true;
             }
-                
+        }
 
-            //desHit = destination;
+        void RemoveInputCallbacks()
+        {
+            if (InputAction != null && callbacksRegistered)
+            {
+                InputAction.performed -= onInputHit;
+                InputAction.canceled -= onInputRelease;
+                callbacksRegistered = false;
+            }
         }
         public RhythmInput SetOnHit(Action action)
         {
@@ -240,14 +279,31 @@ namespace Starborn.InputSystem
 
         public void Enable()
         {
+            if (disposed || InputAction == null)
+                return;
+
             InputAction.Enable();
             enabled = true;
         }
 
         public void Disable()
         {
+            if (InputAction == null)
+                return;
+
             InputAction.Disable();
             enabled = false;
+        }
+
+        public void Dispose()
+        {
+            if (disposed)
+                return;
+
+            RemoveInputCallbacks();
+            Disable();
+            m_inputSystem.Dispose();
+            disposed = true;
         }
 
         bool enabled = false;
@@ -259,6 +315,11 @@ namespace Starborn.InputSystem
             {
                 curHit = time;
                 checkForAccuracy = (curHit >= startPoint) && (curHit <= endPoint);
+
+                if(!enabled && !success && curHit >= startPoint - inputEnableBuffer && curHit <= endPoint)
+                {
+                    Enable();
+                }
 
                 /*if(checkForAccuracy)
                 {
@@ -295,10 +356,11 @@ namespace Starborn.InputSystem
 
                 if(curHit > endPoint && !success)
                 {
-                    //Debug.Log("Ack!");
                     onMiss?.Invoke();
+                    MinigameManager.instance.accuracies.Add(0f);
                     hasHit = true;
                     success = true;
+                    Disable();
                 }
             }
         }
@@ -331,4 +393,3 @@ public enum RhythmInputs
     Pad,
     Random
 }
-

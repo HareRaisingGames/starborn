@@ -19,6 +19,26 @@ public static class StringUtils
         }
         return String.Join("", inputList.ToArray());
     }
+
+    public static string SplitToUpper(string input)
+    {
+        List<char> charList = new List<char>(input.ToCharArray());
+        List<int> indexes = new List<int>();
+        for(int i = 0; i < charList.Count; i++)
+        {
+            if(i + 1 < charList.Count)
+            {
+                if(char.IsUpper(input[i + 1]))
+                    indexes.Add(i + 1);
+            }
+
+        }
+
+        foreach(int index in indexes)
+            charList.Insert(index, ' ');
+
+        return String.Join("", charList.ToArray());
+    }
 }
 
 public class ListToPopUpAttribute : PropertyAttribute

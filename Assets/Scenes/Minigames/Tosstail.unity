@@ -16968,7 +16968,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 14
       startLength: 0
       length: 16
@@ -16980,7 +16980,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6
       startLength: 0
       length: 8
@@ -16992,9 +16992,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters:
-        - propertyName: 
-          caption: 
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
@@ -17002,7 +17000,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: StopBouncing
-        displayParameters: []
+        parameters: []
         mark: 4.5
       - events:
         - ShortToss
@@ -17010,7 +17008,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: StartBouncing
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17022,7 +17020,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       startLength: 0
       length: 4
@@ -17034,7 +17032,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       startLength: 0
       length: 4
@@ -17046,7 +17044,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       startLength: 0
       length: 4
@@ -17058,7 +17056,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       startLength: 0
       length: 4
@@ -17070,7 +17068,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
@@ -17078,7 +17076,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17086,7 +17084,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17098,7 +17096,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17106,7 +17104,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17118,7 +17116,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17126,7 +17124,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
@@ -17134,7 +17132,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17146,7 +17144,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17154,7 +17152,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17166,7 +17164,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
@@ -17174,7 +17172,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17186,7 +17184,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
@@ -17194,7 +17192,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17202,7 +17200,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17214,7 +17212,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
@@ -17222,7 +17220,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17230,7 +17228,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
@@ -17238,7 +17236,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17250,7 +17248,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
@@ -17258,7 +17256,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 2.5
       - events:
         - ShortToss
@@ -17266,7 +17264,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 5.5
       startLength: 0
       length: 8
@@ -17278,7 +17276,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
@@ -17286,7 +17284,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17294,7 +17292,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17306,7 +17304,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
@@ -17314,7 +17312,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       startLength: 0
       length: 4
@@ -17326,7 +17324,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
@@ -17334,7 +17332,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
@@ -17342,7 +17340,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 5.5
       - events:
         - ShortToss
@@ -17350,7 +17348,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 7.5
       startLength: 0
       length: 8
@@ -17362,7 +17360,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 2.5
       startLength: 0
       length: 4
@@ -17374,7 +17372,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
@@ -17382,7 +17380,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
@@ -17390,7 +17388,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17402,7 +17400,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
@@ -17410,7 +17408,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 2.5
       - events:
         - ShortToss
@@ -17418,7 +17416,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 4.5
       startLength: 0
       length: 8
@@ -17430,7 +17428,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
@@ -17438,7 +17436,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17446,7 +17444,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
@@ -17454,7 +17452,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17466,7 +17464,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
@@ -17474,7 +17472,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 2.5
       - events:
         - ShortToss
@@ -17482,7 +17480,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 4.5
       startLength: 0
       length: 8
@@ -17494,7 +17492,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
@@ -17502,7 +17500,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
@@ -17510,7 +17508,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
@@ -17518,7 +17516,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17530,7 +17528,7 @@ MonoBehaviour:
         - StopBouncing
         - StartBouncing
         Event: StopBouncing
-        displayParameters: []
+        parameters: []
         mark: 0
       startLength: 0
       length: 8
@@ -17545,7 +17543,7 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 14
       startLength: 0
       length: 16
@@ -17555,7 +17553,7 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6
       startLength: 0
       length: 8
@@ -17565,7 +17563,7 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17575,7 +17573,7 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       startLength: 0
       length: 4
@@ -17585,7 +17583,7 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       startLength: 0
       length: 4
@@ -17595,7 +17593,7 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       startLength: 0
       length: 4
@@ -17605,7 +17603,7 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       startLength: 0
       length: 4
@@ -17615,19 +17613,19 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17637,13 +17635,13 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17653,19 +17651,19 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17675,13 +17673,13 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17691,13 +17689,13 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17707,19 +17705,19 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17729,25 +17727,25 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17757,19 +17755,19 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 2.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 5.5
       startLength: 0
       length: 8
@@ -17779,19 +17777,19 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       startLength: 0
       length: 8
@@ -17801,13 +17799,13 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       startLength: 0
       length: 4
@@ -17817,25 +17815,25 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 5.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 7.5
       startLength: 0
       length: 8
@@ -17845,7 +17843,7 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 2.5
       startLength: 0
       length: 4
@@ -17855,19 +17853,19 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17877,19 +17875,19 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 2.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 4.5
       startLength: 0
       length: 8
@@ -17899,25 +17897,25 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -17927,19 +17925,19 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 2.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 4.5
       startLength: 0
       length: 8
@@ -17949,25 +17947,25 @@ MonoBehaviour:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: -0.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 1.5
       - events:
         - ShortToss
         - LongToss
         Event: LongToss
-        displayParameters: []
+        parameters: []
         mark: 3.5
       - events:
         - ShortToss
         - LongToss
         Event: ShortToss
-        displayParameters: []
+        parameters: []
         mark: 6.5
       startLength: 0
       length: 8
@@ -18023,13 +18021,13 @@ MonoBehaviour:
         - inputList:
           - events: []
             Event: ShortToss
-            displayParameters: []
+            parameters: []
             mark: 2
           startLength: 0
           length: 4
           loops: 8
         setBPM: 1
-        bpm: 109.95
+        bpm: 110
       amount: 4
       tag: 
       noMusic: 0
@@ -18061,7 +18059,7 @@ MonoBehaviour:
         - inputList:
           - events: []
             Event: LongToss
-            displayParameters: []
+            parameters: []
             mark: 4
           startLength: 0
           length: 8

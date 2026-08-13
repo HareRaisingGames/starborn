@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Linq;
+using Random = UnityEngine.Random;
 
 public static partial class MusicUtils
 {
@@ -36,14 +36,27 @@ public static partial class MusicUtils
     public static AudioClip GetRandomClip(string directory, string baseName)
     {
         AudioClip[] allSounds = Resources.LoadAll<AudioClip>(directory);
-        IEnumerable<AudioClip> filtered = allSounds.Where(sound => sound.name.Contains(baseName));
-        AudioClip[] filteredSFXs = filtered.ToArray();
 
-        if(filteredSFXs.Length != 0)
+        int count = 0;
+        foreach (AudioClip sound in allSounds)
         {
-            System.Random random = new System.Random();
-            int r = random.Next(0, filteredSFXs.Length);
-            return filteredSFXs[r];
+            if (sound.name.Contains(baseName))
+                count++;
+        }
+
+        if (count == 0)
+            return null;
+
+        int target = Random.Range(0, count);
+        int index = 0;
+        foreach (AudioClip sound in allSounds)
+        {
+            if (sound.name.Contains(baseName))
+            {
+                if (index == target)
+                    return sound;
+                index++;
+            }
         }
 
         return null;

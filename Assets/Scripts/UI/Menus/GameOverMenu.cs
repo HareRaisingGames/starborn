@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.UI;
 
 public class GameOverMenu : PopupMenu
 {
@@ -18,7 +19,11 @@ public class GameOverMenu : PopupMenu
     {
         if (FindObjectOfType<PauseMenu>(true) != null)
             Destroy(FindObjectOfType<PauseMenu>(true).gameObject);
-
-        LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1;});
+        MinigameManager.EndChapter();
+        LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () {
+            Time.timeScale = 1; 
+            foreach(Button button in FindObjectsOfType<Button>(true))
+                button.enabled = true;
+        });
     }
 }

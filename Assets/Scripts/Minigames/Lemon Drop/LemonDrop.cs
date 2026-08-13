@@ -20,70 +20,175 @@ namespace Starborn.LemonDrop
         [HideInInspector]
         public bool canCheck;
 
+        AudioSource _bonk;
+        public AudioSource bonk => _bonk;
+        public Knife knife;
+        bool canClick = false;
+        int swings = 0;
+
         // Start is called before the first frame update
         public override void Start()
         {
             lemon = FindObjectOfType<Lemon>();
-            amountJudger = () => successTotal;
-            //lemonEvent.AddToChart(Conductor.instance.crochet * 13, Conductor.instance.crochet);
-            //input = new RhythmInput(RhythmInputs.A).SetDestination(Conductor.instance.crochet * 12).SetRange(Conductor.instance.crochet, Conductor.instance.crochet);
-            //input.Enable();
-            //Conductor.instance.music.Play();
+            // amountJudger = () => successTotal;
 
-            //Debug.Log(Object.FindObjectsOfType<RhythmEvent>().Length);
-            base.Start();
-            StartCoroutine(PlayMusic());
-            IEnumerator PlayMusic()
+            Resources.Load<AudioClip>("Audio/Tosstail/long_toss");
+            Resources.Load<AudioClip>("Audio/LemonDrop/cut_1");
+            Resources.Load<AudioClip>("Audio/LemonDrop/cut_2");
+
+            AudioClip toss = Resources.Load<AudioClip>("Audio/Tosstail/long_toss");
+            toss.LoadAudioData();
+            AudioClip cut1 = Resources.Load<AudioClip>("Audio/LemonDrop/cut_1");
+            cut1.LoadAudioData();
+            AudioClip cut2 = Resources.Load<AudioClip>("Audio/LemonDrop/cut_2");
+            cut2.LoadAudioData();
+            AudioClip bonk = Resources.Load<AudioClip>("Audio/Tosstail/miss");
+            bonk.LoadAudioData();
+
+            if (GameObject.Find("Bonk") == null)
             {
-                yield return new WaitForSeconds(1);
-                //Debug.Log("Go!");
-                SetUpSong();
+                GameObject gameObject = new GameObject("Bonk");
+                _bonk = gameObject.AddComponent<AudioSource>();
+                _bonk.clip = Resources.Load<AudioClip>("Audio/Tosstail/miss");
             }
+            else
+                _bonk = GameObject.Find("Bonk").GetComponent<AudioSource>();
+                
+
+            base.Start();
+            // StartCoroutine(PlayMusic());
+            // IEnumerator PlayMusic()
+            // {
+            //     yield return new WaitForSeconds(1);
+            //     //Debug.Log("Go!");
+            //     SetUpSong();
+            // }
         }
         //int i = 0;
         public override void onA(InputAction.CallbackContext context)
         {
             base.onA(context);
+
+            if(hasCompleted != null && hasCompleted.Invoke()) return;
+            if(autoPlay && Conductor.instance.isPlaying) return;
+            if(!canClick) return;
+
+            if(knife != null)
+                knife.Slice();
+
+            if(tagName == "slash")
+            {
+                swings++;
+            }
         }
 
         public override void StartSong()
         {
+            canClick = true;
             hasCompleted = delegate ()
             {
-                return cutCount >= 3 && afterCut;
+                return cutCount >= 2 && afterCut && Conductor.instance.isFinished;
             };
             base.StartSong();
+            Conductor.instance.onSongFinished += delegate ()
+            {
+                if (!hasCompleted.Invoke())
+                {
+                    Debug.Log("Failed");
+                    //Rare occurance
+                    if(lemon.lime && cutCount >= 1) MinigameManager.instance.AddALife(1f);
+                    else MinigameManager.instance.LoseALife(1f);
+                    StartCoroutine(PlayMusic());
+                    IEnumerator PlayMusic()
+                    {
+                        yield return new WaitForSeconds(1);
+                        StartSong();
+                    }
+
+                }
+
+            };
         }
 
+        public override void AdditionalSongSetup(string tag = "")
+        {
+            base.AdditionalSongSetup(tag);
+            if (tag == "slash")
+            {
+                tagName = "slash";
+                amountJudger = () => swings;
+                canClick = true;
+            }
+            else
+            {
+                tagName = "";
+                amountJudger = () => successTotal;
+                afterCut = true;
+                canClick = true;
+                // canClick = false;
+            }
+        }
         public override void TutorialAdditionals()
         {
             base.TutorialAdditionals();
-            if(!canCheck)
+            canClick = true;
+            if (tagName == "slash")
             {
-                if(cutCount >= 3 && afterCut)
+                if (MinigameManager.instance.remainingText != null && amountJudger != null)
+                {
+                    MinigameManager.instance.remainingText.text = MinigameManager.instance.requiredText;
+                }
+
+                if (hasCompleted != null && hasCompleted.Invoke())
+                    OnBeatTutorial(0);
+            }
+            else
+            {
+                if(cutCount >= 2 && afterCut)
                 {
                     successTotal++;
-                    canCheck = true;
+                    cutCount = 0;
                 }
             }
+
         }
 
         public override void TutorialOnComplete(int amount, string tag = "")
         {
             hasCompleted = null;
             base.TutorialOnComplete(amount, tag);
-            hasCompleted = delegate ()
+            if(tag == "slash")
             {
-                return successTotal >= amount;
-            };
+                hasCompleted = delegate ()
+                {
+                    return swings >= amount;
+                };
+            }
+            else
+            {
+                hasCompleted = delegate ()
+                {
+                    return successTotal >= amount;
+                };
+            }
         }
 
         public override void TutorialReset()
         {
             base.TutorialReset();
+            hasCompleted = null;
+            tagName = "";
             successTotal = 0;
             cutCount = 0;
             afterCut = false;
+            canClick = false;
+            swings = 0;
+        }
+
+        public override void OnTutorialStop()
+        {
+            base.OnTutorialStop();
+            tagName = "";
         }
     }
 }

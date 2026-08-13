@@ -7,6 +7,9 @@ namespace Starborn
 {
     public class Conductor : MonoBehaviour
     {
+        const float fallbackSongBpm = 120f;
+        const float songEndToleranceSeconds = 0.05f;
+
         // Song beats per minute
         // This is determined by the song you're trying to sync up to
         public float songBpm { get; private set; }
@@ -38,7 +41,7 @@ namespace Starborn
 
         public float songLength => (music != null && music.clip != null) ? music.clip.length : 0;
         bool _isFinished;
-        public bool isFinished => Conductor.instance.music.timeSamples < timeSamples && timeSamples > 0 && startSong;
+        public bool isFinished => _isFinished;
 
         public Action onSongFinished = null;
 
@@ -49,7 +52,7 @@ namespace Starborn
 
         public float offset = 0f;
 
-        public float crochet => 60 / songBpm; //Seconds per beat
+        public float crochet => songBpm > 0 ? 60 / songBpm : 0; //Seconds per beat
 
         public float stepCrochet => crochet / 4;
 
@@ -88,18 +91,40 @@ namespace Starborn
         {
             if (music != null)
             {
-                if(manualBpm > 0)
-                {
-                    songBpm = manualBpm;
-                }
-                else
-                {
-                    songBpm = UniBpmAnalyzer.AnalyzeBpm(music.clip) / increment;
-                }
+                songBpm = ResolveSongBpm();
 
                 dspTime = (float)AudioSettings.dspTime;
                 startTime = DateTime.Now;
             }
+        }
+
+        float ResolveSongBpm()
+        {
+            if (manualBpm > 0)
+            {
+                return manualBpm;
+            }
+
+            if (music == null || music.clip == null)
+            {
+                return songBpm > 0 ? songBpm : 0;
+            }
+
+            float safeIncrement = increment;
+            if (safeIncrement <= 0)
+            {
+                Debug.LogWarning($"Conductor on {gameObject.name} has increment <= 0. Falling back to 1 to avoid invalid BPM calculation.");
+                safeIncrement = 1;
+            }
+
+            float analyzedBpm = UniBpmAnalyzer.AnalyzeBpm(music.clip);
+            if (analyzedBpm > 0)
+            {
+                return analyzedBpm / safeIncrement;
+            }
+
+            Debug.LogWarning($"Conductor on {gameObject.name} could not resolve BPM from clip {music.clip.name}. Falling back to {fallbackSongBpm} BPM.");
+            return fallbackSongBpm;
         }
 
         public void ManualSetUpBPM(float bpm)
@@ -126,11 +151,11 @@ namespace Starborn
         public void PlayMusic()
         {
             _isFinished = false;
+            dspStart = AudioSettings.dspTime;
+            startTime = DateTime.Now;
             music.Play();
-            //CancelInvoke();
             timeSamples = music.timeSamples;
             startSong = true;
-            //Invoke("Done", songLength);
             if (FindObjectOfType<Minigame>() != null)
                 FindObjectOfType<Minigame>().OnSongStart?.Invoke();
         }
@@ -138,6 +163,8 @@ namespace Starborn
         public void PlayMusicWithoutCallback()
         {
             _isFinished = false;
+            dspStart = AudioSettings.dspTime;
+            startTime = DateTime.Now;
             startSong = true;
             music.Play();
             timeSamples = music.timeSamples;
@@ -147,6 +174,9 @@ namespace Starborn
 
         void Done()
         {
+            if (_isFinished)
+                return;
+
             _isFinished = true;
             onSongFinished?.Invoke();
             onSongFinished = null;
@@ -159,6 +189,12 @@ namespace Starborn
         {
             isPlaying = music != null && music.clip != null && music.isPlaying;
             isPaused = music != null && music.clip != null && !music.isPlaying;
+
+            int currentTimeSamples = 0;
+            if (music != null && music.clip != null)
+            {
+                currentTimeSamples = music.timeSamples;
+            }
 
             double dsp = AudioSettings.dspTime;
             if(isPlaying)
@@ -194,9 +230,9 @@ namespace Starborn
                 // time = absTime + absTimeAdjust;
 
                 // songPos = startPos + time;
-                songPos = music.time;
+                songPos = currentTimeSamples / (double)music.clip.frequency;
 
-                float adjustedTime = music.time - offset;
+                float adjustedTime = (float)songPos - offset;
 
                 float bps = songBpm / 60f;
 
@@ -205,8 +241,29 @@ namespace Starborn
                 curBeat = Mathf.FloorToInt(adjustedTime * bps);
 
                 curStep = Mathf.FloorToInt(adjustedTime * sps);
+            }
 
-                timeSamples = music.timeSamples;
+            UpdateSongFinishState(currentTimeSamples);
+            timeSamples = currentTimeSamples;
+        }
+
+        void UpdateSongFinishState(int currentTimeSamples)
+        {
+            if (_isFinished || !startSong || music == null || music.clip == null || music.loop || Time.timeScale == 0)
+            {
+                return;
+            }
+
+            int clipSamples = music.clip.samples;
+            int endToleranceSamples = Mathf.CeilToInt(music.clip.frequency * songEndToleranceSeconds);
+
+            bool reachedSongEnd = clipSamples > 0 && currentTimeSamples >= Mathf.Max(0, clipSamples - endToleranceSamples);
+            bool wrappedBackToStart = timeSamples > 0 && currentTimeSamples < timeSamples;
+            bool stoppedNearSongEnd = !music.isPlaying && timeSamples >= Mathf.Max(0, clipSamples - endToleranceSamples);
+
+            if (reachedSongEnd || wrappedBackToStart || stoppedNearSongEnd)
+            {
+                Done();
             }
         }
 

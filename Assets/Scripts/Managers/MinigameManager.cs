@@ -36,6 +36,7 @@ public class MinigameManager : MonoBehaviour
     bool _canPlay = true;
     bool finishedGame = false;
     bool inTutorialMinigame = false;
+    DialogueManager cachedDialogueManager;
 
     public bool canPlay
     {
@@ -139,12 +140,14 @@ public class MinigameManager : MonoBehaviour
         }
     }
 
+    public static void ResetManager() => _instance = null;
     public static Dictionary<string, float> minigameAccuracies = new Dictionary<string, float>();
 
     public static List<float> totalAccuracies = new List<float>();
     public static void ClearAccuracies() => totalAccuracies.Clear();
     public static void ClearMinigameAccuracies() => minigameAccuracies.Clear();
     public static void AverageAccuracies(List<float> game) => totalAccuracies.Add(MathUtils.ListAverage(game));
+    public static float FinalAccuracy() => MathUtils.ListAverage(totalAccuracies);
 
     StarbornInputSystem m_inputSystem;
 
@@ -329,7 +332,14 @@ public class MinigameManager : MonoBehaviour
         if (hearts != null)
             hearts.SetLives(lives);
 
-        displayAccuracy = Mathf.Lerp(displayAccuracy, totalAccuracy, Time.deltaTime * 10);
+        if(minigame.hasCompleted != null)
+        {
+            if(!minigame.hasCompleted.Invoke())
+                displayAccuracy = Mathf.Lerp(displayAccuracy, totalAccuracy, Time.deltaTime * 10);
+        }
+        else
+            displayAccuracy = Mathf.Lerp(displayAccuracy, totalAccuracy, Time.deltaTime * 10);
+
 
         foreach (RhythmInput input in inputs) input.canPlay = _canPlay;
 
@@ -344,6 +354,7 @@ public class MinigameManager : MonoBehaviour
                 {
                     finishedGame = true;
                     Debug.Log($"{Mathf.Round(totalAccuracy * Mathf.Pow(10, 4)) / 100f}%");
+
                     if (cleared != null)
                         cleared.SetActive(true);
                     if (congratulations != null) congratulations.Play();
@@ -401,17 +412,18 @@ public class MinigameManager : MonoBehaviour
 
     public void CheckForAdditionalAssets()
     {
-        if (FindObjectOfType<DialogueManager>(true) != null)
+        if (cachedDialogueManager == null)
+            cachedDialogueManager = FindObjectOfType<DialogueManager>(true);
+
+        if (cachedDialogueManager != null)
         {
-            DialogueManager manager = FindObjectOfType<DialogueManager>(true);
             GameObject[] rootObjects = scene.GetRootGameObjects();
 
             foreach (GameObject obj in rootObjects)
             {
-                if (!manager.sceneVisibilities[scene.name].ContainsKey(obj))
-                    manager.sceneVisibilities[scene.name].Add(obj, obj.activeInHierarchy);
+                if (!cachedDialogueManager.sceneVisibilities[scene.name].ContainsKey(obj))
+                    cachedDialogueManager.sceneVisibilities[scene.name].Add(obj, obj.activeInHierarchy);
             }
-
         }
     }
 
@@ -640,6 +652,7 @@ public class MinigameManager : MonoBehaviour
         }
         else
         {
+            Clear();
             LoadingManager.LoadScene(SceneManager.GetActiveScene().path.Replace(".unity","").Replace("Assets/",""), delegate()
             {
                 StaticProperties.canPause = true;
@@ -648,7 +661,7 @@ public class MinigameManager : MonoBehaviour
                     LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
                     Countdown.ResetCountdown();
                 };
-            }, 0.25f, delegate () { Time.timeScale = 1; });
+            }, 0.25f, true, delegate () { Time.timeScale = 1; }, true, false);
         }
         if(PauseMenu.instance != null)
             PauseMenu.instance.gameObject.SetActive(false);
@@ -721,6 +734,7 @@ public class MinigameManager : MonoBehaviour
         }
     }
     bool hasPressed;
+    bool recordedAccuracy;
     public void OnReleaseA(InputAction.CallbackContext context)
     {
         if(hasPressed)
@@ -731,15 +745,22 @@ public class MinigameManager : MonoBehaviour
             }
             else if (finishedGame)
             {
-                if (FindObjectOfType<DialogueManager>(true) != null)
+                if (!recordedAccuracy)
                 {
                     totalAccuracies.Add(totalAccuracy);
-                    minigameAccuracies.Add(SceneManager.GetActiveScene().name, totalAccuracy);
-                    Clear();
+                    minigameAccuracies[SceneManager.GetActiveScene().name] = totalAccuracy;
+                    recordedAccuracy = true;
+                }
+
+                Clear();
+
+                if (FindObjectOfType<DialogueManager>(true) != null)
+                {
                     //FindObjectOfType<DialogueManager>(true).FromGame();
                 }
                 returnCallback?.Invoke();
                 returnCallback = null;
+                hasPressed = false;
             }
             hasPressed = false;
             releaseSource.Play();
@@ -802,9 +823,17 @@ public class MinigameManager : MonoBehaviour
 
     public static void Clear()
     {
+        foreach (RhythmInput input in instance.inputs)
+        {
+            input?.Dispose();
+        }
+
         instance.events.Clear();
         instance.inputs.Clear();
         instance.accuracies.Clear();
+
+        if (Minigame.instance != null)
+            Minigame.instance.events.Clear();
     }
 
     public static void EndChapter()

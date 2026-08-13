@@ -57,6 +57,7 @@ public class PauseMenu : OptionMenu
     }
     public static void Open(Action enter = null, Action exit = null, Action transition = null, Action onBack = null, Action restart = null)
     {
+        if(instance == null) return;
         pauseTrans = true;
         instance.gameObject.SetActive(true);
         instance.exitCallback = exit;
@@ -242,7 +243,12 @@ public class PauseMenu : OptionMenu
         PopupMenu.Open("Are you sure you want to exit to the main menu? Any unsaved progress here will be lost", delegate () {
             Conductor.startSong = false;
             Destroy(this.gameObject);
-            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { Time.timeScale = 1; }, 0.1f);
+            MinigameManager.EndChapter();
+            LoadingManager.LoadScene("Scenes/Main/TitleScreen", delegate () { 
+                Time.timeScale = 1;
+                foreach(Button button in FindObjectsOfType<Button>(true))
+                    button.enabled = true;
+                }, 0.1f);
         }, delegate () {
             StartCoroutine(PauseDelay());
             IEnumerator PauseDelay()

@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
-#if UNITY_EDITOR
-using UnityEditor.Animations;
-#endif
 
 public static class MiscUtils
 {
