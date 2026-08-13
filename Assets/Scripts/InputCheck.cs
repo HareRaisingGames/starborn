@@ -11,6 +11,8 @@ public class InputCheck : MonoBehaviour
 
     protected static bool startUp = false;
 
+    [SerializeField] private PlayerInput playerInput;
+
     Vector2 mousePosition;
     void Awake()
     {
@@ -23,6 +25,15 @@ public class InputCheck : MonoBehaviour
 
         DontDestroyOnLoad(this.gameObject);
         instance = this;
+    }
+
+    private void OnControlsChanged(PlayerInput input)
+    {
+        foreach (var device in playerInput.devices)
+        {
+            ManualDeviceChange(device.displayName);
+            break;
+        }
     }
 
     private static InputCheck instance;
@@ -51,13 +62,16 @@ public class InputCheck : MonoBehaviour
             startUp = true;
         }
 
-        if(Mouse.current != null)
+        if (Mouse.current != null)
         {
             mousePosition = Mouse.current.position.ReadValue();
         }
 
         CheckForDeviceChange();
         InputSystem.onDeviceChange += OnDeviceChange;
+
+        if (playerInput != null)
+            playerInput.onControlsChanged += OnControlsChanged;
     }
 
     void OnDeviceChange(InputDevice device, InputDeviceChange change)
@@ -68,9 +82,9 @@ public class InputCheck : MonoBehaviour
 
     void CheckForDeviceChange()
     {
-        foreach(Gamepad controllerType in Gamepad.all)
+        foreach (Gamepad controllerType in Gamepad.all)
         {
-            foreach(InputControl control in controllerType.allControls)
+            foreach (InputControl control in controllerType.allControls)
             {
                 if (control is ButtonControl button && button.isPressed)
                 {
@@ -89,7 +103,7 @@ public class InputCheck : MonoBehaviour
 
         foreach (InputDevice device in InputSystem.devices)
         {
-            if(device is Keyboard)
+            if (device is Keyboard)
             {
                 Keyboard keyboard = device as Keyboard;
                 if (keyboard.anyKey.isPressed)
@@ -98,7 +112,7 @@ public class InputCheck : MonoBehaviour
                 }
             }
 
-            if(device is Mouse)
+            if (device is Mouse)
             {
                 Mouse mouse = device as Mouse;
                 Vector2 newPosition = mouse.position.ReadValue();
@@ -112,20 +126,75 @@ public class InputCheck : MonoBehaviour
         }
     }
 
+    public void ManualDeviceChange(string device)
+    {
+        if (device.Contains("XInput") || device.Contains("Xbox"))
+            controlType = "Xbox";
+        else if (device.Contains("DualShock") || device.Contains("PS"))
+            controlType = "PlayStation";
+        else if (device.Contains("Switch"))
+            controlType = "Switch";
+        else if (device.Contains("Keyboard") || device.Contains("Mouse"))
+            controlType = "PC";
+        else
+            controlType = device;
+    }
+
     void Update()
     {
-        
+        // foreach(Gamepad controllerType in Gamepad.all)
+        // {
+        //     foreach(InputControl control in controllerType.allControls)
+        //     {
+        //         if (control is ButtonControl button && button.isPressed)
+        //         {
+
+        //             if (controllerType.displayName.Contains("XInput") || controllerType.displayName.Contains("Xbox"))
+        //                 controlType = "Xbox";
+        //             else if (controllerType.displayName.Contains("DualShock") || controllerType.displayName.Contains("PS"))
+        //                 controlType = "PlayStation";
+        //             else if (controllerType.displayName.Contains("Switch"))
+        //                 controlType = "Switch";
+        //             else
+        //                 controlType = controllerType.displayName;
+        //         }
+        //     }
+        // }
+
+        // foreach (InputDevice device in InputSystem.devices)
+        // {
+        //     if(device is Keyboard)
+        //     {
+        //         Keyboard keyboard = device as Keyboard;
+        //         if (keyboard.anyKey.isPressed)
+        //         {
+        //             controlType = "PC";
+        //         }
+        //     }
+
+        //     if(device is Mouse)
+        //     {
+        //         Mouse mouse = device as Mouse;
+        //         Vector2 newPosition = mouse.position.ReadValue();
+        //         bool isPressed = mouse.leftButton.wasPressedThisFrame || mouse.rightButton.wasPressedThisFrame || mouse.middleButton.wasPressedThisFrame;
+        //         if (isPressed && !mousePosition.Equals(newPosition))
+        //         {
+        //             controlType = "PC";
+        //             mousePosition = newPosition;
+        //         }
+        //     }
+        // }
     }
 
     public static string GetBindFromAction(InputAction action)
     {
         string bindingType = "";
-        foreach(InputBinding binding in action.bindings)
+        foreach (InputBinding binding in action.bindings)
         {
-            switch(controlType)
+            switch (controlType)
             {
                 case "Xbox":
-                    if(binding.path.Contains("XInput") || binding.path.Contains("Xbox"))
+                    if (binding.path.Contains("XInput") || binding.path.Contains("Xbox"))
                     {
                         bindingType = binding.path.Split("/")[binding.path.Split("/").Length - 1];
                         return $"{controlType}_{bindingType}";
@@ -149,7 +218,7 @@ public class InputCheck : MonoBehaviour
                     if (binding.path.Contains("Keyboard") || binding.path.Contains("Mouse"))
                     {
                         string actionName = action.ToString().ToLower();
-                        if(actionName.Contains("pad")) //Check if the input is the dpad
+                        if (actionName.Contains("pad")) //Check if the input is the dpad
                         {
                             return $"{controlType}_dpad";
                         }
@@ -165,7 +234,7 @@ public class InputCheck : MonoBehaviour
     public static void ControllerVibration(float lowFrequency, float highFrequency, float duration)
     {
         Gamepad gamepad = Gamepad.current;
-        if(gamepad != null)
+        if (gamepad != null)
         {
             gamepad.SetMotorSpeeds(lowFrequency, highFrequency);
             instance.StartCoroutine(StopVibration(gamepad, duration));
@@ -175,12 +244,12 @@ public class InputCheck : MonoBehaviour
     private static IEnumerator StopVibration(Gamepad gamepad, float duration)
     {
         yield return new WaitForSecondsRealtime(duration);
-        gamepad.SetMotorSpeeds(0,0);
+        gamepad.SetMotorSpeeds(0, 0);
     }
 
     void GetStartUpDevice()
     {
-        switch(Application.platform)
+        switch (Application.platform)
         {
             case RuntimePlatform.XboxOne:
                 controlType = "Xbox";

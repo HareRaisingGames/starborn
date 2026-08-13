@@ -23,10 +23,16 @@ public class TitleState : MonoBehaviour
     private void Awake()
     {
         //instance = this;
-        foreach(Button button in FindObjectsOfType<Button>(true))
+        if(LoadingManager.instance != null)
         {
-            button.enabled = false;
+            // Debug.Log("Disable");
+            foreach(Button button in FindObjectsOfType<Button>(true))
+            {
+                button.enabled = false;
+            }
+            // FindObjectOfType<OptionMenu>().EnableInput(false);
         }
+
     }
 
     void Start()

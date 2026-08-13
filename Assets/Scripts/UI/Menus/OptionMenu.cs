@@ -43,6 +43,18 @@ public class OptionMenu : MonoBehaviour
         inputActions.Menu.Back.performed += OnBack;
     }
 
+    public void EnableInput(bool enable = true)
+    {
+        if(enable)
+        {
+            inputActions.Menu.Navigate.Enable();
+        }
+        else
+        {
+            inputActions.Menu.Navigate.Disable();   
+        }
+    }
+
     bool mouseMovement;
     protected float release = 0;
 
@@ -322,6 +334,10 @@ public class OptionMenu : MonoBehaviour
     public void Quit()
     {
         Application.Quit(0);
+
+        #if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+        #endif
     }
 }
 

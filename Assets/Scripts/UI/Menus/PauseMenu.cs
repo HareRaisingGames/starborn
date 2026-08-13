@@ -267,6 +267,10 @@ public class PauseMenu : OptionMenu
         StaticProperties.canPause = false;
         PopupMenu.Open("Are you sure you want to quit? Any unsaved progress here will be lost", delegate() {
             Application.Quit();
+
+            #if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+            #endif
         }, delegate() {
             StartCoroutine(PauseDelay());
             IEnumerator PauseDelay()
