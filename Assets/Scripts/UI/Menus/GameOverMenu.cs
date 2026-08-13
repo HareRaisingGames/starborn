@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class GameOverMenu : PopupMenu
 {
     public static Action tryAgainCallback;
+
     public void TryAgain()
     {
         tryAgainCallback?.Invoke();

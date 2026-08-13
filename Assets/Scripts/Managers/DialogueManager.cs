@@ -19,6 +19,7 @@ using Rabbyte.Gyotoku;
 
 public class DialogueManager : MonoBehaviour
 {
+    public Canvas canvas;
     #region Dialogue Properties
     public static string filename;
     public static string sceneName;
@@ -555,6 +556,8 @@ public class DialogueManager : MonoBehaviour
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(sceneName));
         gameObject.SetActive(true);
         backgroundsObject.SetActive(true);
+        // if(canvas != null)
+        //     canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         GameObject baseBG = null;
         foreach (Transform child in backgroundsObject.transform)
         {
@@ -624,7 +627,7 @@ public class DialogueManager : MonoBehaviour
                     startWithName = lines[jumpToLine].name;
                 }
                 PutObjectInFront(backgrounds[lines[jumpToLine].background]);
-
+                backgrounds[lines[jumpToLine].background].SetActive(true);
                 TweenManager.XTween(transition, 0, 800, 2, Eases.EaseInOutCubic, delegate ()
                 {
                     BoxTransition(true, BackToDialogue);
@@ -657,7 +660,7 @@ public class DialogueManager : MonoBehaviour
         Countdown.mode = CountdownMode.Default;
         Countdown.cam = null;
 
-        GameOverMenu.tryAgainCallback = delegate () { TryAgain(delegate () { Destroy(gameObject); }); };
+        GameOverMenu.tryAgainCallback = delegate () { TryAgain(delegate () { Destroy(GameOverMenu.instance.gameObject); }); };
 
         TweenManager.XTween(transition, -800, 0, 2, Eases.EaseInOutCubic, () =>
         {
@@ -817,6 +820,10 @@ public class DialogueManager : MonoBehaviour
     void PlayDialogue()
     {
         interact = true;
+        foreach (KeyValuePair<string, CharacterSprite> character in sprites)
+        {
+            character.Value.gameObject.SetActive(false);
+        }
         StartCoroutine(PlaySong());
         IEnumerator PlaySong()
         {
@@ -1112,6 +1119,8 @@ public class DialogueManager : MonoBehaviour
         List<CharacterSprite> charactersInOnlyPrevScene = new List<CharacterSprite>();
         List<CharacterSprite> charactersInBoth = new List<CharacterSprite>();
 
+        // Debug.Log(prevPack != null);
+
         if (prevPack != null && prevPack.Count != 0)
         {
             //For characters transitioning out
@@ -1309,9 +1318,13 @@ public class DialogueManager : MonoBehaviour
             }
             else if (vertical.Contains(pack.transition))
             {
-                float y = -450 - character.rectTransform.sizeDelta.y / 2;
+                float y;
+
+                if(canvas != null) y = -canvas.GetComponent<RectTransform>().rect.height;
+                else y = -600 + character.rectTransform.sizeDelta.y / 2;
+
                 character.position = new Vector2(xPos, y);
-                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(xPos, value); }, 0, transTime, Eases.EaseInOutCubic, null, pack.character + "y");
+                TweenManager.NumTween(() => character.position.y, (value) => { character.position = new Vector2(xPos, value); }, 0, transTime, Eases.EaseInOutCubic, null, pack.character + "y");
             }
             else
             {
@@ -1342,9 +1355,13 @@ public class DialogueManager : MonoBehaviour
             }
             else if (vertical.Contains(pack.transition))
             {
-                float y = -450 - character.rectTransform.sizeDelta.y / 2;
+                float y;
+
+                if(canvas != null) y = -canvas.GetComponent<RectTransform>().rect.height;
+                else y = -600 + character.rectTransform.sizeDelta.y / 2;
+                
                 character.position = new Vector2(xPos, 0);
-                TweenManager.NumTween(() => character.position.x, (value) => { character.position = new Vector2(xPos, value); }, y, transTime, Eases.EaseInOutCubic, delegate () { character.gameObject.SetActive(false); }, pack.character + "y");
+                TweenManager.NumTween(() => character.position.y, (value) => { character.position = new Vector2(xPos, value); }, y, transTime, Eases.EaseInOutCubic, delegate () { character.gameObject.SetActive(false); }, pack.character + "y");
             }
             else
             {
@@ -1419,7 +1436,7 @@ public class DialogueManager : MonoBehaviour
                     {
                         if (transitionCanvas != null) transitionCanvas.SetActive(false);
                     }).SetStartDelay(0.25f).SetIgnoreTimeScale();
-                    Debug.Log(sceneVisibilities.ContainsKey(minigame));
+                    // Debug.Log(sceneVisibilities.ContainsKey(minigame));
                     sceneVisibilities.Remove(minigame);
                     HideEverythingInScene(minigame);
                     GameOut(minigame, false);
@@ -1445,6 +1462,12 @@ public class DialogueManager : MonoBehaviour
             Countdown.folder = "base";
             Countdown.mode = CountdownMode.Default;
             Countdown.cam = null;
+
+            if(canvas != null)
+            {
+                canvas.renderMode = RenderMode.ScreenSpaceCamera;
+                // Debug.Log(canvas.worldCamera.name);
+            }
             // Save accuracies
 
             StaticProperties.canPause = false;

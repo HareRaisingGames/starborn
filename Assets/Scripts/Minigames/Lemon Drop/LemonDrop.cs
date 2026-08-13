@@ -69,6 +69,7 @@ namespace Starborn.LemonDrop
         {
             base.onA(context);
 
+            if(gotGameOver) return;
             if(hasCompleted != null && hasCompleted.Invoke()) return;
             if(autoPlay && Conductor.instance.isPlaying) return;
             if(!canClick) return;
