@@ -43,6 +43,7 @@ namespace Starborn.Trojan
 
         int clicks = 0;
         bool canClick = false;
+        string tagName = "";
 
         [Header("Additional Assets")]
         public ProgressBar downloadBar;
@@ -859,7 +860,7 @@ namespace Starborn.Trojan
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(virus != null) virus.Attack(Conductor.instance.crochet);
                     if(virus != null) virus.PlayAnimation("attack");
-                }, 3.5f, RhythmInputs.A),
+                }, 3.5f),
                 new CallForAction(()=>{
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(game.autoPlay) game.ActivateForceField();
@@ -947,7 +948,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay && game.forcefield != null) game.forcefield.Play();
                     if(split2 != null)
                         split2.Rev(Conductor.instance.crochet * 0.5f);
-                }, 3f, RhythmInputs.A, 1f, 1f, ()=>{
+                }, 3f, RhythmInputs.A, 0.4f, 0.4f, ()=>{
                     if(split1 != null) split1.Explode(Conductor.instance.crochet * 0.125f, delegate(){ count++; });
                 }, (value) => { if(split1 != null) split1.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
@@ -960,7 +961,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(game.autoPlay) game.ActivateForceField();
-                }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
+                }, 4f, RhythmInputs.A, 0.4f, 0.4f, ()=>{
                     if(split2 != null) split2.Explode(Conductor.instance.crochet * 0.125f, delegate(){
                         count++;
                     if(count >= 2) game.hairsplitterKill++; });
@@ -1019,11 +1020,11 @@ namespace Starborn.Trojan
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(virus != null) virus.Attack(Conductor.instance.crochet);
                     if(virus != null) virus.PlayAnimation("attack");
-                }, 3.5f, RhythmInputs.A),
+                }, 3.5f),
                 new CallForAction(()=>{
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(game.autoPlay) game.ActivateForceField();
-                }, 4f, RhythmInputs.A, 0.5f, 0.5f, ()=>{
+                }, 4f, RhythmInputs.A, 1f, 1f, ()=>{
                     if(virus != null) virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.malwormKill++; }, true);
                 }, (value) => { if(virus != null) virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
@@ -1061,7 +1062,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(game.autoPlay) game.ActivateForceField();
-                }, 2f, RhythmInputs.A, 0.5f, 0.5f, ()=>{
+                }, 2f, RhythmInputs.A, 1f, 1f, ()=>{
                     if(virus != null) virus.Explode(Conductor.instance.crochet * 0.25f, delegate(){ game.turbotKill++; }, true);
                 }, (value) => { if(virus != null) virus.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
@@ -1107,7 +1108,7 @@ namespace Starborn.Trojan
                     if(game.autoPlay && game.forcefield != null) game.forcefield.Play();
                     if(split2 != null)
                         split2.Rev(Conductor.instance.crochet * 0.5f);
-                }, 3f, RhythmInputs.A, 0.5f, 0.5f, ()=>{
+                }, 3f, RhythmInputs.A, 0.4f, 0.4f, ()=>{
                     if(split1 != null) split1.Explode(Conductor.instance.crochet * 0.125f, delegate(){ count++; }, true);
                 }, (value) => { if(split1 != null) split1.Charred();
                 //MinigameManager.instance.LoseALife(0.5f);
@@ -1120,7 +1121,7 @@ namespace Starborn.Trojan
                 new CallForAction(()=>{
                     if(MinigameManager.instance != null && MinigameManager.instance.gameOver) return;
                     if(game.autoPlay) game.ActivateForceField();
-                }, 4f, RhythmInputs.A, 0.5f, 0.5f, ()=>{
+                }, 4f, RhythmInputs.A, 0.4f, 0.4f, ()=>{
                     if(split2 != null) split2.Explode(Conductor.instance.crochet * 0.125f, delegate(){
                         count++;
                     if(count >= 2) game.hairsplitterKill++; }, true);
