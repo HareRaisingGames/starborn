@@ -11,8 +11,6 @@ public class InputCheck : MonoBehaviour
 
     protected static bool startUp = false;
 
-    [SerializeField] private PlayerInput playerInput;
-
     Vector2 mousePosition;
     void Awake()
     {
@@ -27,15 +25,29 @@ public class InputCheck : MonoBehaviour
         instance = this;
     }
 
-    private void OnControlsChanged(PlayerInput input)
+    private void onEnable()
     {
-        foreach (var device in playerInput.devices)
-        {
-            ManualDeviceChange(device.displayName);
-            break;
-        }
+        InputSystem.onActionChange += onActionChange;
     }
 
+    private void onDisable()
+    {
+        InputSystem.onActionChange -= onActionChange;
+    }
+
+    private void onActionChange(object obj, InputActionChange change)
+    {
+        if(change == InputActionChange.ActionPerformed)
+        {
+            var action = (InputAction)obj;
+            if(action.activeControl != null)
+            {
+                InputDevice device = action.activeControl.device;
+                if(controlType != DeviceType(device.name))
+                    controlType = DeviceType(device.name);
+            }
+        }
+    }
     private static InputCheck instance;
 
     //List<string> pcDevices = new List<string>(){ "Keyboard", "Mouse", "Touchscreen", "Tablet Monitor" };
@@ -69,9 +81,10 @@ public class InputCheck : MonoBehaviour
 
         CheckForDeviceChange();
         InputSystem.onDeviceChange += OnDeviceChange;
-
-        if (playerInput != null)
-            playerInput.onControlsChanged += OnControlsChanged;
+        InputSystem.onActionChange += onActionChange;
+        
+        // if (playerInput != null)
+        //     playerInput.onControlsChanged += OnControlsChanged;
     }
 
     void OnDeviceChange(InputDevice device, InputDeviceChange change)
@@ -126,18 +139,19 @@ public class InputCheck : MonoBehaviour
         }
     }
 
-    public void ManualDeviceChange(string device)
+    public string DeviceType(string device)
     {
+        // Debug.Log("Bug change");
         if (device.Contains("XInput") || device.Contains("Xbox"))
-            controlType = "Xbox";
+            return "Xbox";
         else if (device.Contains("DualShock") || device.Contains("PS"))
-            controlType = "PlayStation";
+            return "PlayStation";
         else if (device.Contains("Switch"))
-            controlType = "Switch";
+            return "Switch";
         else if (device.Contains("Keyboard") || device.Contains("Mouse"))
-            controlType = "PC";
+            return "PC";
         else
-            controlType = device;
+            return device;
     }
 
     void Update()

@@ -139,22 +139,26 @@ public class OptionMenu : MonoBehaviour
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerData, results);
 
-            foreach (RaycastResult result in results)
-            {
-                //Debug.Log("Hit UI element: " + result.gameObject.name);
-
-                //if(result.gameObject.GetComponent<RectTransform>)
-                // You can add custom logic here based on the hit UI element
-                foreach (Option option in options)
+            // if(InputCheck.controller == "PC")
+            // {
+                foreach (RaycastResult result in results)
                 {
-                    if (option.HoverOver(result.gameObject.GetComponent<RectTransform>()))
+                    //Debug.Log("Hit UI element: " + result.gameObject.name);
+
+                    //if(result.gameObject.GetComponent<RectTransform>)
+                    // You can add custom logic here based on the hit UI element
+                    foreach (Option option in options)
                     {
-                        Hover(options.IndexOf(option));
-                        curItem = option;
-                    }
+                        if (option.HoverOver(result.gameObject.GetComponent<RectTransform>()))
+                        {
+                            Hover(options.IndexOf(option));
+                            curItem = option;
+                        }
                         
+                    }
                 }
-            }
+            // }
+
 
             if (startScroll)
             {
