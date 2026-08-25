@@ -56,4 +56,20 @@ public static class MiscUtils
         }
         return results;
     }
+
+    public static Bounds GetWorldBoundsFromScreen()
+    {
+        // Get bottom-left and top-right corners in screen pixels
+        Vector3 screenMin = new Vector3(0, 0, Camera.main.transform.position.z * -1);
+        Vector3 screenMax = new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z * -1);
+
+        // Convert to world space
+        Vector3 worldMin = Camera.main.ScreenToWorldPoint(screenMin);
+        Vector3 worldMax = Camera.main.ScreenToWorldPoint(screenMax);
+
+        // Build and return the world bounds
+        Bounds bounds = new Bounds();
+        bounds.SetMinMax(worldMin, worldMax);
+        return bounds;
+    }
 }

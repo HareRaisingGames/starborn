@@ -22,6 +22,8 @@ public class MinigameManager : MonoBehaviour
     public List<RhythmEvent> events = new List<RhythmEvent>();
     [HideInInspector]
     public List<RhythmInput> inputs = new List<RhythmInput>();
+    [HideInInspector]
+    public List<RhythmInput> curInputs = new List<RhythmInput>();
 
     [HideInInspector]
     public List<float> accuracies = new List<float>();
@@ -273,6 +275,7 @@ public class MinigameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        curInputs.Clear();
         if (Conductor.instance.isPlaying)
         {
             foreach (RhythmEvent e in events)
@@ -282,6 +285,8 @@ public class MinigameManager : MonoBehaviour
             foreach (RhythmInput input in inputs)
             {
                 input.Update(Conductor.instance.songPosition);
+                if(input.checkForAccuracy)
+                    curInputs.Add(input);
 
                 if (minigame != null)
                 {
@@ -431,6 +436,7 @@ public class MinigameManager : MonoBehaviour
     public bool tutorial => inTutorial;
     [HideInInspector]
     public bool skipTutorial;
+    protected bool canSkip = true;
     List<TutorialLine> lines = new List<TutorialLine>();
     public void StartTutorial()
     {
@@ -467,6 +473,7 @@ public class MinigameManager : MonoBehaviour
                 TweenManager.instance.RemoveTween("ping-pong");
                 ColorUtils.SetAlpha(nextButton, 0);
             }
+            //Tutorial has ended
             if (lines.Count <= t)
             {
                 text.text = "";
@@ -477,14 +484,14 @@ public class MinigameManager : MonoBehaviour
                 minigame.OnBeatTutorial = null;
                 minigame.PostTutorialAdditionals();
 
-                if (!skipTutorial)
-                {
-                    if (skipText != null)
-                    {
-                        TweenManager.AlphaTween(skipText.gameObject, 1, 0, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
-                        TweenManager.XTween(skipText.gameObject, -10, 300, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
-                    }
-                }
+                // if (!skipTutorial)
+                // {
+                //     if (skipText != null)
+                //     {
+                //         TweenManager.AlphaTween(skipText.gameObject, 1, 0, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
+                //         TweenManager.XTween(skipText.gameObject, -10, 300, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
+                //     }
+                // }
 
                 IEnumerator SetUp()
                 {
@@ -493,9 +500,23 @@ public class MinigameManager : MonoBehaviour
                 }
                 return;
             }
+
+            //Set text to next line
             text.text = FilterDialogue(lines[t].dialogue);
             minigame.TutorialCallback(lines[t].tag);
 
+            //Don't skip when you're at the end of the tutorial
+            if(!skipTutorial && t >= lines.Count - 1)
+            {
+                canSkip = false;
+                if (skipText != null)
+                {
+                    TweenManager.AlphaTween(skipText.gameObject, 1, 0, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
+                    TweenManager.XTween(skipText.gameObject, -10, 300, 1.5f, Eases.EaseInOutQuart).SetStartDelay(0.1f);
+                }
+            }
+
+            //Check if minigame is being played
             if (lines[t].section.sections.Count != 0 || lines[t].noMusic)
             {
                 if (minigame.tutorialSong != null) Conductor.instance.music.clip = minigame.tutorialSong;
@@ -695,6 +716,21 @@ public class MinigameManager : MonoBehaviour
             Countdown.PauseCountdown();
     }
 
+    public static float FindHighestAccuracy()
+    {
+        float c = Mathf.NegativeInfinity;
+        if(instance.curInputs.Count != 0)
+        {
+            foreach(RhythmInput input in instance.curInputs)
+            {
+                if(input.savedAccuracy > c)
+                    c = input.savedAccuracy;
+            }
+            return c;
+        }
+        return 0;
+    }
+
     void Unpause()
     {
         if (minigame != null)
@@ -769,10 +805,11 @@ public class MinigameManager : MonoBehaviour
 
     public void OnSkip(InputAction.CallbackContext context)
     {
-        if(inTutorial && !skipTutorial)
+        if(inTutorial && !skipTutorial && canSkip)
         {
             //
             skipTutorial = true;
+            canSkip = false;
             lines = minigame.tutorial.skipTutorial;
             t = 0;
             //Stop whatever music/minigame is happening if there is any happening

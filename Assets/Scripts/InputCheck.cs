@@ -11,6 +11,8 @@ public class InputCheck : MonoBehaviour
 
     protected static bool startUp = false;
 
+    public static bool isMouse;
+
     Vector2 mousePosition;
     void Awake()
     {
@@ -45,6 +47,8 @@ public class InputCheck : MonoBehaviour
                 InputDevice device = action.activeControl.device;
                 if(controlType != DeviceType(device.name))
                     controlType = DeviceType(device.name);
+
+                isMouse = device.name.Contains("Mouse");
             }
         }
     }

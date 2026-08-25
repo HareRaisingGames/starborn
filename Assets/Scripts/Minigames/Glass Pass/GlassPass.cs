@@ -88,10 +88,24 @@ namespace Starborn.GlassPass
 
         bool isCounting = false;
 
+        #region Easter Eggs
+        [HideInInspector]
+        public List<EasterEgg> preloadedEasterEggs = new List<EasterEgg>();
+        [HideInInspector]
+        public List<EasterEgg> currentEasterEggs = new List<EasterEgg>();
+        protected readonly string eggPath = "Sprites/Easter Eggs/Glass Pass";
+        [HideInInspector]
+        public Texture2D[] spriteResources;
+        public Transform easterEggParent;
+        #endregion
+
         // Start is called before the first frame update
         public override void Start()
         {
             base.Start();
+
+            int dynamicSeed = (int)System.DateTime.Now.Ticks;
+            Random.InitState(dynamicSeed);
             // if(FindObjectOfType<PauseMenu>(true) == null)
             // {
             //     StartCoroutine(PlayMusic());
@@ -150,8 +164,8 @@ namespace Starborn.GlassPass
                 bugz.PlayHand("idle", Conductor.instance.songBpm / 120);
             };
             OnBeatChange = Bounce;
-
-            if(volume != null)
+            OnStepChange = CheckForActivity;
+            if (volume != null)
                 if (volume.profile.TryGet<DepthOfField>(out depthOfField))
                 {
                     depthOfField.mode.value = DepthOfFieldMode.Bokeh;
@@ -160,7 +174,13 @@ namespace Starborn.GlassPass
                 }
             amountJudger = () => catchCount;
 
+            spriteResources = Resources.LoadAll<Texture2D>(eggPath);
+            // int r = Random.Range(0, spriteResources.Length);
+            // EasterEgg testEgg = EasterEgg.CreateCharacter(spriteResources[r],5);
+            // Debug.Log($"Min:{MiscUtils.GetWorldBoundsFromScreen().min.x} - Max:{MiscUtils.GetWorldBoundsFromScreen().max.x}");
         }
+
+
 
         public override void StartSong()
         {
@@ -223,10 +243,21 @@ namespace Starborn.GlassPass
             }
         }
 
+        void CheckForActivity(int i)
+        {
+            if(i % 4 == 0 || i == 0)
+                if (easterEggParent != null) easterEggParent.transform.position = Vector3.down;
+        }
         // Update is called once per frame
         public override void Update()
         {
             base.Update();
+
+            if (easterEggParent != null)
+            {
+                easterEggParent.transform.position =
+                    Vector3.LerpUnclamped(easterEggParent.transform.position, Vector3.zero, Time.deltaTime * 25);
+            }
         }
 
         void Bounce(int i)
@@ -420,9 +451,47 @@ namespace Starborn.GlassPass
             }, -1));
         }
 
+#region Easter Eggs
+        public bool TextureIsContained(Texture2D texture)
+        {
+            if(preloadedEasterEggs.Count != 0)
+            {
+                foreach(EasterEgg egg in preloadedEasterEggs)
+                {
+                    if(texture.name == egg.character) return true;
+                }
+            }
+
+            return false;
+        }
+
+        public void SetUpCharacter()
+        {
+            if(preloadedEasterEggs.Count == 0) return;
+            bool randomBool = Random.value > 0.5f;
+
+            Debug.Log(currentEasterEggs.Count);
+
+            if(currentEasterEggs.Count != 0)
+                preloadedEasterEggs[0].SetFlip(!currentEasterEggs[currentEasterEggs.Count - 1].isFlipped);
+            else
+                preloadedEasterEggs[0].SetFlip(randomBool);
+            currentEasterEggs.Add(preloadedEasterEggs[0]);
+            preloadedEasterEggs.RemoveAt(0);
+            currentEasterEggs[currentEasterEggs.Count - 1].StartMoving(
+                delegate ()
+                {
+                    Debug.Log("Done!");
+                    currentEasterEggs.Remove(currentEasterEggs[currentEasterEggs.Count - 1]);
+                }
+            );
+
+
+        }
+#endregion
     }
 
-    public class Beer : Slide
+    public class Beer : CupSlide
     {
         public Beer() : base(false)
         {
@@ -430,7 +499,7 @@ namespace Starborn.GlassPass
         }
     }
 
-    public class Coffee : Slide
+    public class Coffee : CupSlide
     {
         public Coffee() : base(true)
         {
@@ -444,7 +513,6 @@ namespace Starborn.GlassPass
         {
             base.SetUp();
             game = Object.FindObjectOfType<GlassPass>();
-
         }
 
         public TutorialSlide()
@@ -473,7 +541,7 @@ namespace Starborn.GlassPass
                     // game.waterGlass.Slide(Conductor.instance.crochet);
                 }, 5),
                 new CallForAction(() => { 
-                    // game.waterGlass.DefaultSlide(Conductor.instance.crochet);
+                    // game.waterGlass.DefaultCupSlide(Conductor.instance.crochet);
                     game.waterGlass.Slide(Conductor.instance.crochet);
                 }, 5.4f),
                 new CallForAction(()=>{
@@ -493,9 +561,48 @@ namespace Starborn.GlassPass
             };
         }
     }
+
+    public class CharacterCameo : RhythmEvent
+    {
+        public GlassPass game;
+        public override void SetUp()
+        {
+            base.SetUp();
+            int dynamicSeed = (int)System.DateTime.Now.Ticks;
+            Random.InitState(dynamicSeed);
+
+            game = Object.FindObjectOfType<GlassPass>();
+            preCallback = () =>
+            {
+                if(game.spriteResources == null || game.spriteResources.Length == 0) return;
+                
+                int r = Random.Range(0, game.spriteResources.Length);
+                Texture2D texture = game.spriteResources[r];
+                if(game.preloadedEasterEggs.Count < game.spriteResources.Length)
+                {
+                    while(game.TextureIsContained(texture))
+                    {
+                        r = Random.Range(0, game.spriteResources.Length);
+                        texture = game.spriteResources[r];
+                    }
+                    EasterEgg egg = EasterEgg.CreateCharacter(texture,10, game.easterEggParent != null ? game.easterEggParent : null);
+                    game.preloadedEasterEggs.Add(egg);
+                }
+
+            };
+        }
+
+        public CharacterCameo()
+        {
+            actions = new List<CallForAction>()
+            {
+                new CallForAction(game.SetUpCharacter, 1f)
+            };
+        }
+    }
 }
 
-public class Slide : RhythmEvent
+public class CupSlide : RhythmEvent
 {
     public GlassPass game;
     bool isCoffee = false;
@@ -524,7 +631,7 @@ public class Slide : RhythmEvent
 
     }
 
-    public Slide(bool isCoffee = false)
+    public CupSlide(bool isCoffee = false)
     {
         this.isCoffee = isCoffee;
         actions = new List<CallForAction>()
@@ -539,12 +646,12 @@ public class Slide : RhythmEvent
                     // game.testGlass.Slide(Conductor.instance.crochet);
                 }, 2),
                 new CallForAction(() => { 
-                    // game.waterGlass.DefaultSlide(Conductor.instance.crochet);
+                    // game.waterGlass.DefaultCupSlide(Conductor.instance.crochet);
                     glass.Slide(Conductor.instance.crochet);
                 }, 2.4f),
                 new CallForAction(()=>{
                     // tick.Play();
-                }, 3, RhythmInputs.A, 0.5f, 0.5f, ()=>{
+                }, 3, RhythmInputs.A, 0.75f, 0.75f, ()=>{
                     // game.testGlass.Stop();
                     game.SuccessfulCatch(glass, false, Conductor.instance.crochet);
                     game.catchGlass.Play();

@@ -36,7 +36,8 @@ public class OptionMenu : MonoBehaviour
     {
         inputActions = new StarbornInputSystem();
         inputActions.Menu.Navigate.performed += OnNavigate;
-        inputActions.Menu.Navigate.canceled += delegate (InputAction.CallbackContext context) {
+        inputActions.Menu.Navigate.canceled += delegate (InputAction.CallbackContext context)
+        {
             release = 0;
         };
         inputActions.Menu.Select.performed += OnSelect;
@@ -45,13 +46,13 @@ public class OptionMenu : MonoBehaviour
 
     public void EnableInput(bool enable = true)
     {
-        if(enable)
+        if (enable)
         {
             inputActions.Menu.Navigate.Enable();
         }
         else
         {
-            inputActions.Menu.Navigate.Disable();   
+            inputActions.Menu.Navigate.Disable();
         }
     }
 
@@ -75,7 +76,7 @@ public class OptionMenu : MonoBehaviour
     // Start is called before the first frame update
     public virtual void Start()
     {
-        if(options.Count != 0)
+        if (options.Count != 0)
             ChangeSelection();
 
         GameObject obj = new GameObject("Select");
@@ -92,7 +93,7 @@ public class OptionMenu : MonoBehaviour
         if (up != null) navigateSource.clip = up;
         obj.transform.parent = transform;
 
-        if(down != null)
+        if (down != null)
         {
             obj.name = "Up";
             obj = new GameObject("Down");
@@ -103,14 +104,14 @@ public class OptionMenu : MonoBehaviour
             obj.transform.parent = transform;
         }
 
-        foreach(Option option in options)
+        foreach (Option option in options)
         {
-            if(option.item.GetComponent<Button>())
+            if (option.item.GetComponent<Button>())
             {
                 Button button = option.item.GetComponent<Button>();
                 button.onClick.RemoveAllListeners();
-                button.onClick.AddListener(delegate() 
-                { 
+                button.onClick.AddListener(delegate ()
+                {
                     selectSource.Play();
                     Invoke("OnAudioFinished", selectSource.clip.length);
                 });
@@ -128,7 +129,7 @@ public class OptionMenu : MonoBehaviour
     // Update is called once per frame
     public virtual void Update()
     {
-        if(!hasSelected)
+        if (!hasSelected)
         {
             Option curItem = null;
             PointerEventData pointerData = new PointerEventData(EventSystem.current)
@@ -139,8 +140,35 @@ public class OptionMenu : MonoBehaviour
             List<RaycastResult> results = new List<RaycastResult>();
             EventSystem.current.RaycastAll(pointerData, results);
 
-            // if(InputCheck.controller == "PC")
-            // {
+            if (FindObjectOfType<InputCheck>() != null)
+            {
+                if (InputCheck.isMouse)
+                {
+                    foreach (RaycastResult result in results)
+                    {
+                        //Debug.Log("Hit UI element: " + result.gameObject.name);
+
+                        //if(result.gameObject.GetComponent<RectTransform>)
+                        // You can add custom logic here based on the hit UI element
+                        foreach (Option option in options)
+                        {
+                            if (option.HoverOver(result.gameObject.GetComponent<RectTransform>()))
+                            {
+                                Hover(options.IndexOf(option));
+                                curItem = option;
+                            }
+                        }
+                    }
+
+                    if (curItem != null && options.IndexOf(curItem) != _curOption && !startScroll)
+                    {
+                        curOption = options.IndexOf(curItem);
+                        navigateSource.Play();
+                    }
+                }
+            }
+            else
+            {
                 foreach (RaycastResult result in results)
                 {
                     //Debug.Log("Hit UI element: " + result.gameObject.name);
@@ -154,10 +182,16 @@ public class OptionMenu : MonoBehaviour
                             Hover(options.IndexOf(option));
                             curItem = option;
                         }
-                        
                     }
                 }
-            // }
+
+                if (curItem != null && options.IndexOf(curItem) != _curOption && !startScroll)
+                {
+                    curOption = options.IndexOf(curItem);
+                    navigateSource.Play();
+                }
+            }
+
 
 
             if (startScroll)
@@ -175,14 +209,10 @@ public class OptionMenu : MonoBehaviour
                 }
             }
 
-            if (curItem != null && options.IndexOf(curItem) != _curOption && !startScroll)
-            {
-                curOption = options.IndexOf(curItem);
-                navigateSource.Play();
-            }
+
         }
 
-            
+
     }
 
     public virtual void OnNavigate(InputAction.CallbackContext context)
@@ -201,9 +231,9 @@ public class OptionMenu : MonoBehaviour
 
         scrollDirection = c;
 
-        if(context.action.IsPressed())
+        if (context.action.IsPressed())
         {
-            if(!justPressed)
+            if (!justPressed)
             {
                 startScroll = true;
                 if (c != 0 && release != c)
@@ -222,7 +252,7 @@ public class OptionMenu : MonoBehaviour
         }
 
         release = c;
-            
+
     }
 
     protected bool justPressed;
@@ -285,8 +315,8 @@ public class OptionMenu : MonoBehaviour
 
         if (change != 0)
         {
-            if(navigateSource2 != null)
-                if(change > 0)
+            if (navigateSource2 != null)
+                if (change > 0)
                     navigateSource.Play();
                 else
                     navigateSource2.Play();
@@ -304,16 +334,18 @@ public class OptionMenu : MonoBehaviour
 
     protected virtual void SetSelection(int s)
     {
+        if(s < 0) return;
+        
         float itemWidth = Mathf.Abs(options[s].item.sizeDelta.x / 2);
-        if(cursor != null && type == OptionType.Cursor)
+        if (cursor != null && type == OptionType.Cursor)
         {
             float cursorWidth = Mathf.Abs(cursor.rectTransform.sizeDelta.x / 2);
             cursor.rectTransform.anchoredPosition
                 = new Vector2(options[s].item.anchoredPosition.x - itemWidth - cursorWidth - offset, options[s].item.anchoredPosition.y);
         }
-        else if(type == OptionType.Color)
+        else if (type == OptionType.Color)
         {
-            foreach(Option opt in options)
+            foreach (Option opt in options)
             {
                 if (opt.item.GetComponent<Image>())
                     if (opt.item.GetComponent<Button>())
@@ -332,16 +364,16 @@ public class OptionMenu : MonoBehaviour
             else if (options[s].item.GetComponent<TMPro.TMP_Text>())
                 options[s].item.GetComponent<TMPro.TMP_Text>().color = selectedColor;
         }
-        
+
     }
 
     public void Quit()
     {
         Application.Quit(0);
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-        #endif
+#endif
     }
 }
 
@@ -361,9 +393,9 @@ public class Option
 
         int listeners = 0;
 
-        if(action.GetPersistentEventCount() != 0)
+        if (action.GetPersistentEventCount() != 0)
         {
-            for(int i = 0; i < action.GetPersistentEventCount(); i++)
+            for (int i = 0; i < action.GetPersistentEventCount(); i++)
             {
                 if (action.GetPersistentTarget(i) == null)
                 {

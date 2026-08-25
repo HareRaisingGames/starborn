@@ -161,7 +161,7 @@ namespace Starborn.Tosstail
             shaker.Toss(time, tall, reset);
             RhythmInput input = new RhythmInput(shaker.direction ? RhythmInputs.Pad : RhythmInputs.A)
                 .SetDestination(beat)
-                    .SetRange(0.5f, 0.5f)
+                    .SetRange(0.75f, 0.75f)
                         .SetOnHit(delegate() 
                         { 
                             shaker.SuccessfulCatch(); 

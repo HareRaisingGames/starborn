@@ -91,6 +91,8 @@ namespace Starborn.InputSystem
             }
         }
 
+        public float savedAccuracy;
+
         public RhythmInput(RhythmInputs action)
         {
             _action = action;
@@ -111,6 +113,7 @@ namespace Starborn.InputSystem
             float accurary = 0;
             if (checkForAccuracy && mustHit && !hasHit && !autoplay)
             {
+                // Debug.Log(MinigameManager.instance.curInputs.Count);
                 bool early = false;
                 if(curHit == desHit)
                 {
@@ -119,14 +122,22 @@ namespace Starborn.InputSystem
                 else if(curHit >= startPoint && curHit < desHit)
                 {
                     accurary = MathUtils.Normalize(curHit, startPoint, desHit);
-                    Debug.Log(accurary);
                     early = true;
                 }
                 else if(curHit <= endPoint && curHit > desHit)
                 {
                     accurary = MathUtils.ReverseNormalize(curHit, desHit, endPoint);
-                    Debug.Log(accurary);
                 }
+                savedAccuracy = accurary;
+                if(MinigameManager.instance.curInputs.Count > 1)
+                {
+                    // Debug.Log(MinigameManager.FindHighestAccuracy());
+                    // Debug.Log(accurary == MinigameManager.FindHighestAccuracy());
+                    if(accurary != MinigameManager.FindHighestAccuracy())
+                        return;
+                }
+
+                Debug.Log($"{id}: {accurary}");
 
                 if (accurary >= 0.8)
                 {
