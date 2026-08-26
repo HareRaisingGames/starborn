@@ -9,6 +9,7 @@ public class TitleState : MonoBehaviour
     public GameObject title;
     public GameObject mainMenu;
     public GameObject gameSelection;
+    public GameObject credits;
     static string curOption = "title";
 
     public Dictionary<string, GameObject> menus = new Dictionary<string, GameObject>();
@@ -16,6 +17,7 @@ public class TitleState : MonoBehaviour
     {
         {"title", "" },
         {"mainMenu", "title" },
+        {"credits", "title" },
         {"gameSelection", "mainMenu" }
     };
     //public static TitleState instance;
@@ -39,6 +41,7 @@ public class TitleState : MonoBehaviour
     {
         menus.Add("title", title);
         menus.Add("mainMenu", mainMenu);
+        menus.Add("credits", credits);
         menus.Add("gameSelection", gameSelection);
         ChangeState(curOption, false);
         //Display.Active();
