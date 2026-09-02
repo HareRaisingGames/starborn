@@ -186,7 +186,7 @@ namespace Starborn.GlassPass
         {
             base.StartSong();
             //Weird bug
-            if (song != null) Conductor.instance.music.clip = song;
+            // if (song != null) Conductor.instance.music.clip = song;
             if (indicator != null)
                 indicator.speed = Conductor.instance.songBpm / 120;
 

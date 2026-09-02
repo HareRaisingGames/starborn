@@ -70,7 +70,7 @@ namespace Starborn.LemonDrop
             base.onA(context);
 
             if(gotGameOver) return;
-            if(hasCompleted != null && hasCompleted.Invoke()) return;
+            if(hasCompleted != null && hasCompleted.Invoke() && !Conductor.instance.isPlaying) return;
             if(autoPlay && Conductor.instance.isPlaying) return;
             if(!canClick) return;
 
@@ -88,7 +88,7 @@ namespace Starborn.LemonDrop
             canClick = true;
             hasCompleted = delegate ()
             {
-                return cutCount >= 2 && afterCut && Conductor.instance.isFinished;
+                return cutCount >= 3 && afterCut && Conductor.instance.isFinished;
             };
             base.StartSong();
             Conductor.instance.onSongFinished += delegate ()
@@ -107,7 +107,6 @@ namespace Starborn.LemonDrop
                     }
 
                 }
-
             };
         }
 
@@ -145,7 +144,7 @@ namespace Starborn.LemonDrop
             }
             else
             {
-                if(cutCount >= 2 && afterCut)
+                if(cutCount >= 3 && afterCut)
                 {
                     successTotal++;
                     cutCount = 0;

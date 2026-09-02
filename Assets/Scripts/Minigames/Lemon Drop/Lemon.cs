@@ -33,6 +33,8 @@ namespace Starborn.LemonDrop
         Tween<float> xRotating;
         Tween<float> yRotating;
 
+        protected Vector3 startPosition = Vector3.up * -10f;
+        public float startY => startPosition.y;
         LemonDrop game;
 
         bool isLime = false;
@@ -148,6 +150,7 @@ namespace Starborn.LemonDrop
         }
         public void Reassemble()
         {
+            transform.position = startPosition;
             skin.gameObject.SetActive(true);
 
             skin.transform.parent = lemonParent;
@@ -233,6 +236,64 @@ namespace Starborn.LemonDrop
             
         }
 
+        // public void Cut(float state)
+        // {
+        //     skin.isKinematic = false;
+        //     skin.gameObject.SetActive(false);
+
+        //     if(game != null)
+        //         game.cutCount++;
+
+        //     _squeeze.Play();
+
+        //     if (state >= 1)
+        //     {
+        //         front.isKinematic = false;
+        //         front.transform.parent = null;
+        //     }
+        //     if (state >= 2)
+        //     {
+                
+        //     }
+        //     if (state >= 3)
+        //     {
+        //         slice1.transform.parent = null;
+        //         slice1.isKinematic = false;
+        //         slice2.isKinematic = false;
+        //         back.isKinematic = false;
+        //         slice2.transform.parent = null;
+        //         back.transform.parent = null;
+        //     }
+
+        //     switch (state)
+        //     {
+        //         case 1:
+        //             Destroy(frontToSlice);
+        //             front.AddForce(transform.up * 100);
+        //             front.AddForce(-transform.forward * 100);
+        //             front.AddTorque(transform.up * 10);
+        //             if (splash1 != null)
+        //                 splash1.Play();
+        //             break;
+        //         case 2:
+        //             Destroy(sliceToSlice);
+        //             slice1.AddForce(transform.up * 10);
+        //             slice1.AddForce(-transform.forward * 100);
+        //             break;
+        //         case 3:
+        //             Destroy(sliceToBack);
+        //             slice2.AddForce(-transform.forward * 100);
+
+        //             slice2.AddForce(transform.up * 10);
+
+        //             back.AddForce(transform.forward * 100);
+        //             back.AddTorque(-transform.up * 10);
+        //             if (splash2 != null)
+        //                 splash2.Play();
+        //             break;
+        //     }
+        // }
+
         public void Cut(float state)
         {
             skin.isKinematic = false;
@@ -241,8 +302,6 @@ namespace Starborn.LemonDrop
             if(game != null)
                 game.cutCount++;
 
-            _squeeze.Play();
-
             if (state >= 1)
             {
                 front.isKinematic = false;
@@ -250,12 +309,11 @@ namespace Starborn.LemonDrop
             }
             if (state >= 2)
             {
-                
+                slice1.isKinematic = false;
+                slice1.transform.parent = null;
             }
             if (state >= 3)
             {
-                slice1.transform.parent = null;
-                slice1.isKinematic = false;
                 slice2.isKinematic = false;
                 back.isKinematic = false;
                 slice2.transform.parent = null;
@@ -266,11 +324,8 @@ namespace Starborn.LemonDrop
             {
                 case 1:
                     Destroy(frontToSlice);
-                    front.AddForce(transform.up * 100);
+                    front.AddForce(transform.up * 10);
                     front.AddForce(-transform.forward * 100);
-                    front.AddTorque(transform.up * 10);
-                    if (splash1 != null)
-                        splash1.Play();
                     break;
                 case 2:
                     Destroy(sliceToSlice);
@@ -280,13 +335,13 @@ namespace Starborn.LemonDrop
                 case 3:
                     Destroy(sliceToBack);
                     slice2.AddForce(-transform.forward * 100);
+                    //back.AddForce(transform.forward * 100);
 
                     slice2.AddForce(transform.up * 10);
+                    //back.AddForce(transform.up * 10);
 
-                    back.AddForce(transform.forward * 100);
-                    back.AddTorque(-transform.up * 10);
-                    if (splash2 != null)
-                        splash2.Play();
+                    //if (GetComponent<Outline>() != null)
+                    //GetComponent<Outline>().enabled = false;
                     break;
             }
         }

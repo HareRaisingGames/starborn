@@ -155,13 +155,27 @@ MonoBehaviour:
   conductor: {fileID: 469418586}
   autoPlay: 0
   isTutorial: 0
-  song: {fileID: 0}
+  song: {fileID: 8300000, guid: db5518580593b8940bb497ae01867e10, type: 3}
   tutorialSong: {fileID: 0}
+  caller: 
   paused: 0
   eventsList:
-  - StartCode
+  - ChangeNumber
   countdown: 
-  chartings: []
+  chartings:
+  - skipCountdown: 1
+    sections:
+    - inputList:
+      - events:
+        - ChangeNumber
+        Event: ChangeNumber
+        parameters: []
+        mark: 0
+      startLength: 0
+      length: 1
+      loops: 8
+    setBPM: 1
+    bpm: 120.5
   checkChartings: []
   tutorial:
     lines: []
@@ -184,6 +198,8 @@ MonoBehaviour:
   blip: {fileID: 2023991305}
   button: {fileID: 0}
   instructions: {fileID: 220710163}
+  weirdNumbers: 0
+  blackout: 0
 --- !u!4 &12710290
 Transform:
   m_ObjectHideFlags: 0
@@ -237,9 +253,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Enter {code}
-
-    Press Space to select a number'
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -400,7 +414,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: db5518580593b8940bb497ae01867e10, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

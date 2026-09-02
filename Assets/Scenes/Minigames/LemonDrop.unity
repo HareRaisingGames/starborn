@@ -852,7 +852,17 @@ MonoBehaviour:
       tag: 
       noMusic: 0
       noApplause: 0
-    - dialogue: You will need to cut the lemon twice
+    - dialogue: You will need to cut the lemon three times
+      section:
+        skipCountdown: 0
+        sections: []
+        setBPM: 0
+        bpm: 0
+      amount: 0
+      tag: 
+      noMusic: 0
+      noApplause: 0
+    - dialogue: Listen to the calling cues for guidance
       section:
         skipCountdown: 0
         sections: []
@@ -2626,7 +2636,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1786185212
 MonoBehaviour:
   m_ObjectHideFlags: 0

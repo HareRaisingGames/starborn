@@ -262,8 +262,9 @@ public abstract class Minigame : MonoBehaviour
             Conductor.instance.manualBpm = selectedCharting.bpm;
         Conductor.instance.SetUpBPM();
         inTutorial = false;
+        // Debug.Log(Conductor.instance.music.clip);
         selectedCharting.AddCharting(Conductor.instance.crochet, minigameName);
-        //MinigameManager.SetCongratsAudio(caller);
+        if (song != null) Conductor.instance.music.clip = song;
         AdditionalSongSetup();
         OnCountdown();
         if (selectedCharting.skipCountdown)

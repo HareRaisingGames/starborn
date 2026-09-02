@@ -858,6 +858,20 @@ public class MinigameManager : MonoBehaviour
             instance.congratulations.clip = MusicUtils.GetRandomClip("Audio/Victory", caller);
     }
 
+    public static void LoopClear()
+    {
+        foreach (RhythmInput input in instance.inputs)
+        {
+            input?.Dispose();
+        }
+
+        instance.events.Clear();
+        instance.inputs.Clear();
+
+        if (Minigame.instance != null)
+            Minigame.instance.events.Clear();
+    }
+
     public static void Clear()
     {
         foreach (RhythmInput input in instance.inputs)

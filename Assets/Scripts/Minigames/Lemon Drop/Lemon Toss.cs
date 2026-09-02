@@ -20,6 +20,7 @@ public class LemonToss : RhythmEvent
             new CallForAction(()=>{//sfx.Play(); 
 
                 lemon.Reassemble();
+                Debug.Log("Assemble!");
                 //lemon.transform.position = new Vector3(lemon.transform.position.x, -10, lemon.transform.position.z);
 
             }, 0f),
@@ -27,7 +28,7 @@ public class LemonToss : RhythmEvent
                 //tick.Play();
                 sfx.Play();
                 // lemon.transform.position = new Vector3(lemon.transform.position.x, -10, lemon.transform.position.z);
-                TweenManager.YTween(lemon.gameObject, -10f, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
+                TweenManager.YTween(lemon.gameObject, lemon.startY, -4.5f, Conductor.instance.crochet * 0.5f, Eases.Linear);
                 },
                 1f),
             new CallForAction(()=>{
@@ -50,8 +51,20 @@ public class LemonToss : RhythmEvent
             new CallForAction(()=>{
                 // sfx.Play();
                 //tick.Play();
+                // TweenManager.YTween(lemon.gameObject, 1f, 0.5f, Conductor.instance.crochet, Eases.EaseInOutSine);
+                if(callout) cut1.Play();
+            }, 2.5f, RhythmInputs.A, 1f, 1f, () => {
+                if(game.autoPlay) game.knife.Slice();
+                lemon.Cut(2);
+            }, (bool halfHit) => {
+                lemon.Missed();
+                game.bonk.Play();
+            }),
+            new CallForAction(()=>{
+                // sfx.Play();
+                //tick.Play();
                 if(callout) cut2.Play();
-                TweenManager.YTween(lemon.gameObject, 0.5f, -10f, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
+                TweenManager.YTween(lemon.gameObject, 0.5f, lemon.startY, Conductor.instance.crochet * 0.5f, Eases.EaseInSine, delegate(){
 
                 });
             }, 3f, RhythmInputs.A, 1f, 1f, () => {
