@@ -2705,9 +2705,9 @@ MonoBehaviour:
         - FileCabinet
         Event: Copier
         parameters: []
-        mark: 2
+        mark: 6
       startLength: 0
-      length: 4
+      length: 8
       loops: 1
     - inputList:
       - events:
@@ -2715,19 +2715,15 @@ MonoBehaviour:
         - FileCabinet
         Event: Copier
         parameters: []
-        mark: 0
-      startLength: 0
-      length: 4
-      loops: 1
-    - inputList:
+        mark: 4
       - events:
         - Copier
         - FileCabinet
         Event: FileCabinet
         parameters: []
-        mark: 0
+        mark: 6
       startLength: 0
-      length: 4
+      length: 8
       loops: 1
     setBPM: 1
     bpm: 120
@@ -2756,7 +2752,7 @@ MonoBehaviour:
   layout: {fileID: 707816500}
   obstacleParent: {fileID: 649447449}
   blip: {fileID: 0}
-  interval: 3
+  interval: 2
 --- !u!114 &1877951079
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -128,6 +128,8 @@ namespace Starborn.GreatEscape
             OnSongStart += () =>
             {
                 started = true;
+                // if(jumpCall != null) jumpCall.pitch = Conductor.instance.songBpm / 120f;
+                // if(downCall != null) downCall.pitch = Conductor.instance.songBpm / 120f;
             };
 
         }
@@ -150,7 +152,11 @@ namespace Starborn.GreatEscape
                 Reset();
                 jumpTween = TweenManager.YTween(bugzTemplate, bugzYPosition, bugzJumpPosition, Conductor.instance.crochet / 4f, Eases.EaseOutQuad, delegate ()
                 {
-                    jumpTween = TweenManager.YTween(bugzTemplate, bugzJumpPosition, bugzYPosition, Conductor.instance.crochet / 4f, Eases.EaseInQuad);
+                    jumpTween = TweenManager.YTween(bugzTemplate, bugzJumpPosition, bugzYPosition, Conductor.instance.crochet / 4f, Eases.EaseInQuad, delegate ()
+                    {
+                        bugzTemplate.transform.position =
+                            new Vector3(bugzXPosition, bugzYPosition, bugzTemplate.transform.position.z);
+                    });
                 });
 
             }
@@ -164,11 +170,18 @@ namespace Starborn.GreatEscape
                 Reset();
                 slideTween = TweenManager.ScaleTween(bugzTemplate, Vector3.one, new Vector3(1.5f, 0.5f, 1), Conductor.instance.crochet / 4f, Eases.EaseOutQuad, delegate ()
                 {
-                    slideTween = TweenManager.ScaleTween(bugzTemplate, new Vector3(1.5f, 0.5f, 1), Vector3.one, Conductor.instance.crochet / 4f, Eases.EaseInQuad);
+                    slideTween = TweenManager.ScaleTween(bugzTemplate, new Vector3(1.5f, 0.5f, 1), Vector3.one, Conductor.instance.crochet / 4f, Eases.EaseInQuad, delegate ()
+                    {
+                        bugzTemplate.transform.localScale = Vector3.one;
+                    });
                 });
                 jumpTween = TweenManager.YTween(bugzTemplate, bugzYPosition, bugzSlidePosition, Conductor.instance.crochet / 4f, Eases.EaseOutQuad, delegate ()
                 {
-                    jumpTween = TweenManager.YTween(bugzTemplate, bugzSlidePosition, bugzYPosition, Conductor.instance.crochet / 4f, Eases.EaseInQuad);
+                    jumpTween = TweenManager.YTween(bugzTemplate, bugzSlidePosition, bugzYPosition, Conductor.instance.crochet / 4f, Eases.EaseInQuad, delegate ()
+                    {
+                        bugzTemplate.transform.position =
+                            new Vector3(bugzXPosition, bugzYPosition, bugzTemplate.transform.position.z);
+                    });
                 });
             }
         }
@@ -400,7 +413,7 @@ namespace Starborn.GreatEscape.Templates
                     if(game.downCall != null) game.downCall.Play();
                 }, 1f),
                 new CallForAction(()=>{
-
+                    game.blip.Play();
                 }, 2f, RhythmInputs.Down, 0.5f, 0.5f, ()=>{
                     if(game.autoPlay) game.Slide();
                 }, (value) => {

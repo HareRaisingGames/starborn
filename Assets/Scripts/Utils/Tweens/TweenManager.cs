@@ -494,7 +494,7 @@ public class TweenManager : MonoBehaviour
 
         Tween<Vector3> tween = new Tween<Vector3>(gameObject, identifier, startScale, endScale, duration, value =>
         {
-            gameObject.transform.localScale = value;
+            gameObject.transform.localScale = new Vector3(value.x, value.y, value.z);
 
         }, type, onComplete, lua);
 
