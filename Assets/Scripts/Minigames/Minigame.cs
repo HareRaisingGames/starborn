@@ -273,6 +273,7 @@ public abstract class Minigame : MonoBehaviour
             Conductor.instance.PlayMusic();
             _startSong = true;
             eligibleForClear = true;
+            OnSongStart?.Invoke();
         }
         else
             Countdown.StartCountdown(Conductor.instance.crochet, delegate()
@@ -281,6 +282,7 @@ public abstract class Minigame : MonoBehaviour
                 Conductor.instance.PlayMusic();
                 _startSong = true;
                 eligibleForClear = true;
+                OnSongStart?.Invoke();
             });
         if(!isTutorial && MinigameManager.instance.backdrop != null)
             MinigameManager.instance.backdrop.SetActive(false);
