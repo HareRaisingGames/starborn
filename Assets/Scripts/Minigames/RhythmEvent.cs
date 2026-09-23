@@ -54,6 +54,7 @@ namespace Starborn.InputSystem
             private Action _onHit;
             private Action<bool> _onHalfHit;
             private Action _onMiss;
+            private List<RhythmMisinputs> _misinputs;
 
             private bool _hasInput = false;
             public bool hasInput => _hasInput;
@@ -65,8 +66,9 @@ namespace Starborn.InputSystem
             public Action onHit => _onHit;
             public Action<bool> onHalfHit => _onHalfHit;
             public Action onMiss => _onMiss;
+            public List<RhythmMisinputs> misInputs => _misinputs;
 
-            public CallForAction(Action action, float beat, RhythmInputs input = RhythmInputs.None, float start = 1, float end = 1, Action onHit = null, Action<bool> onHalfHit = null, Action onMiss = null)
+            public CallForAction(Action action, float beat, RhythmInputs input = RhythmInputs.None, float start = 1, float end = 1, Action onHit = null, Action<bool> onHalfHit = null, Action onMiss = null, List<RhythmMisinputs> misinputs = null)
             {
                 _action = action;
                 _beat = beat;
@@ -76,6 +78,7 @@ namespace Starborn.InputSystem
                 _onHit = onHit;
                 _onHalfHit = onHalfHit;
                 _onMiss = onMiss;
+                _misinputs = misinputs;
 
                 _hasInput = input != RhythmInputs.None;
 
@@ -94,7 +97,8 @@ namespace Starborn.InputSystem
 
             public CallForAction AddInput(float length, bool enable = false)
             {
-                input = new RhythmInput(inputMarker).SetDestination(beat).SetRange(_start * length, _end * length).SetOnHit(_onHit).SetOnHalfHit(_onHalfHit).SetOnMiss(_onMiss);
+                input = new RhythmInput(inputMarker, _misinputs).SetDestination(beat).SetRange(_start * length, _end * length).SetOnHit(_onHit).SetOnHalfHit(_onHalfHit).SetOnMiss(_onMiss);
+                //.SetMisinputs(_misinputs);
                 if (input.action != RhythmInputs.None && enable) input.Enable();
                 return this;
             }
@@ -153,7 +157,7 @@ namespace Starborn.InputSystem
             startPoint = time;
             foreach(CallForAction action in actions)
             {
-                CallForAction newCFA = new CallForAction(action.action, startPoint + Conductor.instance.crochet * (action.beat - 1), action.inputMarker, action.startPoint, action.endPoint, action.onHit, action.onHalfHit, action.onMiss);
+                CallForAction newCFA = new CallForAction(action.action, startPoint + Conductor.instance.crochet * (action.beat - 1), action.inputMarker, action.startPoint, action.endPoint, action.onHit, action.onHalfHit, action.onMiss, action.misInputs);
                 if (action.hasInput)
                 {
                     newCFA = newCFA.AddInput(crochet, false);

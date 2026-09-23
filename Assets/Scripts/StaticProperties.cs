@@ -24,4 +24,14 @@ public static class StaticProperties
         int sceneIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
         return sceneIndex >= 0;
     }
+
+    // public static readonly List<string> rhythmInputs = new List<string> 
+    // { 
+    //     "A",
+    //     "Pad", 
+    //     "Left", 
+    //     "Down",
+    //     "Up",
+    //     "Right"
+    // };
 }

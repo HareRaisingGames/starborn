@@ -56,6 +56,16 @@ namespace Starborn
 
         public float stepCrochet => crochet / 4;
 
+        public static float TheoreticalCrochet(float bpm)
+        {
+            return bpm > 0 ? 60 / bpm : 0;
+        }
+
+        public static float TheoreticalStepCrochet(float bpm)
+        {
+            return TheoreticalCrochet(bpm) / 4;
+        }
+
         public AudioSource music;
 
         // Conductor instance

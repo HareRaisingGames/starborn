@@ -2686,7 +2686,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minigameName: Starborn.GreatEscape
   conductor: {fileID: 1877951079}
-  autoPlay: 1
+  autoPlay: 0
   isTutorial: 0
   song: {fileID: 8300000, guid: eed1b2d9f284b774c8893b8e84542512, type: 3}
   tutorialSong: {fileID: 0}

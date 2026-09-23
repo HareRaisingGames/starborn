@@ -189,11 +189,13 @@ namespace Starborn.GreatEscape
         public override void onUp(InputAction.CallbackContext context)
         {
             base.onUp(context);
+            if(autoPlay) return;
             Jump();
         }
         public override void onDown(InputAction.CallbackContext context)
         {
             base.onDown(context);
+            if(autoPlay) return;
             Slide();
         }
 
@@ -343,6 +345,14 @@ namespace Starborn.GreatEscape.Templates
                 }, 2f, RhythmInputs.Up, 0.5f, 0.5f, ()=>{
                     if(game.autoPlay) game.Jump();
                 }, (value) => {
+                }, null, new List<RhythmMisinputs>()
+                {
+                    new RhythmMisinputs(RhythmInputs.Down, delegate(){
+                        Debug.Log("Ow!");
+                    }, (early) =>
+                    {
+                        Debug.Log(early ? "Early" : "Late");
+                    })
                 }),
             };
         }
@@ -417,6 +427,14 @@ namespace Starborn.GreatEscape.Templates
                 }, 2f, RhythmInputs.Down, 0.5f, 0.5f, ()=>{
                     if(game.autoPlay) game.Slide();
                 }, (value) => {
+                }, null, new List<RhythmMisinputs>()
+                {
+                    new RhythmMisinputs(RhythmInputs.Up, delegate(){
+                        Debug.Log("Ow!");
+                    }, (early) =>
+                    {
+                        Debug.Log(early ? "Early" : "Late");
+                    })
                 }),
             };
         }

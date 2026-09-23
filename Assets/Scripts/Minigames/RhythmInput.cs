@@ -72,6 +72,8 @@ namespace Starborn.InputSystem
         private InputAction InputAction;
         public InputAction input => InputAction;
 
+        private List<InputAction> misInputs = new List<InputAction>();
+
         private int id;
 
         public int state = 0;
@@ -93,99 +95,27 @@ namespace Starborn.InputSystem
 
         public float savedAccuracy;
 
-        public RhythmInput(RhythmInputs action)
+        public RhythmInput(RhythmInputs action, List<RhythmMisinputs> misinputs = null)
         {
             _action = action;
             id = (int)UnityEngine.Random.Range(1, 1000);
             MinigameManager.instance.inputs.Add(this);
             spb = Conductor.instance.crochet;
             enabled = false;
+            SetMisinputs(misinputs);
             Generate();
-        }
-
-        public void onInputHit(InputAction.CallbackContext context)
-        {
-            if(!enabled) return;
-
-            curHit = Conductor.instance.songPosition;
-            checkForAccuracy = (curHit >= startPoint) && (curHit <= endPoint);
-
-            float accurary = 0;
-            if (checkForAccuracy && mustHit && !hasHit && !autoplay)
-            {
-                // Debug.Log(MinigameManager.instance.curInputs.Count);
-                bool early = false;
-                if(curHit == desHit)
-                {
-                    accurary = 1.0f;
-                }
-                else if(curHit >= startPoint && curHit < desHit)
-                {
-                    accurary = MathUtils.Normalize(curHit, startPoint, desHit);
-                    early = true;
-                }
-                else if(curHit <= endPoint && curHit > desHit)
-                {
-                    accurary = MathUtils.ReverseNormalize(curHit, desHit, endPoint);
-                }
-                savedAccuracy = accurary;
-                if(MinigameManager.instance.curInputs.Count > 1)
-                {
-                    // Debug.Log(MinigameManager.FindHighestAccuracy());
-                    // Debug.Log(accurary == MinigameManager.FindHighestAccuracy());
-                    if(accurary != MinigameManager.FindHighestAccuracy())
-                        return;
-                }
-
-                Debug.Log($"{id}: {accurary}");
-
-                if (accurary >= 0.8)
-                {
-                    onHit?.Invoke();
-                    if (accurary >= 0.95)
-                        accurary = 1;
-                    MinigameManager.instance.accuracies.Add(accurary);
-                    success = true;
-                    hasHit = true;
-                    Disable();
-                }
-                else if(accurary < 0.8 && accurary >= 0.6)
-                {
-                    onHalfHit?.Invoke(early);
-                    MinigameManager.instance.accuracies.Add(accurary);
-                    success = true;
-                    hasHit = true;
-                    Disable();
-                }
-                else
-                {
-                    onMiss?.Invoke();
-                    MinigameManager.instance.accuracies.Add(0f);
-                    success = true;
-                    hasHit = true;
-                    Disable();
-                }
-
-                MinigameManager.instance.displayAccuracy = 0;
-            }
-
-        }
-
-        public void onInputRelease (InputAction.CallbackContext context)
-        {
-
         }
 
         void Generate()
         {
             //Debug.Log(m_inputSystem.Rhythm.A);
             //m_inputSystem = new StarbornInputSystem();
-            InputAction[] actionList = 
-            { 
-                m_inputSystem.Rhythm.A, 
-                m_inputSystem.Rhythm.Left, 
-                m_inputSystem.Rhythm.Right, 
-                m_inputSystem.Rhythm.Up, 
+            InputAction[] actionList =
+            {
+                m_inputSystem.Rhythm.A,
+                m_inputSystem.Rhythm.Left,
+                m_inputSystem.Rhythm.Right,
+                m_inputSystem.Rhythm.Up,
                 m_inputSystem.Rhythm.Down
             };
 
@@ -219,10 +149,111 @@ namespace Starborn.InputSystem
 
             mustHit = _action != RhythmInputs.None;
             UpdateInputCallbacks();
-                 
+
 
             //desHit = destination;
         }
+
+        private Dictionary<InputAction, RhythmMisinputs> misinputCallbacks = new Dictionary<InputAction, RhythmMisinputs>();
+
+
+        public void onInputHit(InputAction.CallbackContext context)
+        {
+            if (!enabled) return;
+
+            curHit = Conductor.instance.songPosition;
+            checkForAccuracy = (curHit >= startPoint) && (curHit <= endPoint);
+
+            float accurary = 0;
+            if (checkForAccuracy && mustHit && !hasHit && !autoplay)
+            {
+                // Debug.Log(MinigameManager.instance.curInputs.Count);
+                bool early = false;
+                if (curHit == desHit)
+                {
+                    accurary = 1.0f;
+                }
+                else if (curHit >= startPoint && curHit < desHit)
+                {
+                    accurary = MathUtils.Normalize(curHit, startPoint, desHit);
+                    early = true;
+                }
+                else if (curHit <= endPoint && curHit > desHit)
+                {
+                    accurary = MathUtils.ReverseNormalize(curHit, desHit, endPoint);
+                }
+                savedAccuracy = accurary;
+
+                if (MinigameManager.instance.curInputs.Count > 1)
+                {
+                    // Debug.Log(MinigameManager.FindHighestAccuracy());
+                    // Debug.Log(accurary == MinigameManager.FindHighestAccuracy());
+                    if (accurary != MinigameManager.FindHighestAccuracy())
+                        return;
+                }
+
+                Debug.Log($"{id}: {accurary}");
+
+                if (accurary >= 0.8)
+                {
+                    if (context.action.name == InputAction.name)
+                    {
+                        onHit?.Invoke();
+                        if (accurary >= 0.95)
+                            accurary = 1;
+                        MinigameManager.instance.accuracies.Add(accurary);
+                    }
+                    else
+                    {
+                        if (misinputCallbacks.ContainsKey(context.action))
+                        {
+                            misinputCallbacks[context.action].InvokeHit();
+                        }
+                        MinigameManager.instance.accuracies.Add(0f);
+                        // onHit?.Invoke();
+                    }
+                    success = true;
+                    hasHit = true;
+                    Disable();
+                }
+                else if (accurary < 0.8 && accurary >= 0.6)
+                {
+                    if (context.action.name == InputAction.name)
+                    {
+                        onHalfHit?.Invoke(early);
+                        MinigameManager.instance.accuracies.Add(accurary);
+                    }
+                    else
+                    {
+                        if (misinputCallbacks.ContainsKey(context.action))
+                        {
+                            misinputCallbacks[context.action].InvokeHalfHit(early);
+                        }
+                        MinigameManager.instance.accuracies.Add(0f);
+                    }
+                    success = true;
+                    hasHit = true;
+                    Disable();
+                }
+                else
+                {
+                    onMiss?.Invoke();
+                    MinigameManager.instance.accuracies.Add(0f);
+                    success = true;
+                    hasHit = true;
+                    Disable();
+                }
+
+                MinigameManager.instance.displayAccuracy = 0;
+            }
+
+        }
+
+        public void onInputRelease(InputAction.CallbackContext context)
+        {
+
+        }
+
 
         void UpdateInputCallbacks()
         {
@@ -242,6 +273,11 @@ namespace Starborn.InputSystem
             {
                 InputAction.performed += onInputHit;
                 InputAction.canceled += onInputRelease;
+                foreach(InputAction misinput in misInputs)
+                {
+                    misinput.performed += onInputHit;
+                    misinput.canceled += onInputRelease;
+                }
                 callbacksRegistered = true;
             }
         }
@@ -252,6 +288,11 @@ namespace Starborn.InputSystem
             {
                 InputAction.performed -= onInputHit;
                 InputAction.canceled -= onInputRelease;
+                foreach(InputAction misinput in misInputs)
+                {
+                    misinput.performed -= onInputHit;
+                    misinput.canceled -= onInputRelease;
+                }
                 callbacksRegistered = false;
             }
         }
@@ -288,12 +329,62 @@ namespace Starborn.InputSystem
             return this;
         }
 
+        //This is in case of a minigame with two different inputs (A and Down for example) and the player hits the opposing input
+        public void SetMisinputs(List<RhythmMisinputs> misinputs = null)
+        {
+            if (misinputs != null && misinputs.Count > 0)
+            {
+                // Debug.Log(misinputs.Count);
+                foreach (RhythmMisinputs misinput in misinputs)
+                {
+                    InputAction inputAction;
+                    if(misinput.GetInputName() == _action.ToString())
+                        continue;
+                    
+                    switch (misinput.GetInputName())
+                    {
+                        case "A":
+                            inputAction = m_inputSystem.Rhythm.A;
+                            break;
+                        case "Left":
+                            inputAction = m_inputSystem.Rhythm.Left;
+                            break;
+                        case "Down":
+                            inputAction = m_inputSystem.Rhythm.Down;
+                            break;
+                        case "Up":
+                            inputAction = m_inputSystem.Rhythm.Up;
+                            break;
+                        case "Right":
+                            inputAction = m_inputSystem.Rhythm.Right;
+                            break;
+                        case "Pad":
+                            inputAction = m_inputSystem.Rhythm.Pad;
+                            break;
+                        default:
+                            inputAction = null;
+                            break;
+                    }
+
+                    if(inputAction != null && !misinputCallbacks.ContainsKey(inputAction))
+                    {
+                        misinputCallbacks.Add(inputAction, misinput);
+                        misInputs.Add(inputAction);
+                    }
+
+                }
+            }
+        }
+
         public void Enable()
         {
             if (disposed || InputAction == null)
                 return;
 
             InputAction.Enable();
+            foreach(InputAction misinput in misInputs)
+                misinput.Enable();
+
             enabled = true;
         }
 
@@ -303,6 +394,9 @@ namespace Starborn.InputSystem
                 return;
 
             InputAction.Disable();
+            foreach(InputAction misinput in misInputs)
+                misinput.Disable();
+            
             enabled = false;
         }
 
@@ -322,12 +416,12 @@ namespace Starborn.InputSystem
         bool found;
         public void Update(float time)
         {
-            if(mustHit)
+            if (mustHit)
             {
                 curHit = time;
                 checkForAccuracy = (curHit >= startPoint) && (curHit <= endPoint);
 
-                if(!enabled && !success && curHit >= startPoint - inputEnableBuffer && curHit <= endPoint)
+                if (!enabled && !success && curHit >= startPoint - inputEnableBuffer && curHit <= endPoint)
                 {
                     Enable();
                 }
@@ -353,9 +447,9 @@ namespace Starborn.InputSystem
                     }
                 }*/
 
-                if(autoplay)
+                if (autoplay)
                 {
-                    if(curHit >= desHit && !found)
+                    if (curHit >= desHit && !found)
                     {
                         found = true;
                         onHit?.Invoke();
@@ -365,7 +459,7 @@ namespace Starborn.InputSystem
                     }
                 }
 
-                if(curHit > endPoint && !success)
+                if (curHit > endPoint && !success)
                 {
                     onMiss?.Invoke();
                     MinigameManager.instance.accuracies.Add(0f);
@@ -389,8 +483,51 @@ namespace Starborn.InputSystem
 
         }
 
-        }
+    }
 
+}
+
+public struct RhythmMisinputs
+{
+    private RhythmInputs input;
+    private Action onHit;
+    private Action<bool> onHalfHit;
+
+    public RhythmMisinputs(RhythmInputs input, Action onHit, Action<bool> onHalfHit)
+    {
+        this.input = input;
+        this.onHit = onHit;
+        this.onHalfHit = onHalfHit;
+    }
+
+    public RhythmMisinputs(RhythmInputs input, Action onHit)
+    {
+        this.input = input;
+        this.onHit = onHit;
+        onHalfHit = null;
+    }
+
+    public RhythmMisinputs(RhythmInputs input, Action<bool> onHalfHit)
+    {
+        this.input = input;
+        onHit = null;
+        this.onHalfHit = onHalfHit;
+    }
+
+    public string GetInputName()
+    {
+        return input.ToString();
+    }
+
+    public void InvokeHit()
+    {
+        onHit?.Invoke();
+    }
+
+    public void InvokeHalfHit(bool isGood)
+    {
+        onHalfHit?.Invoke(isGood);
+    }
 }
 
 public enum RhythmInputs
