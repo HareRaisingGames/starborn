@@ -196,6 +196,7 @@ namespace Starborn.InputSystem
 
                 if (accurary >= 0.8)
                 {
+                    //Checks if it's the correct input
                     if (context.action.name == InputAction.name)
                     {
                         onHit?.Invoke();
@@ -210,7 +211,6 @@ namespace Starborn.InputSystem
                             misinputCallbacks[context.action].InvokeHit();
                         }
                         MinigameManager.instance.accuracies.Add(0f);
-                        // onHit?.Invoke();
                     }
                     success = true;
                     hasHit = true;
@@ -218,6 +218,7 @@ namespace Starborn.InputSystem
                 }
                 else if (accurary < 0.8 && accurary >= 0.6)
                 {
+                    //Checks if it's the correct input
                     if (context.action.name == InputAction.name)
                     {
                         onHalfHit?.Invoke(early);
