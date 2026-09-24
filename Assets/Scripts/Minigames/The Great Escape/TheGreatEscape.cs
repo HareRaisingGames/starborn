@@ -342,7 +342,7 @@ namespace Starborn.GreatEscape.Templates
                 }, 1f),
                 new CallForAction(()=>{
                     game.blip.Play();
-                }, 2f, RhythmInputs.Up, 0.5f, 0.5f, ()=>{
+                }, 2f, RhythmInputs.Up, 0.75f, 0.75f, ()=>{
                     if(game.autoPlay) game.Jump();
                 }, (value) => {
                 }, null, new List<RhythmMisinputs>()
@@ -373,13 +373,13 @@ namespace Starborn.GreatEscape.Templates
                 }, 2f),
                 new CallForAction(()=>{
 
-                }, 3f, RhythmInputs.Up, 0.5f, 0.5f, ()=>{
+                }, 3f, RhythmInputs.Up, 0.75f, 0.75f, ()=>{
 
                 }, (value) => {
                 }),
                 new CallForAction(()=>{
 
-                }, 4f, RhythmInputs.Up, 0.5f, 0.5f, ()=>{
+                }, 4f, RhythmInputs.Up, 0.75f, 0.75f, ()=>{
 
                 }, (value) => {
                 }),
@@ -424,7 +424,7 @@ namespace Starborn.GreatEscape.Templates
                 }, 1f),
                 new CallForAction(()=>{
                     game.blip.Play();
-                }, 2f, RhythmInputs.Down, 0.5f, 0.5f, ()=>{
+                }, 2f, RhythmInputs.Down, 0.75f, 0.75f, ()=>{
                     if(game.autoPlay) game.Slide();
                 }, (value) => {
                 }, null, new List<RhythmMisinputs>()

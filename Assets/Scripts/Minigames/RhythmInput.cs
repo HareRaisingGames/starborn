@@ -427,27 +427,6 @@ namespace Starborn.InputSystem
                     Enable();
                 }
 
-                /*if(checkForAccuracy)
-                {
-                    //Debug.Log("Hit!");
-                    if(curHit >= startPoint && curHit < desHit)
-                    {
-                        if (MathUtils.Normalize(curHit, startPoint, desHit) >= 0.8)
-                        {
-                            Debug.Log("Good!");
-                        }
-                        //Debug.Log(id + ": " + MathUtils.Normalize(curHit, startPoint, desHit));
-                    }
-                    else if(curHit <= endPoint && curHit > desHit)
-                    {
-                        if (MathUtils.ReverseNormalize(curHit, desHit, endPoint) >= 0.8)
-                        {
-                            Debug.Log("Good!");
-                        }
-                        //Debug.Log(id + ": " + MathUtils.ReverseNormalize(curHit, desHit, endPoint));
-                    }
-                }*/
-
                 if (autoplay)
                 {
                     if (curHit >= desHit && !found)
@@ -456,7 +435,6 @@ namespace Starborn.InputSystem
                         onHit?.Invoke();
                         success = true;
                         hasHit = true;
-                        //Debug.Log("Brrrap!");
                     }
                 }
 
